@@ -705,7 +705,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   const IDLE_MS = 10 * 60 * 1000;                      // kunci otomatis setelah 10 menit diam
   const K_DB = 'cpptkilat.db.v2';                      // semua pasien, teks polos (versi lama / browser tanpa enkripsi)
   const K_OLD = 'cpptkilat.draft.v1';                  // draf versi 1 (dipindahkan otomatis)
-  const K_ENC = 'cpptkilat.db.enc.v1';                 // semua pasien terenkripsi AES-GCM -> sessionStorage (hilang saat tab ditutup)
+  const K_ENC = 'cpptkilat.db.enc.v1';                 // semua pasien terenkripsi AES-GCM -> localStorage, terhapus 12 jam setelah edit terakhir
   const KDF_ITER = 200000;                             // PBKDF2-SHA-256
   const K_PREF = 'cpptkilat.pref.v1';                  // preferensi tampilan -> localStorage
   const K_SET = 'cpptkilat.settings.v1';               // default buatan sendiri -> localStorage
@@ -1564,11 +1564,22 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const raw = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(w.iv) }, kek, unb64(w.ct)));
     try { return await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']); } finally { raw.fill(0); }
   }
-  // f = ada pasien yang terisi (hanya ya/tidak, untuk peringatan tutup tab saat terkunci)
+  /* Isian terenkripsi disimpan di localStorage (bukan sessionStorage) supaya tidak hilang saat Android mematikan
+     aplikasi terpasang di belakang. Terhapus otomatis ENC_TTL setelah terakhir diedit.
+     f = ada pasien yang terisi (hanya ya/tidak); t = waktu edit terakhir (ms). */
+  const ENC_TTL = 12 * 60 * 60 * 1000;
+  let editTs = 0, lastJson = null;
   async function encSave(key, json, filled) {
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(json)));
-    store.set('sessionStorage', K_ENC, { v: 2, iv: b64(iv), ct: b64(ct), f: filled ? 1 : 0 });
+    store.set('localStorage', K_ENC, { v: 2, iv: b64(iv), ct: b64(ct), f: filled ? 1 : 0, t: editTs || Date.now() });
+    store.del('sessionStorage', K_ENC);   // salinan versi lama (per tab) tidak dipakai lagi
+  }
+  // Hapus isian yang sudah lewat 12 jam sejak edit terakhir; true = ada yang dihapus
+  function expireEnc() {
+    const b = store.get('localStorage', K_ENC);
+    if (b && typeof b.t === 'number' && Date.now() - b.t > ENC_TTL) { store.del('localStorage', K_ENC); return true; }
+    return false;
   }
   async function encOpen(key, blob) {
     const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(blob.iv) }, key, unb64(blob.ct));
@@ -1576,18 +1587,23 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   // v2 = kunci data bersama; v1 = versi sebelumnya (kunci dari password + salt per tab), dibaca sekali lalu disimpan ulang sebagai v2
   const encBlob = () => {
-    const b = store.get('sessionStorage', K_ENC);
+    expireEnc();
+    const b = store.get('localStorage', K_ENC) || store.get('sessionStorage', K_ENC);
     return b && typeof b.iv === 'string' && typeof b.ct === 'string' && (b.v === 2 || (b.v === 1 && typeof b.s === 'string')) ? b : null;
   };
 
   // Simpan ditunda 250 ms setelah perubahan terakhir; enkripsi berjalan async dan berurutan (tidak menghambat ketikan)
   let saveTimer = 0;
   function saveSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(() => { saveTimer = 0; saveNow(); }, 250); }
-  function saveNow() {
+  // force = simpan walau isinya sama (migrasi versi lama); selain itu isi yang tidak berubah tidak ditulis ulang,
+  // supaya membuka kunci di satu jendela tidak mengunci jendela lain
+  function saveNow(force) {
     if (!db) return saveChain;
     if (!CRYPTO) { store.set('sessionStorage', K_DB, db); return saveChain; }
     if (!encKey) return saveChain;
     const key = encKey, json = JSON.stringify(db), filled = anyFilled();
+    if (json === lastJson && !force) return saveChain;
+    if (json !== lastJson) { lastJson = json; editTs = Date.now(); }   // hanya perubahan isi yang memperpanjang 12 jam
     saveChain = saveChain.then(() => encSave(key, json, filled)).then(() => true, () => false);
     return saveChain;
   }
@@ -5101,7 +5117,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (locked) return;
     idleT = setTimeout(() => lock('Terkunci otomatis setelah 10 menit tidak dipakai.'), IDLE_MS);
   }
-  function lock(note) {
+  // noSave = jangan simpan isian jendela ini (isian yang lebih baru sudah disimpan jendela lain)
+  function lock(note, noSave) {
     locked = true;
     clearTimeout(idleT);
     hideToast();
@@ -5113,11 +5130,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const m = $('#pwMsg');
     m.className = 'lock-msg';
     m.textContent = note || '';
-    if (CRYPTO && db) purge();
+    if (CRYPTO && db) purge(noSave);
     setTimeout(() => { try { inp.focus(); } catch (e) { /* abaikan */ } }, 30);
   }
   // Kunci sungguhan: simpan terakhir (terenkripsi), kosongkan isian dari memori dan halaman, lalu buang kuncinya
-  function purge() {
+  function purge(noSave) {
     clearTimeout(saveTimer); saveTimer = 0;
     lockedDirty = anyFilled();
     const key = encKey, json = JSON.stringify(db), filled = lockedDirty;
@@ -5125,7 +5142,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     db = null; state = null; BLK = {}; gzMemo = { k: null, r: null };
     undoSnap = null; renaming = null; renameNew = false; tabArm = null; focusSec = null;
     clearPage();
-    if (key) saveChain = saveChain.then(() => encSave(key, json, filled)).then(() => true, () => false);
+    if (key && !noSave && json !== lastJson) { lastJson = json; editTs = Date.now(); } else noSave = true;
+    if (key && !noSave) saveChain = saveChain.then(() => encSave(key, json, filled)).then(() => true, () => false);
   }
   function clearPage() {
     ['#ptTog', '#ptBody', '#sBody', '#oBody', '#bblBody', '#fluidBox', '#ptabs', '#waBar', '#modalBody', '#toast', '#sheetSub'].forEach(s => { const el = $(s); if (el) el.textContent = ''; });
@@ -5148,11 +5166,12 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (CRYPTO || !booted) {
       booted = true;
       loadDB(dec);
+      if (CRYPTO) { const b = encBlob(); editTs = b && typeof b.t === 'number' ? b.t : Date.now(); lastJson = JSON.stringify(db); }
       syncAP();
       renderForm();
       changed();
       // data polos versi lama: simpan ulang terenkripsi dulu, baru hapus versi polosnya
-      if (CRYPTO && (migratePlain || resave)) saveNow().then(ok => { if (ok && migratePlain) { store.del('sessionStorage', K_DB); store.del('sessionStorage', K_OLD); } });
+      if (CRYPTO && (migratePlain || resave)) saveNow(true).then(ok => { if (ok && migratePlain) { store.del('sessionStorage', K_DB); store.del('sessionStorage', K_OLD); } });
     } else if (prev !== appMode) {
       renderForm();
       changed();
@@ -5209,7 +5228,15 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   /* ================= Mulai ================= */
   if (prefs.theme === 'dark' || prefs.theme === 'light') document.documentElement.setAttribute('data-theme', prefs.theme);
   $('#lockNote').hidden = CRYPTO;
-  if (CRYPTO) $('#lockFoot').textContent = 'Isian pasien hanya tersimpan di tab ini, terenkripsi, dan hilang saat tab ditutup. Saat terkunci, isian dikosongkan dari layar. Terkunci otomatis setelah 10 menit tidak dipakai.';
+  if (CRYPTO) $('#lockFoot').textContent = 'Isian pasien tersimpan terenkripsi di perangkat ini (tetap ada walau aplikasi tertutup) dan terhapus otomatis 12 jam setelah terakhir diedit. Saat terkunci, isian dikosongkan dari layar. Terkunci otomatis setelah 10 menit tidak dipakai.';
+  // Isian dibuka di dua jendela (tab dan aplikasi terpasang): jendela lain menyimpan, jendela ini dikunci tanpa menyimpan
+  // supaya isian yang lebih baru tidak tertimpa. Buka kunci lagi = memuat yang terbaru.
+  window.addEventListener('storage', e => {
+    if (!CRYPTO || e.key !== K_ENC || locked || unlocking) return;
+    lock('Isian diubah di jendela lain. Masukkan password untuk memuat yang terbaru.', true);
+  });
+  // Terkunci lama: isian yang lewat 12 jam dihapus walau aplikasi tetap terbuka
+  if (CRYPTO) setInterval(() => { if (locked && expireEnc()) lockedDirty = false; }, 60 * 1000);
   const dl = h('datalist', { id: 'regioList' });
   REGIO.forEach(r => dl.appendChild(h('option', { value: r })));
   document.body.appendChild(dl);
@@ -5245,11 +5272,14 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   // Konfirmasi browser sebelum tab ditutup/dimuat ulang bila ada pasien yang sudah diisi
   window.addEventListener('beforeunload', e => {
     saveFlush();
+    if (CRYPTO) return;   // isian terenkripsi tetap tersimpan, tidak perlu konfirmasi
     if (!(db ? anyFilled() : lockedDirty)) return;
     e.preventDefault();
     e.returnValue = '';
   });
   window.addEventListener('pagehide', saveFlush);
+  // Android bisa mematikan aplikasi begitu pindah ke WA: simpan segera saat halaman tidak terlihat
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveFlush(); });
   try { $('#pw').focus(); } catch (e) { /* abaikan */ }
 })();
 </script>
