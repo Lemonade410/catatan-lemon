@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Catatan Lemon</title>
+<!-- Ikon dan manifest: ikon lemon saat ditambahkan ke layar utama Android/iPhone -->
+<meta name="theme-color" content="#121211">
+<meta name="application-name" content="Catatan Lemon">
+<meta name="apple-mobile-web-app-title" content="Catatan Lemon">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&display=swap">
@@ -221,6 +229,12 @@ textarea.in{display:block;min-height:66px;resize:vertical;overflow:hidden}
 .gx.pos{border-style:solid;border-color:var(--hl-edge);background:var(--hl);color:var(--hl-ink)}
 .gx.neg{border-style:solid;border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
 .gx .mk{margin-left:6px;font-family:var(--f-mono);font-size:12.5px;font-weight:700}
+/* Grup gabungan (umum, paru, jantung, cerna): kelompok kecil berjudul di dalam satu panel */
+.gx-sub{display:grid;grid-template-columns:84px minmax(0,1fr);gap:4px 10px;align-items:start;padding-block:8px;border-top:1px dashed var(--rule)}
+.gx-sub:first-child{padding-top:0;border-top:0}
+.gx-sub:last-child{padding-bottom:0}
+.gx-sub-lab{padding-top:8px;font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:640px){.gx-sub{grid-template-columns:minmax(0,1fr)}.gx-sub-lab{padding-top:0}}
 
 /* ===== Riwayat ===== */
 .rw{border-top:1px solid var(--rule)}
@@ -464,7 +478,10 @@ input.rw-lab{font-weight:600}
 .sheet-acts{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:6px}
 .rep .sh-head{margin-top:2px}
 .rep .sh-k{font-weight:400}
-.wa-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:8px 16px;border-bottom:1px solid var(--rule)}
+.wa-bar{display:grid;gap:6px;padding:8px 16px;border-bottom:1px solid var(--rule)}
+.wa-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;min-width:0}
+.wa-line>.lnk{margin-left:auto}
+.wa-nama{flex:1 1 150px;max-width:260px}
 .ln.hint{color:var(--muted);font-family:var(--f-ui);font-size:12.5px;font-style:italic;border:1px dashed var(--rule);border-radius:4px;padding:0 6px}
 
 /* ===== Status gizi ===== */
@@ -812,12 +829,17 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   const EMPTY_RW = { st: null, ket: '', btg: '', th: '', cara: null, gest: null, bbl: '' };
 
   // Ceklis gejala. Id yang sama di dua grup = gejala yang sama (tidak ditulis dobel).
+  // Grup "umum" menggabungkan umum, paru, jantung, dan cerna (sering muncul bersama pada satu pasien);
+  // subs = kelompok kecil di dalam panelnya, items dihitung dari subs (lihat di bawah).
+  // bb = baris BAB/BAK: bagian sendiri di S, selalu tampil, bawaan "tidak ada keluhan"; label = kata sesudah "BAB"/"BAK".
   const GX = [
-    { id: 'umum', lab: 'Umum', items: [['demam', 'demam'], ['menggigil', 'menggigil'], ['lemas', 'lemas'], ['anoreksia', 'nafsu makan turun'], ['bbturun', 'BB turun'], ['keringat', 'keringat malam']] },
-    { id: 'resp', lab: 'Respirasi', items: [['batuk', 'batuk'], ['pilek', 'pilek'], ['nyeritelan', 'nyeri telan'], ['sesak', 'sesak'], ['mengi', 'mengi'], ['hemoptisis', 'batuk darah']] },
-    { id: 'kv', lab: 'Jantung', items: [['nyeridada', 'nyeri dada'], ['berdebar', 'berdebar'], ['doe', 'dyspneu on effort'], ['ortopnea', 'ortopnea'], ['pnd', 'PND'], ['bengkak', 'bengkak tungkai'], ['sinkop', 'pingsan'], ['lelah', 'cepat lelah'], ['keringatdingin', 'keringat dingin']] },
-    { id: 'gi', lab: 'Cerna', items: [['mual', 'mual'], ['muntah', 'muntah'], ['nyeriperut', 'nyeri perut'], ['nyeriuluhati', 'nyeri ulu hati'], ['diare', 'BAB cair'], ['lendir', 'BAB berlendir'], ['babdarah', 'BAB berdarah'], ['melena', 'BAB hitam'], ['hematemesis', 'muntah darah'], ['konstipasi', 'sulit BAB'], ['kembung', 'kembung'], ['disfagia', 'sulit menelan'], ['tersedak', 'tersedak'], ['kuning', 'kuning']] },
-    { id: 'uro', lab: 'Kemih', items: [['disuria', 'nyeri BAK'], ['anyang', 'anyang-anyangan'], ['frekuensi', 'BAK sering'], ['tidaklampias', 'BAK tidak lampias'], ['hematuria', 'BAK berdarah'], ['oliguria', 'BAK berkurang'], ['nyeripinggang', 'nyeri pinggang']] },
+    { id: 'umum', lab: 'Umum, paru, jantung, cerna', subs: [
+      ['Umum', [['demam', 'demam'], ['menggigil', 'menggigil'], ['lemas', 'lemas'], ['anoreksia', 'nafsu makan turun'], ['bbturun', 'BB turun'], ['keringat', 'keringat malam']]],
+      ['Paru', [['batuk', 'batuk'], ['pilek', 'pilek'], ['nyeritelan', 'nyeri telan'], ['sesak', 'sesak'], ['mengi', 'mengi'], ['hemoptisis', 'batuk darah']]],
+      ['Jantung', [['nyeridada', 'nyeri dada'], ['berdebar', 'berdebar'], ['doe', 'dyspneu on effort'], ['ortopnea', 'ortopnea'], ['pnd', 'PND'], ['bengkak', 'bengkak tungkai'], ['sinkop', 'pingsan'], ['lelah', 'cepat lelah'], ['keringatdingin', 'keringat dingin']]],
+      ['Cerna', [['mual', 'mual'], ['muntah', 'muntah'], ['nyeriperut', 'nyeri perut'], ['nyeriuluhati', 'nyeri ulu hati'], ['hematemesis', 'muntah darah'], ['kembung', 'kembung'], ['disfagia', 'sulit menelan'], ['tersedak', 'tersedak'], ['kuning', 'kuning'], ['nyeripinggang', 'nyeri pinggang']]]] },
+    { id: 'bab', lab: 'BAB', bb: true, items: [['diare', 'cair'], ['lendir', 'berlendir'], ['babdarah', 'berdarah'], ['melena', 'hitam'], ['konstipasi', 'sulit']] },
+    { id: 'bak', lab: 'BAK', bb: true, items: [['disuria', 'nyeri'], ['anyang', 'anyang-anyangan'], ['frekuensi', 'sering'], ['tidaklampias', 'tidak lampias'], ['hematuria', 'berdarah'], ['oliguria', 'berkurang']] },
     { id: 'neuro', lab: 'Neuro', items: [['sefalgia', 'nyeri kepala'], ['thunderclap', 'nyeri kepala hebat mendadak'], ['vertigo', 'pusing berputar'], ['proyektil', 'muntah menyemprot'], ['kejang', 'kejang'], ['hemiparesis', 'lemah sesisi'], ['pelo', 'bicara pelo'], ['mencong', 'mulut mencong'], ['drooling', 'air liur keluar terus'], ['kesemutan', 'kesemutan'], ['baal', 'baal'], ['kabur', 'pandangan kabur/ganda'], ['tidakberdiri', 'tidak bisa berdiri'], ['penkes', 'penurunan kesadaran']] },
     { id: 'trauma', lab: 'Trauma kepala/KLL', items: [['sinkop', 'pingsan'], ['amnesia', 'lupa kejadian'], ['otorhinorea', 'keluar darah dari hidung/telinga'], ['muntah', 'muntah'], ['sefalgia', 'nyeri kepala'], ['kejang', 'kejang']] },
     { id: 'muskulo', lab: 'Otot dan sendi', items: [['lbp', 'nyeri punggung bawah'], ['radikular', 'nyeri menjalar ke tungkai'], ['kesemutantangan', 'kesemutan tangan'], ['artralgia', 'nyeri sendi'], ['bengkaksendi', 'bengkak sendi'], ['nyerileher', 'nyeri leher']] },
@@ -826,8 +848,12 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     { id: 'kulit', lab: 'Kulit/alergi', items: [['gatal', 'gatal'], ['ruam', 'ruam/bentol'], ['angioedema', 'bengkak bibir/kelopak mata']] },
     { id: 'obgyn', lab: 'Obgyn', fem: true, items: [['pervaginam', 'perdarahan pervaginam'], ['keputihan', 'keputihan'], ['telathaid', 'telat haid']] },
     { id: 'mtbs', lab: 'Tanda bahaya MTBS', anak: true, items: [['tidakminum', 'tidak bisa minum/menyusu'], ['muntahsemua', 'memuntahkan semua'], ['kejang', 'kejang'], ['letargis', 'letargis/tidak sadar']] },
-    { id: 'anak', lab: 'Anak', anak: true, items: [['rewel', 'rewel'], ['malasminum', 'malas minum/menyusu'], ['oliguria', 'BAK berkurang']] }
+    { id: 'anak', lab: 'Anak', anak: true, items: [['rewel', 'rewel'], ['malasminum', 'malas minum/menyusu']] }
   ];
+  GX.forEach(G => { if (G.subs) G.items = [].concat.apply([], G.subs.map(sb => sb[1])); });
+  // Grup versi lama -> grup sekarang (pengaturan tambahan gejala dan isian tab yang masih terbuka ikut pindah)
+  const GX_OLD = { resp: 'umum', kv: 'umum', gi: 'umum', uro: 'bak' };
+  const GX_CUS_MAX = 30;   // gejala tambahan buatan sendiri per grup
   const DUR = ['jam', 'hari', 'minggu', 'bulan', 'tahun'];
   const USIA_U = ['tahun', 'bulan', 'hari'];
   const KU = ['baik', 'tampak sakit ringan', 'tampak sakit sedang', 'tampak sakit berat'];
@@ -1055,8 +1081,10 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   // Riwayat obstetri-ginekologi
   const OBG_KB = ['tidak KB', 'pil', 'suntik 1 bulan', 'suntik 3 bulan', 'implan', 'IUD', 'kondom', 'MOW'];
   const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-  // Konsul WA
-  const KONS_ASAL = ['IGD', 'ICU', 'ruang rawat', 'poli'];
+  // Konsul WA. Asal pasien disimpan sebagai indeks, jadi ruangan baru selalu ditambah di belakang;
+  // urutan tampilnya diatur KONS_URUT.
+  const KONS_ASAL = ['IGD', 'ICU', 'ruang rawat', 'poli', 'IGD PONEK', 'PICU', 'NICU', 'Perina'];
+  const KONS_URUT = [0, 4, 1, 5, 6, 7, 2, 3];
   const KONS_SET = { nama: '', salam: "Assalamu'alaikum warahmatullah dokter", pembuka: 'saya izin konsul pasien dari', penutup: 'terima kasih dok, mohon advis lebih lanjut.' };
   const REGIO = ['capitis', 'frontalis', 'temporalis', 'parietalis', 'occipitalis', 'facialis', 'orbitalis', 'palpebra superior', 'palpebra inferior', 'supraorbitalis', 'infraorbitalis', 'nasalis', 'zygomatica', 'maxillaris', 'buccalis', 'labialis superior', 'labialis inferior', 'mentalis', 'mandibularis', 'submandibularis', 'auricularis', 'retroauricularis', 'cervicalis', 'cervicalis anterior', 'cervicalis posterior', 'cervicalis lateral', 'colli', 'nuchae', 'supraclavicularis', 'clavicularis', 'infraclavicularis', 'deltoidea', 'scapularis', 'axillaris', 'thoracalis anterior', 'thoracalis posterior', 'thoracalis lateral', 'sternalis', 'mammae', 'costalis', 'hypochondrium', 'epigastrium', 'umbilicalis', 'abdominalis', 'lumbalis', 'iliaca', 'hypogastrium', 'suprapubik', 'inguinalis', 'genitalia', 'perinealis', 'vertebralis', 'sacralis', 'coccygea', 'glutealis', 'humeri', 'brachii', 'cubiti', 'olecrani', 'antebrachii', 'carpi', 'manus', 'palmaris', 'dorsum manus', 'thenar', 'hypothenar', 'digiti I manus', 'digiti II manus', 'digiti III manus', 'digiti IV manus', 'digiti V manus', 'coxae', 'femoris', 'genu', 'patellaris', 'poplitea', 'cruris', 'malleolus medialis', 'malleolus lateralis', 'achilles', 'pedis', 'dorsum pedis', 'plantaris', 'calcaneus', 'digiti I pedis', 'digiti II pedis', 'digiti III pedis', 'digiti IV pedis', 'digiti V pedis'];
 
@@ -1209,7 +1237,10 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   ];
 
   /* ================= Default buatan sendiri (localStorage) ================= */
-  function defSettings() { return { v: 1, pfLabel: {}, pfExDef: {}, pfOnDef: {}, pfCustom: {}, rwCore: { dewasa: [], anak: [] }, gx: {}, bbl: { nama: '', rs: '', salam: '', penutup: '', pf: {} }, kons: { nama: '', salam: '', pembuka: '', penutup: '' }, gzBBU: [60, 80, 120] }; }
+  // kenal = perkenalan diri ("ini dengan ...") di kalimat salam; bawaan nyala
+  function defSettings() { return { v: 1, pfLabel: {}, pfExDef: {}, pfOnDef: {}, pfCustom: {}, rwCore: { dewasa: [], anak: [] }, gx: {}, bbl: { nama: '', rs: '', salam: '', penutup: '', kenal: true, pf: {} }, kons: { nama: '', salam: '', pembuka: '', penutup: '', kenal: true }, gzBBU: [60, 80, 120] }; }
+  // Gejala tambahan: rapikan, buang dobel (nama sama = gejala sama), batasi jumlahnya
+  const gxCusList = a => a.map(t => clean(t).slice(0, 40)).filter(Boolean).filter((t, i, arr) => arr.findIndex(u => slug(u) === slug(t)) === i).slice(0, GX_CUS_MAX);
   function sanitizeSettings(x) {
     const s = defSettings();
     if (!x || typeof x !== 'object') return s;
@@ -1237,12 +1268,22 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         }
       });
       ['dewasa', 'anak'].forEach(w => { const a = x.rwCore && x.rwCore[w]; if (Array.isArray(a)) s.rwCore[w] = a.filter(id => LAYOUT[w].add.indexOf(id) >= 0); });
-      GX.forEach(G => { const a = x.gx && x.gx[G.id]; if (Array.isArray(a)) s.gx[G.id] = a.map(t => clean(t).slice(0, 40)).filter(Boolean).slice(0, 20); });
+      const gxIn = Object.assign({}, x.gx && typeof x.gx === 'object' ? x.gx : {});
+      Object.keys(GX_OLD).forEach(o => {
+        if (!Array.isArray(gxIn[o])) return;
+        const t = GX_OLD[o];
+        gxIn[t] = (Array.isArray(gxIn[t]) ? gxIn[t] : []).concat(gxIn[o]);
+      });
+      GX.forEach(G => { const a = gxIn[G.id]; if (Array.isArray(a)) { const l = gxCusList(a); if (l.length) s.gx[G.id] = l; } });
       if (x.bbl && typeof x.bbl === 'object') {
         ['nama', 'rs', 'salam', 'penutup'].forEach(k => { if (typeof x.bbl[k] === 'string') s.bbl[k] = clean(x.bbl[k]).slice(0, 200); });
+        if (typeof x.bbl.kenal === 'boolean') s.bbl.kenal = x.bbl.kenal;
         if (x.bbl.pf && typeof x.bbl.pf === 'object') BBL_PF_SET.forEach(p => { const v = x.bbl.pf[p[0]]; if (typeof v === 'string' && clean(v)) s.bbl.pf[p[0]] = clean(v).slice(0, 300); });
       }
-      if (x.kons && typeof x.kons === 'object') ['nama', 'salam', 'pembuka', 'penutup'].forEach(k => { if (typeof x.kons[k] === 'string') s.kons[k] = clean(x.kons[k]).slice(0, 200); });
+      if (x.kons && typeof x.kons === 'object') {
+        ['nama', 'salam', 'pembuka', 'penutup'].forEach(k => { if (typeof x.kons[k] === 'string') s.kons[k] = clean(x.kons[k]).slice(0, 200); });
+        if (typeof x.kons.kenal === 'boolean') s.kons.kenal = x.kons.kenal;
+      }
       if (Array.isArray(x.gzBBU) && x.gzBBU.length === 3 && x.gzBBU.every(v => typeof v === 'number' && v > 0 && v < 300) && x.gzBBU[0] < x.gzBBU[1] && x.gzBBU[1] < x.gzBBU[2]) s.gzBBU = x.gzBBU.slice();
     } catch (e) { return defSettings(); }
     return s;
@@ -1256,6 +1297,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   const gxItems = G => G.items.concat((settings.gx[G.id] || []).map(t => ['cu_' + G.id + '_' + slug(t), t]));
   const bblSet = k => clean(settings.bbl[k]) || BBL_SET[k];
   const konsSet = k => clean(settings.kons[k]) || KONS_SET[k];
+  // Nama di lapor bayi: nama khusus lapor bayi, kalau kosong sama dengan nama di konsul WA
+  const bblNama = () => clean(settings.bbl.nama) || konsSet('nama');
+  // Kalimat salam; perkenalan diri ("ini dengan ...") hanya bila nyala
+  const waktuSalam = () => { const hr = new Date().getHours(); return hr >= 4 && hr < 11 ? 'pagi' : hr >= 11 && hr < 15 ? 'siang' : hr >= 15 && hr < 18 ? 'sore' : 'malam'; };
+  const salamLine = (salam, kenal, nama) => salam + ', selamat ' + waktuSalam() + (kenal ? ', ini dengan ' + (nama || '...') : '');
   const SET_PH = { nama: 'mis. dr. nama anda', rs: 'mis. nama rumah sakit' };
   function bblPfDef(k) {
     if (k === 'gen') {
@@ -1301,6 +1347,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       v: 2, who: who || prefs.who, kind: kind || prefs.kind,
       s: { auto: false, allo: false, alloW: '', ku: '', durN: '', durU: 1, rps: '', rps2: '', hari: '', fu: '', bebas: '' },   // bebas = kolom S bebas dari versi sebelumnya
       gx: {}, gxOpen: [],
+      bb: { on: true, bab: '', bak: '' },   // BAB/BAK: on = ditulis (bawaan "tidak ada keluhan"); bab/bak = keterangan tiap baris
       amp: { m: '', p: '', l: '', e: '' },
       rw: {}, rwAdd: [], rwCustom: [], rwK: '',
       obg: { on: false, g: '', p: '', a: '', hpht: '', hamil: null, menarche: '', siklus: null, siklusH: '', lama: '', dismen: null, kb: null, kbK: '', sc: null, scN: '', ket: '' },
@@ -1364,7 +1411,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       if (['anak', 'dewasa', 'bbl'].indexOf(d.who) >= 0) s.who = d.who;
       if (d.kind === 'awal' || d.kind === 'fu') s.kind = d.kind;
       ['lok', 'pen', 'a', 'p'].forEach(k => { if (typeof d[k] === 'string') s[k] = d[k]; });
-      ['s', 'o', 'ant', 'ps', 'sc', 'amp', 'pat', 'lab', 'fl', 'bbl', 'obg', 'kons', 'gz'].forEach(k => mergeShallow(s[k], d[k]));
+      ['s', 'o', 'ant', 'ps', 'sc', 'amp', 'pat', 'lab', 'fl', 'bbl', 'obg', 'kons', 'gz', 'bb'].forEach(k => mergeShallow(s[k], d[k]));
       ['rwK', 'penLab', 'penRad'].forEach(k => { if (typeof d[k] === 'string') s[k] = d[k]; });
       if (d.nl && typeof d.nl === 'object') {
         s.nl.on = !!d.nl.on;
@@ -1415,8 +1462,12 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       if (['4', '3', '2', '1'].indexOf(s.o.e) < 0) s.o.e = '4';
       if (['5', '4', '3', '2', '1', 'x'].indexOf(s.o.vv) < 0) s.o.vv = '5';
       if (['6', '5', '4', '3', '2', '1'].indexOf(s.o.m) < 0) s.o.m = '6';
-      if (d.gx && typeof d.gx === 'object') Object.keys(d.gx).forEach(k => { const g = d.gx[k]; if (g && (g.st === 0 || g.st === 1)) s.gx[k] = { st: g.st, d: String(g.d || '') }; });
-      if (Array.isArray(d.gxOpen)) s.gxOpen = d.gxOpen.filter(id => GX.some(G => G.id === id));
+      if (d.gx && typeof d.gx === 'object') Object.keys(d.gx).forEach(k => {
+        const g = d.gx[k]; if (!g || (g.st !== 0 && g.st !== 1)) return;
+        const m = /^cu_([a-z]+)_(.+)$/.exec(k), key = m && GX_OLD[m[1]] ? 'cu_' + GX_OLD[m[1]] + '_' + m[2] : k;   // gejala tambahan dari grup lama
+        if (!s.gx[key] || key === k) s.gx[key] = { st: g.st, d: String(g.d || '') };
+      });
+      if (Array.isArray(d.gxOpen)) s.gxOpen = d.gxOpen.map(id => GX_OLD[id] || id).filter((id, i, a) => a.indexOf(id) === i && GX.some(G => G.id === id && !G.bb));
       if (d.rw) Object.keys(d.rw).forEach(k => { if (RW[k] && d.rw[k]) s.rw[k] = Object.assign({}, EMPTY_RW, d.rw[k]); });
       if (Array.isArray(d.rwAdd)) s.rwAdd = d.rwAdd.filter(k => !!RW[k]);
       if (Array.isArray(d.rwCustom)) s.rwCustom = d.rwCustom.filter(c => c && c.id).map(c => ({ id: String(c.id), lab: String(c.lab || ''), st: (c.st === 0 || c.st === 1) ? c.st : null, ket: String(c.ket || '') }));
@@ -1450,6 +1501,9 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         dst.v = keepOrder(dst.v, src.v);
         dst.d = keepOrder(dst.d, src.d);
       });
+      // Isian dari versi sebelum ada bagian BAB/BAK: pasien yang sudah diisi tidak tiba-tiba ditulis "tidak ada keluhan",
+      // kecuali sudah ada keluhan BAB/BAK yang diklik (keluhan itu tetap ditulis)
+      if (!d.bb && !isBlank(s) && !GX.some(G => G.bb && gxItems(G).some(it => s.gx[it[0]]))) s.bb.on = false;
     } catch (e) { return fresh(); }
     return s;
   }
@@ -1749,6 +1803,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         ? 'Klik gejala: sekali (+), dua kali (-), tiga kali hapus. Ditulis satu paragraf dengan RPS, dipisah titik.'
         : 'Klik gejala: sekali (+), dua kali (-), tiga kali hapus. Ditulis di bawah keluhan.')));
     b.appendChild(blk('S:gx', gxEl));
+    b.appendChild(blk('S:bb', bbEl));
     if (state.kind === 'awal') {
       b.appendChild(row('RPS lanjutan', ta('sRps2', s.rps2, 'Lanjutan setelah gejala, mis. riwayat pengobatan, kontak, perjalanan', v => { s.rps2 = v; }, 's:rps2'), 'sRps2', 'row--gap'));
       if (state.ps.on) {
@@ -1825,7 +1880,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
   function gxEl() {
     const wrap = h('div');
-    const groups = GX.filter(G => (!G.anak || state.who === 'anak') && (!G.fem || state.ant.sex !== 0));
+    const groups = GX.filter(G => !G.bb && (!G.anak || state.who === 'anak') && (!G.fem || state.ant.sex !== 0));
     const bar = h('div', { class: 'gx-groups' });
     groups.forEach(G => {
       const n = gxItems(G).filter(it => state.gx[it[0]]).length;
@@ -1834,42 +1889,72 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         G.lab, n ? h('span', { class: 'cnt' }, String(n)) : null));
     });
     wrap.appendChild(bar);
+    const negBtn = (items, fk) => h('button', { type: 'button', class: 'ghost', 'data-fk': fk, title: 'Isi (-) untuk gejala yang belum diklik', onclick: () => { items.forEach(it => { if (!state.gx[it[0]]) state.gx[it[0]] = { st: 0, d: '' }; }); refresh(['S:gx']); } }, 'sisanya (-)');
     groups.forEach(G => {
       if (state.gxOpen.indexOf(G.id) < 0) return;
       const items = gxItems(G);
-      const list = h('div', { class: 'gx-items' });
-      items.forEach(it => list.appendChild(gxItemEl(it)));
+      let list;
+      if (G.subs) {
+        // Grup gabungan: tiap kelompok punya judul kecil dan "sisanya (-)" sendiri, supaya (-) tidak memenuhi paragraf
+        const extra = items.slice(G.items.length);
+        list = h('div', { class: 'gx-subs' }, G.subs.concat(extra.length ? [['Tambahan', extra]] : []).map(sb =>
+          h('div', { class: 'gx-sub' }, h('span', { class: 'gx-sub-lab' }, sb[0]),
+            h('div', { class: 'gx-items' }, sb[1].map(it => gxItemEl(it)), negBtn(sb[1], 'gx:neg:' + G.id + ':' + slug(sb[0]))))));
+      } else list = h('div', { class: 'gx-items' }, items.map(it => gxItemEl(it)));
       wrap.appendChild(h('div', { class: 'gx-panel' },
         h('div', { class: 'gx-panel-head' }, h('b', null, G.lab),
           h('span', { class: 'gx-tools' },
-            h('button', { type: 'button', class: 'ghost', 'data-fk': 'gx:neg:' + G.id, onclick: () => { items.forEach(it => { if (!state.gx[it[0]]) state.gx[it[0]] = { st: 0, d: '' }; }); refresh(['S:gx']); } }, 'sisanya (-)'),
+            G.subs ? null : negBtn(items, 'gx:neg:' + G.id),
             h('button', { type: 'button', class: 'ghost', 'data-fk': 'gx:clr:' + G.id, onclick: () => undoable('Gejala ' + G.lab + ' dihapus', () => { items.forEach(it => { delete state.gx[it[0]]; }); refresh(['S:gx']); }) }, 'hapus semua'))),
         list));
     });
     return wrap;
   }
-  function gxItemEl(it) {
-    const id = it[0], lab = it[1], g = state.gx[id];
+  // key = blok yang digambar ulang setelah klik (bawaan ceklis gejala); pre = awalan nama untuk pembaca layar, mis. "BAB"
+  function gxItemEl(it, key, pre) {
+    const id = it[0], lab = it[1], g = state.gx[id], name = (pre ? pre + ' ' : '') + lab;
     const st = g ? g.st : null;
     const b = h('button', {
       type: 'button', class: 'gx' + (st === 1 ? ' pos' : st === 0 ? ' neg' : ''),
-      'aria-label': lab + (st === 1 ? ', positif' : st === 0 ? ', negatif' : ', belum ditanyakan') + '. Klik untuk ganti.',
+      'aria-label': name + (st === 1 ? ', positif' : st === 0 ? ', negatif' : ', belum ditanyakan') + '. Klik untuk ganti.',
       'data-fk': 'gx:i:' + id,
       onclick: () => {
         if (st == null) state.gx[id] = { st: 1, d: '' };
         else if (st === 1) state.gx[id].st = 0;
         else delete state.gx[id];
-        refresh(['S:gx']);
+        refresh([key || 'S:gx']);
       }
     }, lab, st != null ? h('span', { class: 'mk' }, st === 1 ? '(+)' : '(-)') : null);
     const w = h('span', { class: 'gx-item' }, b);
     if (st === 1) {
-      const d = h('input', { class: 'det', type: 'text', value: g.d, placeholder: 'detail', 'aria-label': 'Detail ' + lab, autocomplete: 'off', 'data-fk': 'gx:d:' + id });
+      const d = h('input', { class: 'det', type: 'text', value: g.d, placeholder: 'detail', 'aria-label': 'Detail ' + name, autocomplete: 'off', 'data-fk': 'gx:d:' + id });
       d.addEventListener('input', () => { g.d = d.value; autoW(d); changed(); });
       autoW(d);
       w.appendChild(d);
     }
     return w;
+  }
+  // BAB dan BAK: bagian sendiri, bawaan aktif dan "tidak ada keluhan"; keluhan diklik seperti ceklis gejala
+  const BB_PH = { bab: 'keterangan, mis. terakhir kemarin', bak: 'keterangan, mis. via kateter' };
+  function bbEl() {
+    const x = state.bb;
+    const box = h('div', { class: 'bb' });
+    box.appendChild(h('div', { class: 'sub-head' }, h('h3', null, 'BAB dan BAK'),
+      chip({ l: x.on ? 'Aktif' : 'Aktifkan' }, x.on, () => { x.on = !x.on; refresh(['S:bb']); }, 'bb:on', 'chip--sm'),
+      h('span', { class: 'hint' }, x.on ? 'Bawaan tidak ada keluhan. Klik keluhan: sekali (+), dua kali (-), tiga kali hapus.' : 'Tidak ditulis.')));
+    if (!x.on) return box;
+    GX.filter(G => G.bb).forEach(G => {
+      const items = gxItems(G);
+      const isDef = () => !items.some(it => state.gx[it[0]]) && !clean(x[G.id]);
+      const none = chip({ l: 'tidak ada keluhan' }, isDef(), () => {
+        if (isDef()) return;
+        undoable(G.lab + ' kembali ke tidak ada keluhan', () => { items.forEach(it => { delete state.gx[it[0]]; }); x[G.id] = ''; refresh(['S:bb']); });
+      }, 'bb:none:' + G.id, 'chip--sm');
+      const ket = txt(x[G.id], BB_PH[G.id] || 'keterangan', v => { x[G.id] = v; none.setAttribute('aria-pressed', isDef() ? 'true' : 'false'); },
+        'bb:k:' + G.id, { 'aria-label': 'Keterangan ' + G.lab, style: 'flex:1 1 220px' });
+      box.appendChild(row(G.lab, [none, items.map(it => gxItemEl(it, 'S:bb', G.lab)), ket]));
+    });
+    return box;
   }
 
   function ampleEl() {
@@ -3800,7 +3885,9 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   function gxParts() {
     const seen = {}, pos = [], neg = [];
+    GX.forEach(G => { if (G.bb) gxItems(G).forEach(it => { seen[it[0]] = 1; }); });   // keluhan BAB/BAK ditulis di kalimatnya sendiri
     GX.forEach(G => {
+      if (G.bb) return;
       if (G.anak && state.who !== 'anak') return;
       if (G.fem && state.ant.sex === 0) return;
       gxItems(G).forEach(it => {
@@ -3814,6 +3901,26 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     });
     const all = pos.concat(neg);
     return all.length ? joinBits(all) : null;
+  }
+  // Satu baris BAB/BAK sesudah kata "BAB"/"BAK": keluhan (+), keluhan (-), lalu keterangan. null = tidak ada keluhan.
+  function bbLine(G) {
+    const pos = [], neg = [];
+    gxItems(G).forEach(it => {
+      const g = state.gx[it[0]];
+      if (!g) return;
+      if (g.st === 1) pos.push({ t: it[1] + ' (+)' + (clean(g.d) ? ' ' + clean(g.d) : ''), abn: true });
+      else neg.push({ t: it[1] + ' (-)' });
+    });
+    const all = pos.concat(neg), k = clean(state.bb[G.id]);
+    if (k) all.push({ t: k });
+    return all.length ? all : null;
+  }
+  // Kalimat BAB dan BAK (tiap kalimat = daftar potongan). Keduanya tanpa keluhan: "BAB dan BAK tidak ada keluhan".
+  function bbParts() {
+    if (!state.bb.on) return [];
+    const G = GX.filter(g => g.bb), lines = G.map(bbLine);
+    if (lines.every(l => !l)) return [[{ t: G.map(g => g.lab).join(' dan ') + ' tidak ada keluhan' }]];
+    return G.map((g, i) => (lines[i] ? joinBits(lines[i], g.lab + ' ') : [{ t: g.lab + ' tidak ada keluhan' }]));
   }
   // Satu paragraf dari beberapa potongan kalimat, dipisah titik (huruf awal kalimat berikutnya kapital)
   function paraParts(pieces) {
@@ -3829,12 +3936,13 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     });
     return out;
   }
-  // RPS + ceklis gejala + RPS lanjutan jadi satu paragraf: huruf awal kapital, diakhiri titik
+  // RPS + ceklis gejala + BAB/BAK + RPS lanjutan jadi satu paragraf: huruf awal kapital, diakhiri titik
   function rpsPara() {
     const s = state.s, pieces = [];
     const lines = t => splitLines(t).map(l => l.trim()).filter(Boolean).forEach(l => pieces.push([{ t: l }]));
     lines(s.rps);
     const gx = gxParts(); if (gx) pieces.push(gx);
+    bbParts().forEach(p => pieces.push(p));
     lines(s.rps2);
     if (!pieces.length) return null;
     pieces[0] = capParts(pieces[0]);
@@ -4171,7 +4279,6 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   const waBold = parts => parts.map(p => (p.abn ? boldT(p.t) : p.t)).join('').replace(/\s+$/, '');
   const waPlain = parts => parts.map(p => p.t).join('').replace(/\s+$/, '');
-  const waktuSalam = () => { const hr = new Date().getHours(); return hr >= 4 && hr < 11 ? 'pagi' : hr >= 11 && hr < 15 ? 'siang' : hr >= 15 && hr < 18 ? 'sore' : 'malam'; };
   /* Baris laporan: t = teks WA (dengan *tebal*), c = teks polos untuk CPPT di EMR, p = potongan (stabilo di lembar),
      b = potongan tidak normal ditebalkan, k = bagian (A/S/O/P), h = judul bagian, hint = teks bantu di lembar (tidak disalin).
      Urutan laporan ASOP: diagnosa kerja, S, O, P. Mode ringkas: hanya S. */
@@ -4191,7 +4298,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       blank();
     };
     const s = state.s, full = appMode !== 'ringkas';
-    add(konsSet('salam') + ', selamat ' + waktuSalam() + ', ini dengan ' + (konsSet('nama') || '...'));
+    add(salamLine(konsSet('salam'), settings.kons.kenal, konsSet('nama')));
     add(konsSet('pembuka') + ' *' + KONS_ASAL[state.kons.asal] + '* atas nama:');
     blank();
     L.push({ t: '', hint: 'tempel no. RM - nama pasien' });
@@ -4233,6 +4340,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       if (clean(s.hari)) add('Perawatan hari ke-' + clean(s.hari));
       splitLines(s.fu).forEach(x => add(x));
       const gx = gxParts(); if (gx) addP(capParts(gx));
+      bbParts().forEach(p => addP(p));
       blank();
     }
     // O: temuan tidak normal ditebalkan
@@ -4417,10 +4525,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const unit = (s, u, tight) => { const c = v(s); return isNum(c) ? c + (tight ? '' : ' ') + u : c; };
     const pct = s => { const c = v(s); return /%$/.test(c) ? c : c + '%'; };
     const noDot = s => v(s).replace(/[.\s]+$/, '');
-    const hr = new Date().getHours();
-    const waktu = hr >= 4 && hr < 11 ? 'pagi' : hr >= 11 && hr < 15 ? 'siang' : hr >= 15 && hr < 18 ? 'sore' : 'malam';
     const li = bblLokIdx(), lok = li == null ? '...' : BBL_LOK[li];
-    L.push(bblSet('salam') + ', selamat ' + waktu + ', ini dengan ' + (bblSet('nama') || '...'));
+    L.push(salamLine(bblSet('salam'), settings.bbl.kenal, bblNama()));
     L.push('izin lapor *bayi baru lahir* di *' + lok + '* atas nama :');
     L.push('');
     L.push('*' + dots(x.nama) + '*');
@@ -4536,10 +4642,10 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   function syncSheetHead(mode) {
     const lab = curPat().label;
-    $('#waBar').hidden = mode !== 'wa';
+    $('#waBar').hidden = false;
     $('#btnSoap').hidden = mode !== 'wa';
     $('#btnSoap').title = appMode === 'ringkas' ? 'Salin S untuk CPPT di EMR: tanpa salam, identitas, dan tanda bintang' : 'Salin S, O, A, P untuk CPPT di EMR: tanpa salam, identitas, dan tanda bintang';
-    if (mode === 'wa') renderWaBar();
+    renderWaBar();
     if (mode === 'bbl') {
       $('#sheetTitle').textContent = 'LAPOR BAYI';
       $('#sheetSub').textContent = lab + ' · format WhatsApp';
@@ -4551,14 +4657,26 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     }
     $('#btnJump').textContent = mode === 'bbl' ? 'Lihat laporan' : 'Lihat konsul';
   }
+  // Bilah di atas lembar: asal pasien (konsul WA) dan perkenalan diri (konsul WA dan lapor bayi).
+  // Nama tersimpan di pengaturan browser ini (bukan data pasien); kolom nama tidak digambar ulang selama diketik.
   function renderWaBar() {
-    const bar = $('#waBar'), sig = String(state.kons.asal);
+    const bar = $('#waBar'), bbl = state.who === 'bbl', K = bbl ? settings.bbl : settings.kons;
+    const sig = (bbl ? 'b' : 'w' + state.kons.asal) + (K.kenal ? '1' : '0');
     if (bar._sig === sig && bar.childNodes.length) return;
     bar._sig = sig;
     bar.textContent = '';
-    bar.appendChild(h('span', { class: 'mini-lab' }, 'Konsul dari'));
-    bar.appendChild(h('div', { class: 'chips' }, KONS_ASAL.map((t, i) => chip({ l: t }, state.kons.asal === i, () => { state.kons.asal = i; bar._sig = null; changed(); }, 'kons:asal:' + i, 'chip--sm'))));
-    bar.appendChild(h('button', { type: 'button', class: 'lnk', onclick: () => { openSettings(); setTimeout(() => jumpSet('set-kons'), 0); } }, 'ubah salam'));
+    if (!bbl) bar.appendChild(h('div', { class: 'wa-line' }, h('span', { class: 'mini-lab' }, 'Konsul dari'),
+      h('div', { class: 'chips' }, KONS_URUT.map(i => chip({ l: KONS_ASAL[i] }, state.kons.asal === i, () => { state.kons.asal = i; bar._sig = null; changed(); }, 'kons:asal:' + i, 'chip--sm')))));
+    const line = h('div', { class: 'wa-line' }, h('span', { class: 'mini-lab' }, 'Perkenalan'),
+      chip({ l: K.kenal ? 'Aktif' : 'Aktifkan' }, K.kenal, () => { K.kenal = !K.kenal; saveSettings(); bar._sig = null; changed(); }, 'wa:kenal', 'chip--sm'));
+    if (K.kenal) {
+      const nm = h('input', { class: 'in in--sm wa-nama', type: 'text', value: K.nama || '', placeholder: bbl && konsSet('nama') ? konsSet('nama') : SET_PH.nama, maxlength: '200', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Nama untuk perkenalan (ini dengan ...)', 'data-fk': 'wa:nama' });
+      nm.addEventListener('input', () => { K.nama = clean(nm.value).slice(0, 200); saveSettings(); changed(); });
+      line.appendChild(h('span', { class: 'hint' }, 'ini dengan'));
+      line.appendChild(nm);
+    } else line.appendChild(h('span', { class: 'hint' }, 'hanya salam'));
+    line.appendChild(h('button', { type: 'button', class: 'lnk', onclick: () => { openSettings(); setTimeout(() => jumpSet(bbl ? 'set-bbl' : 'set-kons'), 0); } }, 'ubah salam'));
+    bar.appendChild(line);
   }
   /* Lembar mengikuti bagian yang sedang diisi (desktop, lembar sticky): saat fokus pindah ke S/O/A/P,
      judul bagian yang sama di lembar ("diagnosa kerja:", "S:", "O:", "P:") digulir sampai terlihat. Tidak menggulir bila sudah terlihat. */
@@ -4823,9 +4941,9 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     body.appendChild(sRW);
     const sGX = h('section', { class: 'set-sec', id: 'set-gx' }, h('h3', null, 'Tambahan ceklis gejala'));
     GX.forEach(G => {
-      const inp = h('input', { class: 'in in--sm', type: 'text', value: (settings.gx[G.id] || []).join(', '), placeholder: 'pisahkan dengan koma', 'aria-label': 'Gejala tambahan ' + G.lab, 'data-fk': 'set:gx:' + G.id, style: 'flex:1 1 260px' });
+      const inp = h('input', { class: 'in in--sm', type: 'text', value: (settings.gx[G.id] || []).join(', '), placeholder: G.bb ? 'tanpa kata ' + G.lab + ', pisahkan dengan koma' : 'pisahkan dengan koma', 'aria-label': 'Gejala tambahan ' + G.lab, 'data-fk': 'set:gx:' + G.id, style: 'flex:1 1 260px' });
       inp.addEventListener('change', () => {
-        const arr = inp.value.split(',').map(t => clean(t).slice(0, 40)).filter(Boolean).slice(0, 20);
+        const arr = gxCusList(inp.value.split(','));
         if (arr.length) settings.gx[G.id] = arr; else delete settings.gx[G.id];
         saveSettings(); refresh();
       });
@@ -4834,11 +4952,15 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     body.appendChild(sGX);
     const sK = h('section', { class: 'set-sec', id: 'set-kons' }, h('h3', null, 'Konsul WhatsApp'));
     sK.appendChild(h('p', { class: 'set-intro' }, 'Kosongkan kolom untuk kembali ke bawaan (tulisan abu-abu). Kalimat pembuka ditutup otomatis dengan asal pasien, mis. *IGD* atas nama:'));
+    // Kalimat salam, perkenalan diri, dan nama juga bisa diubah langsung di bilah atas lembar
+    const kenalLine = K => h('div', { class: 'set-line' }, h('div', { class: 'set-line-head' }, h('b', null, 'Perkenalan'),
+      chk('tulis "ini dengan (nama)" sesudah salam', K.kenal, v => { K.kenal = v; saveSettings(); $('#waBar')._sig = null; changed(); })));
     const kIn = (k, lab) => {
       const i = h('input', { class: 'in in--sm', type: 'text', value: settings.kons[k] || '', placeholder: KONS_SET[k] || SET_PH[k] || '', 'aria-label': lab, 'data-fk': 'set:kons:' + k, style: 'flex:1 1 280px' });
-      i.addEventListener('input', () => { settings.kons[k] = clean(i.value).slice(0, 200); saveSettings(); changed(); });
+      i.addEventListener('input', () => { settings.kons[k] = clean(i.value).slice(0, 200); saveSettings(); $('#waBar')._sig = null; changed(); });
       return h('div', { class: 'set-line' }, h('div', { class: 'set-line-head' }, h('b', null, lab), i));
     };
+    sK.appendChild(kenalLine(settings.kons));
     [['nama', 'Nama'], ['salam', 'Salam'], ['pembuka', 'Pembuka'], ['penutup', 'Penutup']].forEach(p => sK.appendChild(kIn(p[0], p[1])));
     body.appendChild(sK);
     const sG = h('section', { class: 'set-sec', id: 'set-gz' }, h('h3', null, 'Status gizi: BB/U CDC'));
@@ -4854,13 +4976,14 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       h('button', { type: 'button', class: 'btn btn--sm', onclick: () => { settings.gzBBU = [60, 80, 120]; saveSettings(); rerenderSettings(); changed(); } }, 'Bawaan'))));
     body.appendChild(sG);
     const sB = h('section', { class: 'set-sec', id: 'set-bbl' }, h('h3', null, 'Lapor bayi baru lahir'));
-    sB.appendChild(h('p', { class: 'set-intro' }, 'Kosongkan kolom untuk kembali ke bawaan (tulisan abu-abu).'));
+    sB.appendChild(h('p', { class: 'set-intro' }, 'Kosongkan kolom untuk kembali ke bawaan (tulisan abu-abu). Nama kosong = sama dengan nama di Konsul WhatsApp.'));
     const bIn = (lab, get, set, ph, fk) => {
       const i = h('input', { class: 'in in--sm', type: 'text', value: get() || '', placeholder: ph, 'aria-label': lab, 'data-fk': fk, style: 'flex:1 1 280px' });
-      i.addEventListener('input', () => { set(clean(i.value)); saveSettings(); refresh(); });
+      i.addEventListener('input', () => { set(clean(i.value)); saveSettings(); $('#waBar')._sig = null; refresh(); });
       return h('div', { class: 'set-line' }, h('div', { class: 'set-line-head' }, h('b', null, lab), i));
     };
-    [['nama', 'Nama'], ['rs', 'RS'], ['salam', 'Salam'], ['penutup', 'Penutup']].forEach(p => sB.appendChild(bIn(p[1], () => settings.bbl[p[0]], v => { settings.bbl[p[0]] = v.slice(0, 200); }, BBL_SET[p[0]] || SET_PH[p[0]] || '', 'set:bbl:' + p[0])));
+    sB.appendChild(kenalLine(settings.bbl));
+    [['nama', 'Nama'], ['rs', 'RS'], ['salam', 'Salam'], ['penutup', 'Penutup']].forEach(p => sB.appendChild(bIn(p[1], () => settings.bbl[p[0]], v => { settings.bbl[p[0]] = v.slice(0, 200); }, (p[0] === 'nama' ? konsSet('nama') : '') || BBL_SET[p[0]] || SET_PH[p[0]] || '', 'set:bbl:' + p[0])));
     BBL_PF_SET.forEach(p => sB.appendChild(bIn('PF ' + p[1], () => settings.bbl.pf[p[0]], v => { if (v) settings.bbl.pf[p[0]] = v.slice(0, 300); else delete settings.bbl.pf[p[0]]; }, p[2], 'set:bblpf:' + p[0])));
     body.appendChild(sB);
     const sEx = h('section', { class: 'set-sec', id: 'set-ex' }, h('h3', null, 'Pindahkan ke komputer lain'));
