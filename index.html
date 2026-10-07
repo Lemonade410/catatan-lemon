@@ -113,31 +113,31 @@ h2,h3,p{margin:0}
 .bbtn.armed{background:var(--hl);border-color:var(--hl);color:var(--hl-ink)}
 .bbtn--icon{width:34px;padding:0}
 .bbtn--sm{height:30px;padding:0 10px;font-size:13px}
-.ptabs{order:5;flex:1 1 100%;display:flex;align-items:center;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
-/* "+ Pasien" selalu terlihat walau tab digulir */
-.ptabs>[data-fk="tab:add"]{position:sticky;right:0;flex:none;background:var(--bar);box-shadow:-10px 0 8px -2px var(--bar)}
-.ptab{flex:none;display:inline-flex;align-items:stretch;border:1.5px solid var(--bar-line);border-radius:6px;overflow:hidden}
+/* Tab pasien: baris tipis sendiri di bawah menu utama (lebih kecil dari tombol menu).
+   Tab banyak turun ke baris berikutnya, bukan digulir, supaya semua pasien tetap terlihat. */
+.bar-pt{border-top:1px solid var(--bar-line)}
+.ptabs{max-width:1480px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:5px 6px;padding-block:5px 6px;padding-inline:var(--gutter)}
+.ptabs>.bbtn{align-self:stretch;height:auto;min-height:28px;padding:0 10px;font-size:12.5px}
+.ptab{flex:none;display:inline-flex;align-items:stretch;border:1.5px solid var(--bar-line);border-radius:5px;overflow:hidden}
 .ptab.on{border-color:var(--hl)}
-.ptab-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:0;background:transparent;color:var(--bar-muted);font-size:13.5px;font-weight:700;white-space:nowrap}
+.ptab-btn{display:inline-flex;align-items:center;gap:5px;min-height:25px;padding:2px 9px;border:0;background:transparent;color:var(--bar-muted);font-size:13px;font-weight:700;line-height:1.2;white-space:nowrap}
 .ptab.on .ptab-btn{background:var(--bar-line);color:var(--bar-ink)}
 .ptab-btn:hover{color:var(--bar-ink)}
 /* Penanda jenis pasien (D/A/B) dan pensil ganti nama di tab aktif */
-.ptab-k{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 3px;border:1px solid var(--bar-line);border-radius:3px;font-family:var(--f-mono);font-size:11px;font-weight:700;line-height:1}
+.ptab-k{display:inline-grid;place-items:center;min-width:16px;height:16px;padding:0 3px;border:1px solid var(--bar-line);border-radius:3px;font-family:var(--f-mono);font-size:10.5px;font-weight:700;line-height:1}
 .ptab.on .ptab-k{border-color:var(--hl);color:var(--hl)}
 .ptab-ed{opacity:.75}
 .ptab-btn:hover .ptab-ed{opacity:1}
-.ptab-x{min-width:30px;padding:0 8px;border:0;border-left:1.5px solid var(--bar-line);background:transparent;color:var(--bar-muted);font-size:13px;font-weight:700;white-space:nowrap}
+.ptab-x{min-width:26px;padding:0 7px;border:0;border-left:1.5px solid var(--bar-line);background:transparent;color:var(--bar-muted);font-size:12.5px;font-weight:700;white-space:nowrap}
 .ptab-x:hover{color:var(--bar-ink)}
 .ptab-x.armed{background:var(--hl);color:var(--hl-ink)}
-.ptab-in{width:13ch;padding:5px 8px;border:0;background:var(--bar-line);color:var(--bar-ink);font-size:13.5px;font-weight:700}
+.ptab-in{width:13ch;padding:2px 8px;border:0;background:var(--bar-line);color:var(--bar-ink);font-size:13px;font-weight:700}
 .ptab-in::placeholder{color:var(--bar-muted);opacity:1}
-/* Layar lebar: tab pasien sebaris dengan tombol mode dan aksi; tab bergulir mendatar bila banyak */
+/* Layar lebar: menu utama satu baris */
 @media (min-width:1200px){
   .bar-in{flex-wrap:nowrap}
   .bar-in>.brand,.bar-in>.modes,.bar-in>.acts{flex-shrink:0}
   .modes{flex-wrap:nowrap}
-  .ptabs{order:5;flex:1 1 auto;min-width:0;padding-bottom:0}
-  .acts{order:6}
 }
 @media (max-width:760px){
   .bar{position:static}
@@ -393,6 +393,11 @@ input.rw-lab{font-weight:600}
 .pt-sex{width:108px}
 .pt-date .f-box input{padding-right:8px}
 .pt-note{font-size:12.5px;color:var(--muted)}
+/* Identitas dari ERM (nama/no. RM, usia): baris pertama Data pasien */
+.pt-id{margin-bottom:14px}
+.pt-row .pt-idn{flex:1 1 260px;max-width:460px}
+.pt-row .pt-umur{flex:0 1 190px;min-width:150px}
+.pt-id-note{flex-basis:100%;margin-top:-7px}
 
 /* ===== PAT anak ===== */
 .pat .ps-row{grid-template-columns:118px minmax(0,1fr)}
@@ -453,6 +458,11 @@ input.rw-lab{font-weight:600}
 .nl-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
 .nl-head b{font-size:12.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
 .nl-sub{margin:14px 0 2px;font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.nl-hint{flex-basis:100%}
+/* Pemeriksaan neurologi yang tidak dilakukan (tidak ditulis): berjejer di bawah kalimat, klik "+" untuk mengerjakan */
+.pf-nd{display:flex;flex-wrap:wrap;align-items:center;gap:5px 6px;padding-block:3px;font-family:var(--f-ui);line-height:1.3}
+.pf-sent>*+.pf-nd{margin-top:4px}
+.pf-nd-lab{margin-right:2px;font-size:12px;font-weight:700;font-style:italic;color:var(--muted)}
 .pf--wide .pf-line{grid-template-columns:128px minmax(0,1fr) auto}
 .pf--wide .pf-lab{white-space:normal;line-height:1.3;padding-top:6px}
 .pf--wide .nw{white-space:normal}
@@ -625,6 +635,9 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         <button type="button" class="bbtn bbtn--icon" id="btnTheme" title="Terang / gelap" aria-label="Ganti tema terang atau gelap"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
         <button type="button" class="bbtn bbtn--icon" id="btnLock" title="Kunci sekarang" aria-label="Kunci sekarang"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="1.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></button>
       </div>
+    </div>
+    <!-- Tab pasien: baris tipis sendiri di bawah menu utama, ikut menempel di atas; tab banyak turun baris (semua tetap terlihat) -->
+    <div class="bar-pt">
       <div class="ptabs" id="ptabs" role="group" aria-label="Pasien"></div>
     </div>
   </header>
@@ -891,10 +904,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       { id: 'si', pre: 'si ', bi: true, opts: ['-', '+'] }],
       extras: [
         { id: 'cekung', name: 'cekung', pre: 'cekung ', bi: true, opts: ['-', '+'] }] },
-    // Neurologi lengkap: Pupil dan TRM ditulis setelah Mata (format konsul)
+    // Neurologi lengkap: Pupil dan TRM ditulis setelah Mata (format konsul).
+    // Tiap pemeriksaan neurologi bawaannya "tidak dilakukan" (nilai null, tidak ditulis); nm = nama di tombol bila pre kosong/terlalu panjang.
     { id: 'pupil', label: 'Pupil', grp: 'neuro', optional: true, segs: [
-      { id: 'bentuk', pre: '', opts: ['bulat', 'tidak bulat'] },
-      { id: 'iso', pre: '', opts: ['isokor', 'anisokor'] },
+      { id: 'bentuk', nm: 'bentuk', pre: '', opts: ['bulat', 'tidak bulat'] },
+      { id: 'iso', nm: 'isokoria', pre: '', opts: ['isokor', 'anisokor'] },
       { id: 'diam', pre: 'diameter ', bi: true, opts: ['3 mm', '2 mm', '4 mm', '5 mm', '6 mm', '1 mm'] },
       { id: 'rcl', pre: 'RCL ', bi: true, opts: ['+', '-'] },
       { id: 'rctl', pre: 'RCTL ', bi: true, opts: ['+', '-'] }] },
@@ -952,15 +966,15 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         { id: 'kaku', name: 'kaku kuduk', pre: 'kaku kuduk ', opts: ['-', '+'] },
         { id: 'lat', name: 'lateralisasi', pre: 'lateralisasi ', opts: ['-', '+'], det: 'sisi' },
         { id: 'patol', name: 'refleks patologis', pre: 'refleks patologis ', bi: true, opts: ['-', '+'] }] },
-    // Neurologi lengkap (format konsul). Pilihan pertama = normal.
+    // Neurologi lengkap (format konsul). Pilihan pertama = normal (nilai awal saat pemeriksaan diklik).
     { id: 'n1', label: 'N. I', grp: 'neuro', nk: true, optional: true, segs: [
-      { id: 'olf', pre: '', bi: true, opts: ['normosmia', 'hiposmia', 'anosmia'] }] },
+      { id: 'olf', nm: 'penciuman', pre: '', bi: true, opts: ['normosmia', 'hiposmia', 'anosmia'] }] },
     { id: 'n2', label: 'N. II', grp: 'neuro', nk: true, optional: true, segs: [
       { id: 'vod', pre: 'visus VOD ', txt: '3/60' },
       { id: 'vos', pre: 'VOS ', txt: '3/60 (terbatas ruangan)' },
       { id: 'lp', pre: 'lapang pandang ', bi: true, opts: ['sama dengan pemeriksa', 'menyempit'] },
       { id: 'bw', pre: 'buta warna ', bi: true, opts: ['-', '+'] },
-      { id: 'fund', pre: 'funduskopi ', opts: ['tidak dilakukan', 'normal', 'papil edema'], abn: [false, false, true], det: 'temuan lain' }] },
+      { id: 'fund', pre: 'funduskopi ', opts: ['normal', 'papil edema'], det: 'temuan lain' }] },
     { id: 'n346', label: 'N. III, IV, VI', grp: 'neuro', nk: true, optional: true, segs: [
       { id: 'ked', pre: 'kedudukan bola mata ', opts: ['ortoforia', 'strabismus'], det: 'arah' },
       { id: 'gbm', pre: 'gerak bola mata ', opts: ['baik ke segala arah', 'terbatas'], det: 'arah' },
@@ -970,11 +984,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       { id: 'ako', pre: 'akomodasi ', bi: true, opts: ['+', '-'] },
       { id: 'dip', pre: 'diplopia ', opts: ['(-)', '(+)'] }] },
     { id: 'n5', label: 'N. V', grp: 'neuro', nk: true, optional: true, segs: [
-      { id: 'mot', pre: 'motorik m. masseter dan m. temporalis ', bi: true, opts: ['baik', 'lemah'] },
+      { id: 'mot', nm: 'motorik (masseter, temporalis)', pre: 'motorik m. masseter dan m. temporalis ', bi: true, opts: ['baik', 'lemah'] },
       { id: 'sen', pre: 'sensorik V1-V3 ', bi: true, opts: ['normoestesi', 'hipoestesi', 'anestesi', 'hiperestesi'] },
       { id: 'kor', pre: 'refleks kornea ', bi: true, opts: ['+', '-'] }] },
     { id: 'n7', label: 'N. VII', grp: 'neuro', nk: true, optional: true, segs: [
-      { id: 'otot', pre: 'm. frontalis, m. orbicularis oculi, m. buccinator, m. orbicularis oris ', bi: true, opts: ['baik', 'lemah'] },
+      { id: 'otot', nm: 'otot wajah', pre: 'm. frontalis, m. orbicularis oculi, m. buccinator, m. orbicularis oris ', bi: true, opts: ['baik', 'lemah'] },
       { id: 'kecap', pre: 'pengecap 2/3 anterior lidah ', opts: ['baik', 'terganggu'] }] },
     { id: 'n8', label: 'N. VIII', grp: 'neuro', nk: true, optional: true, segs: [
       { id: 'rinne', pre: 'Rinne ', bi: true, opts: ['+', '-'] },
@@ -995,8 +1009,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       { id: 'tremor', pre: 'tremor ', opts: ['(-)', '(+)'] },
       { id: 'dev', sep: '; ', pre: 'lidah dijulurkan deviasi ', opts: ['(-)', 'ke kanan', 'ke kiri'] }] },
     { id: 'motorik', label: 'Motorik', grp: 'neuro', optional: true, segs: [
-      { id: 'trofi', pre: '', bi: true, opts: ['normotrofi', 'atrofi', 'hipertrofi'] },
-      { id: 'tonus', pre: '', bi: true, opts: ['normotonus', 'hipotonus', 'hipertonus'] }] },
+      { id: 'trofi', nm: 'trofi', pre: '', bi: true, opts: ['normotrofi', 'atrofi', 'hipertrofi'] },
+      { id: 'tonus', nm: 'tonus', pre: '', bi: true, opts: ['normotonus', 'hipotonus', 'hipertonus'] }] },
     { id: 'rf', label: 'Refleks fisiologis', grp: 'neuro', optional: true, segs: [
       { id: 'bpr', pre: 'BPR ', bi: true, opts: ['+2', '+1', '+3', '+4', '0'] },
       { id: 'tpr', pre: 'TPR ', bi: true, opts: ['+2', '+1', '+3', '+4', '0'] },
@@ -1019,7 +1033,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     { id: 'oto', label: 'Fungsi otonom', grp: 'neuro', optional: true, segs: [
       { id: 'miksi', pre: 'miksi ', opts: ['baik', 'terganggu'] },
       { id: 'def', pre: 'defekasi ', opts: ['baik', 'terganggu'] },
-      { id: 'hid', pre: '', opts: ['normohidrosis', 'hiperhidrosis', 'anhidrosis'] }] },
+      { id: 'hid', nm: 'hidrosis', pre: '', opts: ['normohidrosis', 'hiperhidrosis', 'anhidrosis'] }] },
     // PF khusus (ditulis setelah neurologi)
     { id: 'lbp', label: 'LBP/HNP', grp: 'khusus', optional: true, segs: [
       { id: 'las', pre: 'Lasegue ', bi: true, opts: ['>70°', '<70°'], det: 'sudut, mis. 45°' },
@@ -1166,7 +1180,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   ];
   // [kunci, label, default]; gen mengikuti jenis kelamin
   const BBL_PF = [
-    ['kepala', 'kepala', 'UUB tidak teraba'],
+    ['kepala', 'kepala', 'UUB terbuka, datar'],
     ['mata', 'mata', 'membuka spontan, ikterik -'],
     ['telinga', 'telinga', 'bentuk normal, massa -'],
     ['hidung', 'hidung', 'nafas cuping hidung -.'],
@@ -1332,10 +1346,12 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   let state = null, db = null, locked = true, booted = false, appMode = 'biasa';
 
   const segDef = s => (s.txt != null ? s.txt : s.bi ? [0, 0] : 0);
+  // Pemeriksaan neurologi lengkap: nilai null = tidak dilakukan (tidak ditulis), dan itu bawaannya
+  const isNd = L => L.grp === 'neuro';
   // tk = baris sudah disentuh/dicek (tanpa tk dan belum berubah = tag "default" di PF umum)
   function freshLine(L, on) {
     const v = {};
-    L.segs.forEach(s => { v[s.id] = segDef(s); });
+    L.segs.forEach(s => { v[s.id] = isNd(L) ? null : segDef(s); });
     const ex = (settings.pfExDef[L.id] || []).filter(id => !!findExtra(L, id));
     ex.forEach(id => { v[id] = findExtra(L, id).bi ? [0, 0] : 0; });
     return { on: on, v: v, d: {}, ex: ex, ket: '', ketOn: false, tk: false };
@@ -1343,8 +1359,9 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   function fresh(who, kind) {
     const pf = {};
     PF.forEach(L => { pf[L.id] = freshLine(L, !L.optional || !!settings.pfOnDef[L.id]); });
+    // v3: neurologi lengkap bawaan "tidak dilakukan" (v1/v2: bawaan normal, lihat hydrate)
     return {
-      v: 2, who: who || prefs.who, kind: kind || prefs.kind,
+      v: 3, who: who || prefs.who, kind: kind || prefs.kind,
       s: { auto: false, allo: false, alloW: '', ku: '', durN: '', durU: 1, rps: '', rps2: '', hari: '', fu: '', bebas: '' },   // bebas = kolom S bebas dari versi sebelumnya
       gx: {}, gxOpen: [],
       bb: { on: true, bab: '', bak: '' },   // BAB/BAK: on = ditulis (bawaan "tidak ada keluhan"); bab/bak = keterangan tiap baris
@@ -1353,9 +1370,9 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       obg: { on: false, g: '', p: '', a: '', hpht: '', hamil: null, menarche: '', siklus: null, siklusH: '', lama: '', dismen: null, kb: null, kbK: '', sc: null, scN: '', ket: '' },
       o: { jam: '', ku: null, kes: 0, gcsOn: true, e: '4', vv: '5', m: '6', td: '', n: '', rr: '', s: '', spo2: '', o2: null, o2k: '', nyeri: '', nyS: 0, wb: null, flacc: [null, null, null, null, null], gds: '' },
       tv: [],
-      ant: { usia: '', usiaU: 0, bb: '', tb: '', sex: null },
+      ant: { usia: '', usiaU: 0, bb: '', tb: '', sex: null, idn: '', umur: '' },   // idn = nama/no. RM, umur = teks umur; keduanya ditempel dari ERM untuk baris "atas nama" konsul WA
       ps: { on: false, a: null, aAct: [], cspine: false, b: null, nadi: null, irama: null, bleed: null, bleedK: '', lat: null, jejas: null, jejasK: '' },
-      pf: pf, nl: { on: false, pw: ['5555', '5555', '5555', '5555'], kesan: '' }, luka: [], lok: '', pen: '', penLab: '', penRad: '', kons: { asal: 0 },
+      pf: pf, nl: { on: false, pw: ['', '', '', ''], kesan: '' }, luka: [], lok: '', pen: '', penLab: '', penRad: '', kons: { asal: 0 },   // pw kosong semua = kekuatan motorik tidak dilakukan
       gz: { dob: '', tgl: '', cara: null, lk: '', kkT: '' },
       sc: {
         s2: false, pB: null, pC: null, pR: null, pX: false, deh: false,
@@ -1404,7 +1421,10 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   function hydrate(d) {
     const s = fresh();
-    if (!d || (d.v !== 1 && d.v !== 2)) return s;
+    if (!d || [1, 2, 3].indexOf(d.v) < 0) return s;
+    // Isian versi sebelum v3: neurologi lengkap bawaannya normal. Blok yang belum diaktifkan dimulai dari "tidak dilakukan";
+    // blok yang sudah aktif dipertahankan apa adanya (sudah tampil dan tertulis normal).
+    const nlOld = d.v !== 3;
     try {
       // indeks pilihan harus valid
       const fix = (obj, k, n) => { if (obj[k] !== null && !inIdx(obj[k], n)) obj[k] = null; };
@@ -1416,7 +1436,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       if (d.nl && typeof d.nl === 'object') {
         s.nl.on = !!d.nl.on;
         if (typeof d.nl.kesan === 'string') s.nl.kesan = d.nl.kesan;
-        if (Array.isArray(d.nl.pw) && d.nl.pw.length === 4) s.nl.pw = d.nl.pw.map(v => String(v == null ? '' : v).replace(/[^0-5]/g, '').slice(0, 4));
+        if (Array.isArray(d.nl.pw) && d.nl.pw.length === 4 && !(nlOld && !s.nl.on)) s.nl.pw = d.nl.pw.map(v => String(v == null ? '' : v).replace(/[^0-5]/g, '').slice(0, 4));
       }
       if (Array.isArray(d.tv)) s.tv = d.tv.filter(t => t && typeof t === 'object').slice(0, 12).map(t => {
         const n = freshTV(); mergeShallow(n, t); if (typeof t.id === 'string') n.id = t.id;
@@ -1480,20 +1500,25 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       });
       if (d.pf) PF.forEach(L => {
         const src = d.pf[L.id]; if (!src) return;
+        if (isNd(L) && nlOld && !s.nl.on) return;   // neurologi versi lama yang belum diaktifkan: tetap "tidak dilakukan"
         const dst = s.pf[L.id];
         if (L.optional) dst.on = !!src.on;
         dst.ket = String(src.ket || ''); dst.ketOn = !!src.ketOn; dst.tk = !!src.tk;
         dst.ex = Array.isArray(src.ex) ? src.ex.filter(id => !!findExtra(L, id)) : [];
         L.segs.concat(pfExtras(L)).forEach(seg => {
-          const v = src.v ? src.v[seg.id] : undefined;
+          let v = src.v ? src.v[seg.id] : undefined;
+          const nd = isNd(L) && L.segs.indexOf(seg) >= 0;   // pemeriksaan neurologi bawaan: null = tidak dilakukan
+          if (nlOld && L.id === 'n2' && seg.id === 'fund') v = v === 1 ? 0 : v === 2 ? 1 : null;   // versi lama: 0 tidak dilakukan, 1 normal, 2 papil edema
+          if (nd && v == null) { dst.v[seg.id] = null; return; }
           if (seg.txt != null) {
-            dst.v[seg.id] = typeof v === 'string' ? v.slice(0, 80) : seg.txt;
+            dst.v[seg.id] = typeof v === 'string' ? v.slice(0, 80) : nd ? null : seg.txt;
             if (src.d && typeof src.d[seg.id] === 'string') dst.d[seg.id] = src.d[seg.id];
             return;
           }
           const ok = x => inIdx(x, seg.opts.length);
           if (seg.bi && Array.isArray(v) && v.length === 2 && ok(v[0]) && ok(v[1])) dst.v[seg.id] = [v[0], v[1]];
           else if (!seg.bi && ok(v)) dst.v[seg.id] = v;
+          else if (nd) dst.v[seg.id] = null;
           else if (dst.ex.indexOf(seg.id) >= 0 || L.segs.indexOf(seg) >= 0) dst.v[seg.id] = seg.bi ? [0, 0] : 0;
           else delete dst.v[seg.id];
           if (src.d && typeof src.d[seg.id] === 'string') dst.d[seg.id] = src.d[seg.id];
@@ -1774,7 +1799,26 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       row.appendChild(fldDate('dob', 'Tgl lahir', null));
       row.appendChild(fldDate('tgl', 'Tgl periksa', 'kosong = hari ini'));
     }
-    return row;
+    return [fldIdent(), row];
+  }
+  // Identitas dari ERM (teks bebas, ditempel apa adanya): hanya untuk baris "atas nama" di konsul WA, tidak ikut Salin SOAP
+  function fldIdent() {
+    const a = state.ant;
+    const f = (k, id, label, ph, max, cls) => {
+      const inp = h('input', { id: id, type: 'text', value: a[k], placeholder: ph, maxlength: max, autocomplete: 'off', spellcheck: 'false', 'data-fk': 'ant:' + k });
+      inp.addEventListener('input', () => { a[k] = inp.value; changed(); });
+      return h('div', { class: 'f ' + cls }, h('div', { class: 'f-top' }, h('label', { class: 'f-lab', for: id }, label)), h('div', { class: 'f-box' }, inp));
+    };
+    return h('div', { class: 'pt-row pt-id' },
+      f('idn', 'ptIdn', 'Nama / No. RM', 'tempel dari ERM', '120', 'pt-idn'),
+      f('umur', 'ptUmur', 'Usia (ERM)', 'mis. 45 th 2 bln', '60', 'pt-umur'),
+      h('div', { class: 'pt-note pt-id-note' }, 'Ditulis di baris "atas nama" konsul WA (baris kedua: JK / usia), tidak ikut Salin SOAP.'));
+  }
+  // Baris identitas konsul WA: nama/no. RM, lalu jenis kelamin / usia dari ERM. null = belum diisi (baris tempel kosong)
+  function identLines() {
+    const a = state.ant, one = s => clean(s).replace(/\s+/g, ' ');
+    const l2 = [a.sex == null ? '' : ['Laki-laki', 'Perempuan'][a.sex], one(a.umur)].filter(Boolean).join(' / ');
+    return [one(a.idn) || null, l2 || null];
   }
   // Tanggal lahir dan tanggal periksa (anak): untuk usia tepat status gizi; tanggal lahir mengisi Usia bila masih kosong
   function fldDate(k, label, note) {
@@ -1957,7 +2001,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const box = h('div', { class: 'bb' });
     box.appendChild(h('div', { class: 'sub-head' }, h('h3', null, 'BAB dan BAK'),
       chip({ l: x.on ? 'Aktif' : 'Aktifkan' }, x.on, () => { x.on = !x.on; refresh(['S:bb']); }, 'bb:on', 'chip--sm'),
-      h('span', { class: 'hint' }, x.on ? 'Bawaan tidak ada keluhan. Klik keluhan: sekali (+), dua kali (-), tiga kali hapus.' : 'Tidak ditulis.')));
+      h('span', { class: 'hint' }, x.on ? 'Bawaan tidak ada keluhan. Klik keluhan: sekali (+), dua kali (-), tiga kali hapus.' + (state.kind === 'awal' ? ' Ditulis paragraf sendiri di bawah RPS.' : '') : 'Tidak ditulis.')));
     if (!x.on) return box;
     GX.filter(G => G.bb).forEach(G => {
       const items = gxItems(G);
@@ -2488,19 +2532,34 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     return !!(seg.bi ? (v[0] || v[1]) : v);
   };
   const optAbn = (seg, i) => (seg.abn ? !!seg.abn[i] : i > 0);
-  const segDiff = (seg, v) => (seg.txt != null ? clean(v) !== seg.txt : v != null && (seg.bi ? (v[0] !== 0 || v[1] !== 0) : v !== 0));
+  const segDiff = (seg, v) => v != null && (seg.txt != null ? clean(v) !== seg.txt : (seg.bi ? (v[0] !== 0 || v[1] !== 0) : v !== 0));
   function pfChanged(L) {
     const st = state.pf[L.id];
     if (st.ex.length || st.ketOn || clean(st.ket)) return true;
     if (Object.keys(st.d).some(k => clean(st.d[k]))) return true;
     return L.segs.some(seg => segDiff(seg, st.v[seg.id]));
   }
-  function resetLine(L) { state.pf[L.id] = freshLine(L, state.pf[L.id].on); }
+  // Kembali normal. Neurologi lengkap: yang sudah dilakukan jadi normal, yang tidak dilakukan tetap tidak dilakukan.
+  function resetLine(L) {
+    const old = state.pf[L.id], st = freshLine(L, old.on);
+    if (isNd(L)) L.segs.forEach(seg => { if (old.v[seg.id] != null) st.v[seg.id] = segDef(seg); });
+    state.pf[L.id] = st;
+  }
+  // Neurologi lengkap: satu baris jadi semua dilakukan (hasil normal) atau semua tidak dilakukan
+  function ndLine(L, done) {
+    const st = freshLine(L, state.pf[L.id].on);
+    if (done) L.segs.forEach(seg => { st.v[seg.id] = segDef(seg); });
+    else { st.ex.forEach(id => { delete st.v[id]; }); st.ex = []; }
+    st.tk = true;
+    state.pf[L.id] = st;
+  }
+  const PW_N = ['5555', '5555', '5555', '5555'];
+  const pwDone = () => state.nl.pw.some(v => clean(v));   // kekuatan motorik: semua kolom kosong = tidak dilakukan
   // Semua normal: baris PF umum yang tampil dianggap sudah dicek (tag "default" hilang)
   function resetPF() {
     undoable('Semua PF dikembalikan normal', () => {
       PF.forEach(resetLine);
-      state.nl.pw = ['5555', '5555', '5555', '5555'];
+      state.nl.pw = state.nl.pw.map(v => (clean(v) ? '5555' : ''));
       PF.forEach(L => { if (!L.grp && lineVisible(L)) state.pf[L.id].tk = true; });
       refresh();
     });
@@ -2540,21 +2599,28 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     }
     return box;
   }
+  const segName = (L, seg) => seg.nm || clean(seg.pre) || pfLabel(L);
+  // Fokus pindah ke tombol pengganti setelah baris digambar ulang (tombol yang diklik hilang).
+  // Isian teks (visus) tidak difokus supaya keyboard HP tidak tiba-tiba muncul; fokus ke tombol × miliknya.
+  const focusFk = fk => { const n = document.querySelector('[data-fk="' + fk + '"]'); if (n) { try { n.focus({ preventScroll: true }); } catch (e) { n.focus(); } } };
+  const tokFk = (L, seg) => 'pf:' + L.id + (seg.txt != null ? ':nd:' + seg.id : ':tok:' + seg.id + ':' + (seg.bi ? 0 : -1));
   function pfLineEl(L) {
-    const st = state.pf[L.id], key = 'O:pf:' + L.id;
+    const st = state.pf[L.id], key = 'O:pf:' + L.id, nd = isNd(L);
     const ch = pfChanged(L), lab = pfLabel(L);
     const el = h('div', { class: 'pf-line' + (ch ? ' is-changed' : ''), 'data-line': L.id });
     el.appendChild(ch
-      ? h('button', { type: 'button', class: 'pf-lab is-reset', title: 'Kembalikan ' + lab + ' ke normal', 'data-fk': 'pf:' + L.id + ':lab', onclick: () => undoable(lab + ' dikembalikan normal', () => { resetLine(L); state.pf[L.id].tk = true; refresh([key]); }) }, lab, h('span', { class: 'rs', 'aria-hidden': 'true' }, ' ↺'))
+      ? h('button', { type: 'button', class: 'pf-lab is-reset', title: nd ? 'Kembalikan pemeriksaan ' + lab + ' yang dilakukan ke normal' : 'Kembalikan ' + lab + ' ke normal', 'data-fk': 'pf:' + L.id + ':lab', onclick: () => undoable(lab + ' dikembalikan normal', () => { resetLine(L); state.pf[L.id].tk = true; refresh([key]); }) }, lab, h('span', { class: 'rs', 'aria-hidden': 'true' }, ' ↺'))
       : h('span', { class: 'pf-lab' }, lab));
     const sent = h('div', { class: 'pf-sent' });
-    const list = L.segs.map(s => [s, false]).concat(st.ex.map(id => [findExtra(L, id), true]).filter(x => x[0]));
+    // Neurologi lengkap: pemeriksaan yang tidak dilakukan (null) tidak ikut kalimat; tampil sebagai tombol di baris "tidak dilakukan"
+    const off = nd ? L.segs.filter(s => st.v[s.id] == null) : [];
+    const list = L.segs.filter(s => off.indexOf(s) < 0).map(s => [s, false]).concat(st.ex.map(id => [findExtra(L, id), true]).filter(x => x[0]));
     list.forEach((pair, i) => {
       if (i) sent.appendChild(h('span', { class: 'sep' }, pair[0].sep || ', '));
       sent.appendChild(segEl(L, pair[0], pair[1]));
     });
     if (st.ketOn) {
-      sent.appendChild(h('span', { class: 'sep' }, ', '));
+      if (list.length) sent.appendChild(h('span', { class: 'sep' }, ', '));
       const k = h('input', { class: 'det det--ket', type: 'text', value: st.ket, placeholder: 'temuan lain', 'aria-label': 'Temuan lain ' + lab, autocomplete: 'off', 'data-fk': 'pf:' + L.id + ':ket' });
       k.addEventListener('input', () => { st.ket = k.value; autoW(k); touchLine(L, k); changed(); });
       autoW(k);
@@ -2562,8 +2628,16 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     }
     // PF umum yang belum disentuh: tag kecil "default" (tidak ikut ke CPPT)
     if (!L.grp && !st.tk && !ch) sent.appendChild(h('span', { class: 'pf-def', title: 'Belum dicek: masih nilai bawaan. Klik isinya, atau "Semua normal" bila sudah diperiksa.' }, 'default'));
+    if (off.length) {
+      const doIt = s => () => { st.v[s.id] = segDef(s); st.tk = true; refresh([key]); focusFk(tokFk(L, s)); };
+      sent.appendChild(h('div', { class: 'pf-nd' }, h('span', { class: 'pf-nd-lab' }, 'tidak dilakukan'),
+        off.map(s => h('button', { type: 'button', class: 'ghost', title: 'Tidak dilakukan, tidak ditulis. Klik bila diperiksa (hasil awal normal).', 'aria-label': segName(L, s) + ': tidak dilakukan. Klik bila diperiksa.', 'data-fk': 'pf:' + L.id + ':do:' + s.id, onclick: doIt(s) }, '+ ' + segName(L, s)))));
+    }
     el.appendChild(sent);
     const addBox = h('div', { class: 'pf-add' });
+    if (off.length > 1) addBox.appendChild(h('button', { type: 'button', class: 'ghost', title: 'Semua pemeriksaan ' + lab + ' yang belum dilakukan diisi normal', 'data-fk': 'pf:' + L.id + ':doall', onclick: () => {
+      off.forEach(s => { st.v[s.id] = segDef(s); }); st.tk = true; refresh([key]); focusFk(tokFk(L, off[0]));
+    } }, '+ semua'));
     pfExtras(L).forEach(e => {
       if (st.ex.indexOf(e.id) >= 0) return;
       addBox.appendChild(h('button', { type: 'button', class: 'ghost', 'data-fk': 'pf:' + L.id + ':add:' + e.id, onclick: () => {
@@ -2588,6 +2662,10 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const v = st.v[seg.id];
     const w = h('span', { class: 'seg' });
     const nw = h('span', { class: 'nw' });
+    // Neurologi lengkap: × = jadikan tidak dilakukan (pindah ke baris "tidak dilakukan", tidak ditulis)
+    const ndX = () => (!isEx && isNd(L) ? h('button', { type: 'button', class: 'x x--sm', title: 'Tidak dilakukan', 'aria-label': segName(L, seg) + ': jadikan tidak dilakukan', 'data-fk': 'pf:' + L.id + ':nd:' + seg.id, onclick: () => {
+      st.v[seg.id] = null; delete st.d[seg.id]; st.tk = true; refresh([key]); focusFk('pf:' + L.id + ':do:' + seg.id);
+    } }, '×') : null);
     if (seg.txt != null) {
       // isian bebas, mis. visus
       if (seg.pre) nw.appendChild(document.createTextNode(seg.pre));
@@ -2596,6 +2674,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       autoW(t);
       nw.appendChild(t);
       w.appendChild(nw);
+      put(w, ndX());
       return w;
     }
     if (seg.bi) {
@@ -2621,6 +2700,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (isEx) w.appendChild(h('button', { type: 'button', class: 'x x--sm', title: 'Hapus ' + seg.name, 'aria-label': 'Hapus ' + seg.name, 'data-fk': 'pf:' + L.id + ':rm:' + seg.id, onclick: () => {
       st.ex = st.ex.filter(x => x !== seg.id); delete st.v[seg.id]; delete st.d[seg.id]; st.tk = true; refresh([key]);
     } }, '×'));
+    put(w, ndX());
     return w;
   }
   function tokEl(L, seg, side) {
@@ -2648,16 +2728,31 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   function nlNormal() {
     return NL_ALL.every(id => {
       const L = PF_BY[id], st = state.pf[id];
-      return !clean(st.ket) && !L.segs.some(seg => segAbn(seg, st.v[seg.id]));
+      return !clean(st.ket) && !L.segs.some(seg => segAbn(seg, st.v[seg.id])) && !st.ex.some(x => { const e = findExtra(L, x); return !!e && segAbn(e, st.v[x]); });
     }) && !state.nl.pw.some(pwAbn);
   }
-  function kesanText() { const k = clean(state.nl.kesan); return k || (nlNormal() ? NL_AUTO : ''); }
+  // Ada pemeriksaan yang dilakukan di baris ini / di blok neurologi (nervus kranialis s.d. otonom dan kekuatan motorik)?
+  const lineDone = L => { const st = state.pf[L.id]; return st.ex.length > 0 || !!clean(st.ket) || L.segs.some(seg => st.v[seg.id] != null); };
+  const nlBlockDone = () => NL_BLOCK.some(id => lineDone(PF_BY[id])) || pwDone();
+  // Kesan otomatis "dalam batas normal" hanya bila ada yang diperiksa di blok neurologi dan semuanya normal
+  function kesanText() { const k = clean(state.nl.kesan); return k || (nlNormal() && nlBlockDone() ? NL_AUTO : ''); }
+  // Tombol di judul blok: semua dilakukan dengan hasil normal, atau semua tidak dilakukan (bisa diurungkan)
+  function nlAll(done) {
+    undoable(done ? 'Neurologi: semua dilakukan, normal' : 'Neurologi: semua tidak dilakukan', () => {
+      NL_ALL.forEach(id => ndLine(PF_BY[id], done));
+      state.nl.pw = done ? PW_N.slice() : ['', '', '', ''];
+      if (!done) state.nl.kesan = '';
+      refresh(['O:nl']);
+    });
+  }
   function nlEl() {
     const nl = state.nl;
     const box = h('div', { class: 'nl' + (nl.on ? ' on' : '') });
     box.appendChild(h('div', { class: 'nl-head' }, h('b', null, 'Neurologi lengkap'),
       chip({ l: nl.on ? 'Aktif' : 'Aktifkan' }, nl.on, () => { nl.on = !nl.on; refresh(['O:nl', 'O:pf', 'O:ps']); }, 'nl:on', 'chip--sm'),
-      h('span', { class: 'hint' }, nl.on ? 'Default normal. Pupil dan TRM ditulis setelah Mata; baris Neuro singkat disembunyikan.' : 'Pupil, TRM, nervus kranialis, motorik, refleks, sensorik, otonom.')));
+      nl.on ? h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'nl:all', title: 'Semua pemeriksaan neurologi dilakukan dengan hasil normal', onclick: () => nlAll(true) }, 'Semua normal') : null,
+      nl.on ? h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'nl:none', title: 'Semua pemeriksaan neurologi jadi tidak dilakukan (tidak ditulis)', onclick: () => nlAll(false) }, 'Semua tidak dilakukan') : null,
+      h('span', { class: 'hint nl-hint' }, nl.on ? 'Bawaan tiap pemeriksaan: tidak dilakukan, tidak ditulis ke CPPT. Klik "+" pada yang dikerjakan (hasil awal normal), × untuk batal. Pupil dan TRM ditulis setelah Mata; baris Neuro singkat disembunyikan.' : 'Pupil, TRM, nervus kranialis, motorik, refleks, sensorik, otonom.')));
     if (!nl.on) return box;
     const sec = (t, ids) => {
       box.appendChild(h('div', { class: 'nl-sub' }, t));
@@ -2666,13 +2761,17 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     sec('Pupil dan TRM', ['pupil', 'trm']);
     sec('Nervus kranialis', ['n1', 'n2', 'n346', 'n5', 'n7', 'n8', 'n910', 'n11', 'n12']);
     sec('Motorik', ['motorik']);
-    box.appendChild(h('div', { class: 'pf pf--wide' }, pwEl()));
+    box.appendChild(h('div', { class: 'pf pf--wide' }, blk('O:nl:pw', pwEl)));
     sec('Refleks, sensorik, otonom', ['rf', 'rp', 'sens', 'oto']);
-    box.appendChild(blk('O:nl:kesan', kesanEl, () => String(nlNormal())));
+    box.appendChild(blk('O:nl:kesan', kesanEl, () => String(nlNormal()) + (nlBlockDone() ? '1' : '0')));
     return box;
   }
+  // Kekuatan motorik: keempat kolom kosong = tidak dilakukan (tidak ditulis); "+" mengisi 5555 semua
   function pwEl() {
-    const nl = state.nl;
+    const nl = state.nl, key = 'O:nl:pw', lab = h('span', { class: 'pf-lab' }, 'Kekuatan motorik');
+    if (!pwDone()) return h('div', { class: 'pf-line' }, lab,
+      h('div', { class: 'pf-sent' }, h('div', { class: 'pf-nd' }, h('span', { class: 'pf-nd-lab' }, 'tidak dilakukan'),
+        h('button', { type: 'button', class: 'ghost', title: 'Tidak dilakukan, tidak ditulis. Klik bila diperiksa (awal 5555).', 'aria-label': 'Kekuatan motorik: tidak dilakukan. Klik bila diperiksa.', 'data-fk': 'nl:pw:do', onclick: () => { nl.pw = PW_N.slice(); refresh([key]); focusFk('nl:pw:nd'); } }, '+ kekuatan motorik'))));
     const cell = (i, lab) => {
       const inp = h('input', { class: 'in in--sm in--num' + (pwAbn(nl.pw[i]) ? ' abn' : ''), type: 'text', inputmode: 'numeric', maxlength: '4', value: nl.pw[i], placeholder: '5555', autocomplete: 'off', 'aria-label': 'Kekuatan motorik ' + lab, 'data-fk': 'nl:pw:' + i });
       inp.addEventListener('input', () => {
@@ -2682,19 +2781,20 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       });
       return inp;
     };
-    return h('div', { class: 'pf-line' }, h('span', { class: 'pf-lab' }, 'Kekuatan motorik'),
+    return h('div', { class: 'pf-line' }, lab,
       h('div', { class: 'pw' },
         h('span'), h('span', { class: 'pw-lab' }, 'kanan'), h('span'), h('span', { class: 'pw-lab' }, 'kiri'),
         h('span', { class: 'pw-lab' }, 'atas'), cell(0, 'lengan kanan'), h('span', { class: 'pw-sep' }, '|'), cell(1, 'lengan kiri'),
         h('span', { class: 'pw-lab' }, 'bawah'), cell(2, 'tungkai kanan'), h('span', { class: 'pw-sep' }, '|'), cell(3, 'tungkai kiri')),
-      h('span', { class: 'hint' }, 'angka 0-5'));
+      h('div', { class: 'pf-add' }, h('span', { class: 'hint' }, 'angka 0-5'),
+        h('button', { type: 'button', class: 'x x--sm', title: 'Tidak dilakukan', 'aria-label': 'Kekuatan motorik: jadikan tidak dilakukan', 'data-fk': 'nl:pw:nd', onclick: () => { nl.pw = ['', '', '', '']; refresh([key]); focusFk('nl:pw:do'); } }, '×')));
   }
   function kesanEl() {
-    const nl = state.nl, ok = nlNormal();
-    const inp = h('input', { class: 'in in--sm', type: 'text', value: nl.kesan, placeholder: ok ? NL_AUTO : 'mis. hemiparesis sinistra, parese N. VII sinistra tipe sentral', autocomplete: 'off', 'aria-label': 'Kesan neurologis', 'data-fk': 'nl:kesan', style: 'flex:1 1 320px' });
+    const nl = state.nl, ok = nlNormal(), any = nlBlockDone();
+    const inp = h('input', { class: 'in in--sm', type: 'text', value: nl.kesan, placeholder: ok && any ? NL_AUTO : 'mis. hemiparesis sinistra, parese N. VII sinistra tipe sentral', autocomplete: 'off', 'aria-label': 'Kesan neurologis', 'data-fk': 'nl:kesan', style: 'flex:1 1 320px' });
     inp.addEventListener('input', () => { nl.kesan = inp.value; changed(); });
     return h('div', { class: 'kesan' }, h('b', null, 'Kesan'), inp,
-      h('span', { class: 'hint', style: 'flex-basis:100%' }, ok ? 'Semua normal: bila kosong ditulis "' + NL_AUTO + '".' : 'Ada temuan tidak normal: tulis kesannya (kosong = baris Kesan tidak ditulis).'));
+      h('span', { class: 'hint', style: 'flex-basis:100%' }, !any ? 'Belum ada pemeriksaan neurologi yang dilakukan: baris Kesan hanya ditulis bila diisi.' : ok ? 'Semua normal: bila kosong ditulis "' + NL_AUTO + '".' : 'Ada temuan tidak normal: tulis kesannya (kosong = baris Kesan tidak ditulis).'));
   }
 
   /* ---------- PF khusus ---------- */
@@ -3952,13 +4052,20 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     });
     return out;
   }
-  // RPS + ceklis gejala + BAB/BAK + RPS lanjutan jadi satu paragraf: huruf awal kapital, diakhiri titik
+  // BAB dan BAK: paragraf sendiri di bawah paragraf RPS, mis. "BAB dan BAK tidak ada keluhan" (tanpa titik di akhir)
+  function bbPara() {
+    const ps = bbParts();
+    if (!ps.length) return null;
+    const out = paraParts(ps), last = out[out.length - 1];
+    last.t = last.t.replace(/[\s,;]+$/, '');
+    return out;
+  }
+  // RPS + ceklis gejala + RPS lanjutan jadi satu paragraf: huruf awal kapital, diakhiri titik (BAB/BAK di paragraf sendiri)
   function rpsPara() {
     const s = state.s, pieces = [];
     const lines = t => splitLines(t).map(l => l.trim()).filter(Boolean).forEach(l => pieces.push([{ t: l }]));
     lines(s.rps);
     const gx = gxParts(); if (gx) pieces.push(gx);
-    bbParts().forEach(p => pieces.push(p));
     lines(s.rps2);
     if (!pieces.length) return null;
     pieces[0] = capParts(pieces[0]);
@@ -4111,6 +4218,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (d && seg.det && (seg.detAlways || abn)) t += ' ' + d;
     return { t: t, abn: abn };
   }
+  // null = tidak ada yang ditulis (mis. semua pemeriksaan neurologi di baris ini tidak dilakukan)
   function pfParts(L) {
     const st = state.pf[L.id];
     const segs = L.segs.concat(st.ex.map(id => findExtra(L, id)).filter(Boolean));
@@ -4122,8 +4230,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       if (!first) out.push({ t: seg.sep || ', ' });
       out.push(b); first = false;
     });
-    if (clean(st.ket)) { if (!first) out.push({ t: ', ' }); out.push({ t: clean(st.ket) }); }
-    return out;
+    if (clean(st.ket)) { if (!first) out.push({ t: ', ' }); out.push({ t: clean(st.ket) }); first = false; }
+    return first ? null : out;
   }
   // Baris PF umum (termasuk Pupil dan TRM setelah Mata), blok neurologi, dan PF khusus
   const pfGeneral = () => PF.filter(L => (!L.grp || NL_EARLY.indexOf(L.id) >= 0) && lineVisible(L));
@@ -4133,13 +4241,14 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     return [{ t: a, abn: pwAbn(a) && a !== '-' }, { t: ' | ' }, { t: b, abn: pwAbn(b) && b !== '-' }];
   }
   // Blok neurologi: grup baris (dipisah baris kosong di WhatsApp)
+  // Hanya pemeriksaan yang dilakukan; baris/grup yang semuanya tidak dilakukan tidak ditulis
   function nlGroups() {
     if (!state.nl.on) return [];
-    const lines = ids => ids.map(id => pfParts(PF_BY[id]));
-    const g = [];
-    g.push({ head: 'Nervus kranialis', lines: lines(['n1', 'n2', 'n346', 'n5', 'n7', 'n8', 'n910', 'n11', 'n12']) });
-    g.push({ lines: lines(['motorik']).concat([[{ t: 'Kekuatan motorik:' }], pwParts(0, 1), pwParts(2, 3)]) });
-    g.push({ lines: lines(['rf', 'rp', 'sens', 'oto']) });
+    const lines = ids => ids.map(id => pfParts(PF_BY[id])).filter(Boolean);
+    const g = [], push = (lns, head) => { if (lns.length) g.push(head ? { head: head, lines: lns } : { lines: lns }); };
+    push(lines(['n1', 'n2', 'n346', 'n5', 'n7', 'n8', 'n910', 'n11', 'n12']), 'Nervus kranialis');
+    push(lines(['motorik']).concat(pwDone() ? [[{ t: 'Kekuatan motorik:' }], pwParts(0, 1), pwParts(2, 3)] : []));
+    push(lines(['rf', 'rp', 'sens', 'oto']));
     const k = kesanText();
     if (k) g.push({ lines: [[{ t: 'Kesan: ' }, { t: k, abn: !nlNormal() }]] });
     return g;
@@ -4175,10 +4284,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       if (o.gcsOn) { const g = gcsCalc(o); bits.push({ t: 'GCS ' + g.s, abn: g.total == null || g.total < 15 }); }
       const ne = PF_BY.neuro;
       if (lineVisible(ne)) ne.segs.forEach(s => bits.push(pfSegPart(ne, s)));
-      if (state.nl.on) {
+      if (state.nl.on) {   // dari baris Pupil neurologi lengkap; yang tidak dilakukan tidak ditulis
         const pu = PF_BY.pupil, sg = id => pu.segs.filter(x => x.id === id)[0];
         const iso = pfSegPart(pu, sg('iso')), dm = pfSegPart(pu, sg('diam')), rc = pfSegPart(pu, sg('rcl'));
-        bits.push({ t: 'pupil ' + iso.t + ' ' + dm.t.replace(/^diameter /, ''), abn: iso.abn || dm.abn });
+        const pt = [iso.t, dm.t.replace(/^diameter /, '')].filter(Boolean).join(' ');
+        if (pt) bits.push({ t: 'pupil ' + pt, abn: iso.abn || dm.abn });
         bits.push(rc);
       }
       if (ps.lat != null) man({ t: 'lateralisasi (' + (ps.lat ? '+' : '-') + ')', abn: ps.lat === 1 });
@@ -4317,8 +4427,10 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     add(salamLine(konsSet('salam'), settings.kons.kenal, konsSet('nama')));
     add(konsSet('pembuka') + ' *' + KONS_ASAL[state.kons.asal] + '* atas nama:');
     blank();
-    L.push({ t: '', hint: 'tempel no. RM - nama pasien' });
-    L.push({ t: '', hint: 'jenis kelamin / umur' });
+    // identitas dari Data pasien; yang belum diisi tetap baris kosong untuk ditempel di WA
+    const idl = identLines();
+    if (idl[0]) add(idl[0]); else L.push({ t: '', hint: 'no. RM - nama pasien (isi di Data pasien)' });
+    if (idl[1]) add(idl[1]); else L.push({ t: '', hint: 'jenis kelamin / umur (isi di Data pasien)' });
     blank();
     // A: diagnosa kerja
     if (full) {
@@ -4336,8 +4448,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       const src = srcLine(); if (src) add(src);
       const ku = kuText();
       if (ku) { add('*Keluhan utama*', 'Keluhan utama'); add(ku); blank(); }
-      const rps = rpsPara();
-      if (rps) { add('*RPS*', 'RPS'); addP(rps); blank(); }
+      const rps = rpsPara(), bb = bbPara();
+      if (rps || bb) { add('*RPS*', 'RPS'); if (rps) addP(rps); if (bb) addP(bb); blank(); }
       if (state.ps.on) { const am = ampleParts(); if (am) { addP(am); blank(); } }
       const own = { imun: 1, tumbang: 1, lahir: 1, keluarga: 1 };
       const rpd = [];
@@ -4374,12 +4486,12 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         blank();
       });
       const an = antroItems(); if (an.length) { an.forEach(x => add(x.k + ': ' + x.v)); blank(); }
-      pfGeneral().forEach(Lx => addP(pfParts(Lx), true));
+      pfGeneral().forEach(Lx => { const p = pfParts(Lx); if (p) addP(p, true); });
       const lok = lokLines();
       if (lok.length) { blank(); lok.forEach(l => addP(l, true)); }
       blank();
       nlGroups().forEach(g => { if (g.head) add(g.head); g.lines.forEach(l => addP(l, true)); blank(); });
-      const kh = pfKhusus(); if (kh.length) { kh.forEach(Lx => addP(pfParts(Lx), true)); blank(); }
+      const kh = pfKhusus().map(pfParts).filter(Boolean); if (kh.length) { kh.forEach(p => addP(p, true)); blank(); }
       const sc = scoreLines(); if (sc.length) { sc.forEach(l => addP(l, true)); blank(); }
       const gz = gzLines(); if (gz.length) { gz.forEach(l => addP(l, true)); blank(); }
       sec('Radiologi:', null, splitLines(state.penRad));
@@ -4796,14 +4908,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       box.appendChild(t);
     });
     box.appendChild(h('button', { type: 'button', class: 'bbtn bbtn--sm', 'data-fk': 'tab:add', onclick: addPatient }, '+ Pasien'));
-    measureBar();
-    // tab aktif digulir (mendatar saja) supaya terlihat bila tab banyak
-    const on = $('.ptab.on', box), add = box.lastChild;
-    if (on && box.scrollWidth > box.clientWidth) {
-      const l = on.getBoundingClientRect().left - box.getBoundingClientRect().left + box.scrollLeft, r = l + on.offsetWidth + (add ? add.offsetWidth + 12 : 0);
-      if (l < box.scrollLeft) box.scrollLeft = l - 8;
-      else if (r > box.scrollLeft + box.clientWidth) box.scrollLeft = r - box.clientWidth;
-    }
+    measureBar();   // tab yang turun baris mengubah tinggi bar atas (dipakai lembar konsul yang menempel)
   }
 
   /* ================= Salin ================= */
@@ -4935,7 +5040,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const sPF = h('section', { class: 'set-sec', id: 'set-pf' }, h('h3', null, 'Pemeriksaan fisik'));
     PF.forEach(L => { if (!L.grp) sPF.appendChild(setPFLine(L)); });
     body.appendChild(sPF);
-    const sNL = h('section', { class: 'set-sec', id: 'set-nl' }, h('h3', null, 'Neurologi lengkap'), h('p', { class: 'set-intro' }, 'Muncul semua saat Neurologi lengkap diaktifkan di pasien.'));
+    const sNL = h('section', { class: 'set-sec', id: 'set-nl' }, h('h3', null, 'Neurologi lengkap'), h('p', { class: 'set-intro' }, 'Muncul semua saat Neurologi lengkap diaktifkan di pasien; tiap pemeriksaan bawaannya tidak dilakukan (tidak ditulis) sampai diklik.'));
     PF.forEach(L => { if (L.grp === 'neuro') sNL.appendChild(setPFLine(L)); });
     body.appendChild(sNL);
     const sKH = h('section', { class: 'set-sec', id: 'set-kh' }, h('h3', null, 'PF khusus'));
