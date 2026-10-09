@@ -443,6 +443,14 @@ input.rw-lab{font-weight:600}
 .obg .row{grid-template-columns:118px minmax(0,1fr)}
 .obg-auto{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
 
+/* ===== Riwayat poli (kunjungan poli sebelumnya) ===== */
+.poli{display:grid;gap:8px}
+.poli-card{padding:10px 12px;border:1px solid var(--rule);border-radius:8px}
+.poli-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}
+.poli-head b{font-size:12.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.poli-card .row{grid-template-columns:118px minmax(0,1fr)}
+@media (max-width:640px){.poli-card .row{grid-template-columns:minmax(0,1fr)}.poli-card .row-lab{padding-top:0}}
+
 /* ===== TTV multi-waktu ===== */
 .tvset{margin-top:12px;padding:10px 12px;border:1.5px solid var(--rule);border-radius:8px}
 .tvset-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px;margin-bottom:4px}
@@ -840,6 +848,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     gest: [{ l: 'cukup bulan', o: 'cukup bulan' }, { l: 'kurang bulan', o: 'kurang bulan', pos: true }, { l: 'lebih bulan', o: 'lebih bulan', pos: true }]
   };
   const EMPTY_RW = { st: null, ket: '', btg: '', th: '', cara: null, gest: null, bbl: '' };
+  // Riwayat poli: satu kartu per kunjungan poli (nama poli, DPJP, tanggal, dx, tx), ditulis paling bawah di S.
+  // POLI_UP = kode sediaan lepas lambat yang tetap huruf besar walau lainnya dijadikan huruf kecil (mis. tamsulosin SR).
+  const MAX_POLI = 10;
+  const POLI_K = ['nama', 'dpjp', 'tgl', 'dx', 'tx'];
+  const POLI_UP = /\b(sr|xr|er|cr|mr|xl|la|odt)\b/g;
 
   // Ceklis gejala. Id yang sama di dua grup = gejala yang sama (tidak ditulis dobel).
   // Grup "umum" menggabungkan umum, paru, jantung, dan cerna (sering muncul bersama pada satu pasien);
@@ -1366,7 +1379,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       gx: {}, gxOpen: [],
       bb: { on: true, bab: '', bak: '' },   // BAB/BAK: on = ditulis (bawaan "tidak ada keluhan"); bab/bak = keterangan tiap baris
       amp: { m: '', p: '', l: '', e: '' },
-      rw: {}, rwAdd: [], rwCustom: [], rwK: '',
+      rw: {}, rwAdd: [], rwCustom: [], rwK: '', rwPoli: [],
       obg: { on: false, g: '', p: '', a: '', hpht: '', hamil: null, menarche: '', siklus: null, siklusH: '', lama: '', dismen: null, kb: null, kbK: '', sc: null, scN: '', ket: '' },
       o: { jam: '', ku: null, kes: 0, gcsOn: true, e: '4', vv: '5', m: '6', td: '', n: '', rr: '', s: '', spo2: '', o2: null, o2k: '', nyeri: '', nyS: 0, wb: null, flacc: [null, null, null, null, null], gds: '' },
       tv: [],
@@ -1491,6 +1504,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       if (d.rw) Object.keys(d.rw).forEach(k => { if (RW[k] && d.rw[k]) s.rw[k] = Object.assign({}, EMPTY_RW, d.rw[k]); });
       if (Array.isArray(d.rwAdd)) s.rwAdd = d.rwAdd.filter(k => !!RW[k]);
       if (Array.isArray(d.rwCustom)) s.rwCustom = d.rwCustom.filter(c => c && c.id).map(c => ({ id: String(c.id), lab: String(c.lab || ''), st: (c.st === 0 || c.st === 1) ? c.st : null, ket: String(c.ket || '') }));
+      if (Array.isArray(d.rwPoli)) s.rwPoli = d.rwPoli.filter(e => e && typeof e === 'object' && e.id).slice(0, MAX_POLI).map(e => {
+        const n = freshPoli(); n.id = String(e.id);
+        POLI_K.forEach(k => { if (typeof e[k] === 'string') n[k] = e[k]; });
+        return n;
+      });
       if (Array.isArray(d.luka)) s.luka = d.luka.filter(w => w && w.id).slice(0, MAX_LUKA).map(w => {
         const n = freshLuka(w.type); n.id = String(w.id);
         if (n.type === 'lfm') LFM_K.forEach(k => { const src = w[k] || {}; LFM[k].forEach(t => { if (inIdx(src[t.id], t.opts.length)) n[k][t.id] = src[t.id]; }); if (typeof w[k + 'k'] === 'string') n[k + 'k'] = w[k + 'k']; });
@@ -1540,6 +1558,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (w.type === 'lfm') LFM_K.forEach(k => { w[k] = {}; LFM[k].forEach(t => { w[k][t.id] = 0; }); w[k + 'k'] = ''; });
     return w;
   }
+  function freshPoli() { return { id: uid('k'), nama: '', dpjp: '', tgl: '', dx: '', tx: '' }; }
   // o2c = oksigen terbawa dari set sebelumnya dan belum disentuh (set yang hanya berisi itu tidak ditulis)
   function freshTV() { return { id: uid('t'), jam: '', ku: null, kes: null, gcsOn: false, e: '4', vv: '5', m: '6', td: '', n: '', rr: '', s: '', spo2: '', o2: null, o2k: '', o2c: false, nyeri: '', gds: '' }; }
 
@@ -1634,11 +1653,12 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   function saveFlush() { if (!saveTimer || !db) return; clearTimeout(saveTimer); saveTimer = 0; saveNow(); }
   // Isian pasien masih sama dengan keadaan kosong? Panel gejala yang dibuka, riwayat yang diklik lalu dibatalkan,
-  // dan tanda "sudah dicek" di PF tidak dihitung.
+  // kartu riwayat poli yang belum diisi, dan tanda "sudah dicek" di PF tidak dihitung.
   function isBlank(st) {
     const norm = x => {
       const c = JSON.parse(JSON.stringify(x));
       c.gxOpen = [];
+      c.rwPoli = (c.rwPoli || []).filter(e => POLI_K.some(k => clean(e[k])));
       Object.keys(c.rw || {}).forEach(k => { if (JSON.stringify(c.rw[k]) === JSON.stringify(EMPTY_RW)) delete c.rw[k]; });
       Object.keys(c.pf || {}).forEach(k => { c.pf[k].tk = false; });
       return JSON.stringify(c);
@@ -1877,7 +1897,41 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       b.appendChild(blk('S:rw', riwayatEl));
       b.appendChild(row('Riwayat lain', ta('sRwK', state.rwK, 'Tulis bebas, satu per baris. Ikut di RPD/RPSos.', v => { state.rwK = v; }, 's:rwK'), 'sRwK'));
       b.appendChild(blk('S:obg', obgEl, () => JSON.stringify([state.ant.sex, state.who, obgShow()])));
+      b.appendChild(blk('S:poli', poliEl));
     }
+  }
+
+  /* ---------- Riwayat poli (kunjungan poli sebelumnya, ditulis paling bawah di S) ---------- */
+  function poliEl() {
+    const box = h('div');
+    box.appendChild(h('div', { class: 'sub-head' },
+      h('h3', null, 'Riwayat poli'),
+      h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'poli:add', onclick: addPoli }, state.rwPoli.length ? '+ Poli lain' : '+ Tambah'),
+      h('span', { class: 'hint' }, 'Ditulis paling bawah. Huruf kecil otomatis kecuali DPJP; dx jadi satu baris dipisah koma, tx tanpa (…) dan "signa :".')));
+    if (state.rwPoli.length) box.appendChild(h('div', { class: 'poli' }, state.rwPoli.map((e, i) => poliCard(e, i))));
+    return box;
+  }
+  function addPoli() {
+    if (state.rwPoli.length >= MAX_POLI) { toast('Maksimal ' + MAX_POLI + ' riwayat poli'); return; }
+    const e = freshPoli();
+    state.rwPoli.push(e);
+    refresh(['S:poli']);
+    const n = document.querySelector('[data-fk="poli:' + e.id + ':nama"]');
+    if (n) n.focus();
+  }
+  function poliCard(e, i) {
+    const f = k => 'poli:' + e.id + ':' + k, id = k => 'poli-' + k + '-' + e.id;
+    const line = (k, ph) => txt(e[k], ph, v => { e[k] = v; }, f(k), { id: id(k), spellcheck: 'false', style: 'flex:1 1 240px' });
+    const tgl = h('input', { class: 'in in--sm in--num', type: 'date', id: id('tgl'), value: e.tgl, 'data-fk': f('tgl'), style: 'width:auto' });
+    tgl.addEventListener('input', () => { e.tgl = tgl.value; changed(); });
+    const rm = () => undoable('Riwayat poli ' + (i + 1) + ' dihapus', () => { state.rwPoli = state.rwPoli.filter(z => z !== e); refresh(['S:poli']); });
+    return h('div', { class: 'poli-card' },
+      h('div', { class: 'poli-head' }, h('b', null, 'Poli ' + (i + 1)), h('button', { type: 'button', class: 'ghost', 'data-fk': f('rm'), onclick: rm }, 'hapus')),
+      row('Nama poli', line('nama', 'mis. penyakit dalam'), id('nama')),
+      row('DPJP', line('dpjp', 'mis. dr. Bambang, SpPD'), id('dpjp')),
+      row('Tanggal', tgl, id('tgl')),
+      row('Diagnosis (dx)', ta(id('dx'), e.dx, 'Satu per baris atau pakai koma, mis.\nHHD\nCAD', v => { e.dx = v; }, f('dx')), id('dx')),
+      row('Obat (tx)', ta(id('tx'), e.tx, 'Tempel resep dari EMR, satu obat per baris, mis.\nAMLODIPINE 5 MG (30.00 TAB) SIGNA : 1DD1', v => { e.tx = v; }, f('tx')), id('tx')));
   }
 
   /* ---------- Riwayat obstetri & ginekologi (perempuan) ---------- */
@@ -4150,6 +4204,30 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (og.dismen != null) mn.push({ t: 'dismenore (' + (og.dismen ? '+' : '-') + ')', abn: og.dismen === 1 });
     return ob.length || mn.length ? { ob: ob, mn: mn } : null;
   }
+  /* Riwayat poli: "riw. poli <poli> <DPJP> - <tanggal>", lalu "dx:" satu baris dan "tx:" satu obat per baris.
+     Huruf kecil semua, kecuali nama DPJP (ditulis apa adanya), nama bulan, dan kode sediaan lepas lambat (POLI_UP). */
+  const poliLow = s => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  // Diagnosis: tiap baris (enter) jadi koma; tanda daftar di depan baris dan koma/titik di ujung baris dibuang
+  function poliDx(text) {
+    return splitLines(text).map(l => poliLow(l).replace(/^(?:[-•*·]+|\d+[.)])\s*/, '').replace(/[\s,;.]+$/, '')).filter(Boolean).join(', ');
+  }
+  // Obat: buang isi tanda kurung (mis. jumlah "(30.00 TAB)") dan kata "signa :"; tanda "- " di depan baris tetap
+  function poliTxLine(l) {
+    let s = poliLow(l);
+    for (let i = 0; i < 4 && /\([^()]*\)/.test(s); i++) s = s.replace(/\([^()]*\)/g, ' ');
+    s = s.replace(/\bsigna\b\s*:?/g, ' ').replace(/\s+([,;])/g, '$1').replace(/\s+/g, ' ').replace(/^[\s,;]+|[\s,;]+$/g, '');
+    return /[a-z0-9]/.test(s) ? s.replace(POLI_UP, m => m.toUpperCase()) : '';
+  }
+  const poliTx = text => splitLines(text).map(poliTxLine).filter(Boolean);
+  function poliLines(e) {
+    const nama = poliLow(e.nama).replace(/^poli(?:klinik)?\b\.?\s*/, ''), dpjp = clean(e.dpjp).replace(/\s+/g, ' ');
+    const d = parseISO(e.tgl), dx = poliDx(e.dx), tx = poliTx(e.tx);
+    if (!nama && !dpjp && !d && !dx && !tx.length) return [];
+    const out = ['riw. poli' + (nama ? ' ' + nama : '') + (dpjp ? ' ' + dpjp : '') + (d ? ' - ' + tglText(d) : '')];
+    if (dx) out.push('dx:', dx);
+    if (tx.length) out.push('tx:');
+    return out.concat(tx);
+  }
   // KU & kesadaran satu set TTV
   function kuBits(o) {
     const bits = [];
@@ -4464,6 +4542,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       const og = obgParts();
       if (og) sec('Riw. Obstetris dan ginekologi', null, (og.ob.length ? [joinBits(og.ob)] : []).concat(og.mn.length ? [joinBits(og.mn, 'Menstruasi: ')] : []));
       sec('Riw. Penyakit keluarga', null, one('keluarga'));
+      // Riwayat poli paling bawah, satu blok per kunjungan
+      state.rwPoli.forEach(e => { const ls = poliLines(e); if (ls.length) { ls.forEach(x => add(x)); blank(); } });
     } else {
       if (clean(s.hari)) add('Perawatan hari ke-' + clean(s.hari));
       splitLines(s.fu).forEach(x => add(x));
