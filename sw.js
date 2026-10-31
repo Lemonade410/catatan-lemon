@@ -1,6 +1,6 @@
 /* Catatan Lemon: simpan file aplikasi di perangkat supaya tetap bisa dibuka tanpa sinyal.
    Hanya file aplikasi & materi edukasi yang disimpan; isian pasien tidak pernah lewat sini. */
-const VERSI = 'cl-2026-11-01a';
+const VERSI = 'cl-2026-11-01b';
 const INTI = [
   './', './index.html', './manifest.webmanifest',
   './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png',
