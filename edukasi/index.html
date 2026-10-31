@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f48fb1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#3a1a28" media="(prefers-color-scheme: dark)">
+<meta name="robots" content="noindex, nofollow">
+<title>Edukasi Pasien</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --skala: 1;
+  --bg:#f5f7f6; --kartu:#ffffff; --teks:#1b2420; --teks2:#47544e; --teks3:#66736d;
+  --garis:#dde4e0; --garis2:#c3cec8;
+  --utama:#c2185b; --utama-hover:#ad1457; --utama-teks:#ffffff; --utama-muda:#fce4ec; --utama-tua:#880e4f;
+  --pita:#f48fb1; --pita-teks:#121211; --stabilo:#ffe033;
+  --bahaya:#9b2626; --bahaya-bg:#fcebeb; --bahaya-garis:#efb4b4;
+  --awas-bg:#faeeda; --awas-teks:#5e3505; --awas-garis:#efcf96;
+  --fokus:#c2185b;
+  --r:12px; --r-kecil:8px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121614; --kartu:#1a1f1d; --teks:#e7eeea; --teks2:#b5c2bc; --teks3:#93a19a;
+    --garis:#2b3330; --garis2:#3d4843;
+    --utama:#f48fb1; --utama-hover:#f8bbd0; --utama-teks:#3a0d20; --utama-muda:#3a1a28; --utama-tua:#f8bbd0;
+    --pita:#3a1a28; --pita-teks:#fbe3ec;
+    --bahaya:#f7c1c1; --bahaya-bg:#361718; --bahaya-garis:#6e2c2c;
+    --awas-bg:#36280d; --awas-teks:#f8cf85; --awas-garis:#6b4e17;
+    --fokus:#f48fb1;
+  }
+}
+*{box-sizing:border-box}
+html{font-size:calc(100% * var(--skala));-webkit-text-size-adjust:100%;touch-action:manipulation}
+body{margin:0;background:var(--bg);color:var(--teks);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;line-height:1.6;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,h4{line-height:1.3;text-wrap:balance;margin:0}
+p,ul,ol{margin:0 0 .75em}
+ul,ol{padding-left:1.4em}
+li{margin-bottom:.35em}
+li>ul,li>ol{margin-top:.35em}
+a{color:var(--utama-tua)}
+:focus-visible{outline:3px solid var(--fokus);outline-offset:2px;border-radius:4px}
+button{font:inherit;color:inherit;cursor:pointer}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.loncat{position:absolute;left:8px;top:-60px;background:var(--kartu);padding:8px 12px;border-radius:var(--r-kecil);z-index:30}
+.loncat:focus{top:8px}
+.wadah{max-width:44rem;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left)) 0 max(16px,env(safe-area-inset-right))}
+.tombol{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 16px;border-radius:var(--r-kecil);border:1px solid var(--garis2);background:var(--kartu);text-decoration:none;color:var(--teks);font-size:.95rem;transition:background-color .15s,border-color .15s}
+.tombol:hover{border-color:var(--teks3)}
+.tombol.utama{background:var(--utama);border-color:var(--utama);color:var(--utama-teks);font-weight:600}
+.tombol.utama:hover{background:var(--utama-hover);border-color:var(--utama-hover)}
+.tombol svg{width:18px;height:18px;flex:none}
+.kepala{border-bottom:3px solid var(--stabilo);background:var(--pita);color:var(--pita-teks);padding:14px 0}
+.situs{font-weight:700;margin:0;color:var(--pita-teks)}
+.penyusun{margin:0;font-size:.85rem;color:var(--pita-teks);opacity:.85}
+.awas{background:var(--awas-bg);color:var(--awas-teks);border:1px solid var(--awas-garis);border-radius:var(--r-kecil);padding:10px 12px;font-size:.9rem}
+
+/* ---------- mode pasien ---------- */
+.sapaan{font-size:1.5rem;margin:1.25rem 0 .75rem}
+.daftar-isi{background:var(--kartu);border:1px solid var(--garis);border-radius:var(--r);padding:12px 16px;margin-bottom:12px}
+.daftar-isi p{margin:0 0 4px;font-size:.85rem;color:var(--teks3)}
+.daftar-isi ol{margin:0}
+.daftar-isi a{display:inline-block;padding:6px 0;font-weight:500}
+.alat{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 1.25rem}
+.alat .tombol{min-width:44px;padding:8px 12px}
+.topik{background:var(--kartu);border:1px solid var(--garis);border-radius:var(--r);padding:20px 18px 12px;margin-bottom:16px;scroll-margin-top:16px}
+.topik>h2{font-size:1.4rem;margin-bottom:6px}
+.label{display:inline-block;font-size:.8rem;background:var(--utama-muda);color:var(--utama-tua);padding:2px 10px;border-radius:999px;margin-bottom:10px}
+.pengantar blockquote{margin:6px 0 14px;padding:12px 14px;background:var(--utama-muda);color:var(--teks);border-radius:var(--r-kecil);font-size:1.05rem}
+.pengantar blockquote p:last-child{margin:0}
+.bagian{border-top:1px solid var(--garis)}
+.bagian summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:10px 2px}
+.bagian summary::-webkit-details-marker{display:none}
+.bagian summary h3{font-size:1.08rem;font-weight:600}
+.bagian summary::after{content:"";flex:none;width:10px;height:10px;border-right:2px solid var(--teks3);border-bottom:2px solid var(--teks3);transform:rotate(45deg);margin:0 6px 4px 0;transition:transform .2s}
+.bagian[open] summary::after{transform:rotate(-135deg);margin-bottom:-4px}
+.isi-bagian{padding:0 2px 10px}
+.isi-bagian h4{font-size:1rem;margin:12px 0 6px}
+.bahaya{background:var(--bahaya-bg);border:2px solid var(--bahaya-garis);border-radius:var(--r-kecil);padding:14px 14px 4px;margin:12px 0}
+.bahaya h3{display:flex;align-items:center;gap:8px;color:var(--bahaya);font-size:1.1rem;margin-bottom:8px}
+.bahaya h3 svg{width:22px;height:22px;flex:none}
+.bahaya li::marker{color:var(--bahaya)}
+.kaki{color:var(--teks3);font-size:.85rem;padding:8px 0 40px;text-align:center}
+.kosong{text-align:center;padding:48px 0}
+.kosong h1{font-size:1.4rem;margin-bottom:8px}
+.cetak-qr{display:none}
+.tabel{overflow-x:auto;margin-bottom:.75em}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border:1px solid var(--garis);padding:6px 8px;text-align:left;vertical-align:top}
+
+/* ---------- mode dokter ---------- */
+.mode-dokter{padding-bottom:120px}
+.mode-dokter h1{font-size:1.35rem;margin:1.25rem 0 4px}
+.sub{color:var(--teks2);margin-bottom:12px}
+.cari{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0}
+.cari input{width:100%;min-height:48px;font-size:16px;padding:10px 14px;border-radius:var(--r-kecil);border:1px solid var(--garis2);background:var(--kartu);color:var(--teks)}
+.cari input:focus-visible{outline:3px solid var(--fokus);outline-offset:0}
+.kelompok{margin-top:14px}
+.kelompok h2{font-size:1rem;color:var(--teks2);margin-bottom:8px;display:flex;gap:8px;align-items:baseline}
+.jml{font-size:.85rem;color:var(--teks3);font-weight:400;font-variant-numeric:tabular-nums}
+.pilihan{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,17rem),1fr));gap:8px}
+.pilihan li{margin:0;min-width:0}
+.opsi{width:100%;height:100%;text-align:left;display:grid;grid-template-columns:24px minmax(0,1fr);gap:4px 10px;align-items:start;padding:12px;border-radius:var(--r-kecil);border:1px solid var(--garis);background:var(--kartu);transition:border-color .15s,background-color .15s}
+.opsi:hover{border-color:var(--garis2)}
+.opsi[aria-pressed="true"]{border-color:var(--utama);background:var(--utama-muda)}
+.centang{grid-row:1/span 3;width:22px;height:22px;margin-top:1px;border:2px solid var(--garis2);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.centang svg{width:14px;height:14px;opacity:0}
+.opsi[aria-pressed="true"] .centang{background:var(--utama);border-color:var(--utama);color:var(--utama-teks)}
+.opsi[aria-pressed="true"] .centang svg{opacity:1}
+.opsi-judul{font-weight:600;overflow-wrap:anywhere}
+.opsi-ringkas{font-size:.85rem;color:var(--teks2);overflow-wrap:anywhere}
+.opsi-tag{display:flex;flex-wrap:wrap;gap:6px}
+.opsi-tag span{font-size:.75rem;padding:1px 8px;border-radius:999px;background:var(--bg);color:var(--teks3);border:1px solid var(--garis)}
+.opsi-tag .draf{background:var(--awas-bg);color:var(--awas-teks);border-color:var(--awas-garis)}
+.tak-ada{color:var(--teks2);padding:24px 0;text-align:center}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--kartu);border-top:1px solid var(--garis);padding:10px 0 max(10px,env(safe-area-inset-bottom))}
+.bar .wadah{display:flex;align-items:center;gap:8px}
+.bar-info{flex:1;min-width:0;font-size:.9rem;color:var(--teks2)}
+.bar-info strong{color:var(--teks);font-variant-numeric:tabular-nums}
+.bar-daftar{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.8rem;color:var(--teks3)}
+.pesan-bar{display:block;font-size:.85rem;font-weight:600;color:var(--bahaya)}
+.pesan-bar:empty{display:none}
+dialog{border:none;border-radius:var(--r);padding:0;width:min(28rem,calc(100vw - 24px));max-height:calc(100dvh - 24px);background:var(--kartu);color:var(--teks);overscroll-behavior:contain}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.dlg{padding:18px}
+.dlg-kepala{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.dlg-kepala h2{font-size:1.15rem}
+.tutup{width:44px;height:44px;border-radius:var(--r-kecil);border:1px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center}
+.tutup:hover{background:var(--bg)}
+.tutup svg{width:20px;height:20px}
+.qr{background:#fff;border-radius:var(--r-kecil);padding:8px;width:min(100%,300px);margin:0 auto 12px}
+.qr svg{display:block;width:100%;height:auto}
+.dlg ol{font-size:.95rem;margin-bottom:12px}
+.dlg label{display:block;font-size:.85rem;color:var(--teks2);margin-bottom:4px}
+.dlg input{width:100%;font-size:16px;min-height:44px;padding:8px 10px;border-radius:var(--r-kecil);border:1px solid var(--garis2);background:var(--bg);color:var(--teks);font-family:ui-monospace,Menlo,Consolas,monospace}
+.dlg-aksi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.status{min-height:1.4em;font-size:.85rem;color:var(--utama-tua);margin:8px 0 0;text-align:center}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media print{
+  html{font-size:11pt}
+  body{background:#fff;color:#000}
+  .kepala{border:none;padding:0}
+  .alat,.loncat,.daftar-isi,.bar{display:none!important}
+  .topik{border:none;padding:0;margin:0 0 14pt}
+  .topik>h2{border-bottom:1.5pt solid #000;padding-bottom:3pt}
+  .bagian{border:none}
+  .bagian summary{min-height:0;padding:6pt 0 2pt}
+  .bagian summary::after{display:none}
+  .pengantar blockquote{background:none;border-left:3pt solid #000;border-radius:0}
+  .bahaya{background:none;border:1.5pt solid #000;break-inside:avoid}
+  .bahaya h3{color:#000}
+  .label{background:none;border:1pt solid #000;color:#000}
+  .cetak-qr{display:flex;gap:14pt;align-items:center;border:1pt solid #000;padding:8pt;margin:8pt 0 14pt;break-inside:avoid}
+  .cetak-qr .qr{width:3.2cm;margin:0;padding:0}
+  .cetak-qr p{margin:0}
+  .sapaan{margin-top:6pt}
+}
+</style>
+</head>
+<body>
+<a class="loncat" href="#isi">Lompat ke isi</a>
+<div id="app"><noscript><p class="wadah">Halaman ini butuh JavaScript. Silakan buka di browser HP biasa (Chrome atau Safari).</p></noscript></div>
+
+<script src="lib/qrcode.js"></script>
+<script src="materi.js"></script>
+<script>
+/* ============================================================
+   PENGATURAN — ubah teks di bawah sesuai kebutuhan
+   ============================================================ */
+const SITUS = {
+  nama: 'Edukasi Pasien',
+  penyusun: '',   // contoh: 'Disusun oleh dr. Aubert'. Kosongkan kalau tidak perlu
+  catatan: 'Materi ini membantu Bapak/Ibu memahami kondisi dan perawatan. Materi ini bukan pengganti pemeriksaan dan nasihat langsung dari dokter.'
+};
+const URUTAN_KATEGORI = ['penyakit', 'tindakan'];
+const NAMA_KATEGORI = { penyakit: 'Penyakit', tindakan: 'Tindakan' };
+/* ============================================================ */
+
+const IKON = {
+  bahaya: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>',
+  centang: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>',
+  tutup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  salin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>',
+  lihat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  cetak: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>'
+};
+
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function simpan(k, v) { try { localStorage.setItem('edukasi.' + k, JSON.stringify(v)); } catch (e) {} }
+function ambil(k, d) { try { const v = localStorage.getItem('edukasi.' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
+
+/* ---------- pembaca markdown sederhana ---------- */
+function inline(s) {
+  s = esc(s);
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?![*\w])/g, '$1<em>$2</em>');
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return s;
+}
+const RE_ITEM = /^(\s*)([-*]|\d+\.)\s+(.*)$/;
+const lebarIndent = l => l.match(/^\s*/)[0].replace(/\t/g, '    ').length;
+function bacaList(lines, i) {
+  const dasar = lebarIndent(lines[i]);
+  const berurut = /^\s*\d+\./.test(lines[i]);
+  const item = [];
+  while (i < lines.length) {
+    const l = lines[i];
+    if (!l.trim()) {
+      let j = i + 1; while (j < lines.length && !lines[j].trim()) j++;
+      if (j < lines.length && RE_ITEM.test(lines[j]) && lebarIndent(lines[j]) >= dasar) { i = j; continue; }
+      break;
+    }
+    const m = l.match(RE_ITEM), ind = lebarIndent(l);
+    if (m && ind === dasar) { item.push({ teks: m[3], sub: '' }); i++; continue; }
+    if (m && ind > dasar && item.length) { const r = bacaList(lines, i); item[item.length - 1].sub += r.html; i = r.i; continue; }
+    if (!m && ind > dasar && item.length) { item[item.length - 1].teks += ' ' + l.trim(); i++; continue; }
+    break;
+  }
+  const tag = berurut ? 'ol' : 'ul';
+  return { html: `<${tag}>` + item.map(x => `<li>${inline(x.teks)}${x.sub}</li>`).join('') + `</${tag}>`, i };
+}
+function blok(md) {
+  const lines = md.split(/\r?\n/);
+  let out = '', i = 0, m;
+  while (i < lines.length) {
+    const l = lines[i];
+    if (!l.trim()) { i++; continue; }
+    if ((m = l.match(/^#{1,6}\s+(.*)/))) { out += `<h4>${inline(m[1])}</h4>`; i++; continue; }
+    if (/^\s*>/.test(l)) {
+      const buf = [];
+      while (i < lines.length && /^\s*>/.test(lines[i])) { buf.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
+      out += `<blockquote>${blok(buf.join('\n'))}</blockquote>`; continue;
+    }
+    if (/^\s*\|/.test(l)) {
+      const baris = [];
+      while (i < lines.length && /^\s*\|/.test(lines[i])) { baris.push(lines[i]); i++; }
+      const sel = r => r.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      const isi = baris.slice(1).filter(r => !/^\s*\|?\s*:?-{2,}/.test(r));
+      out += `<div class="tabel"><table><thead><tr>${sel(baris[0]).map(c => `<th>${inline(c)}</th>`).join('')}</tr></thead><tbody>` +
+        isi.map(r => `<tr>${sel(r).map(c => `<td>${inline(c)}</td>`).join('')}</tr>`).join('') + '</tbody></table></div>';
+      continue;
+    }
+    if (RE_ITEM.test(l)) { const r = bacaList(lines, i); out += r.html; i = r.i; continue; }
+    const buf = [];
+    while (i < lines.length && lines[i].trim() && !/^(#{1,6}\s|\s*>|\s*\|)/.test(lines[i]) && !RE_ITEM.test(lines[i])) { buf.push(lines[i].trim()); i++; }
+    out += `<p>${inline(buf.join(' '))}</p>`;
+  }
+  return out;
+}
+function bacaTopik(src, path) {
+  const meta = {};
+  let body = src.replace(/^﻿/, '');
+  const fm = body.match(/^---\r?\n([\s\S]*?)\r?\n---[^\n]*\n?/);
+  if (fm) {
+    fm[1].split(/\r?\n/).forEach(l => {
+      const k = l.indexOf(':');
+      if (k > 0) meta[l.slice(0, k).trim().toLowerCase()] = l.slice(k + 1).replace(/\s+#.*$/, '').trim();
+    });
+    body = body.slice(fm[0].length);
+  }
+  body = body.replace(/<!--[\s\S]*?-->/g, '');
+  const intro = [], bagian = [];
+  let kini = null, m;
+  for (const l of body.split(/\r?\n/)) {
+    if ((m = l.match(/^#\s+(.*)/))) { if (!meta.judul) meta.judul = m[1].trim(); continue; }
+    if ((m = l.match(/^##\s+(.*)/))) { kini = { judul: m[1].trim(), lines: [] }; bagian.push(kini); continue; }
+    (kini ? kini.lines : intro).push(l);
+  }
+  const id = (meta.id || '').toLowerCase();
+  return {
+    id, path,
+    judul: meta.judul || id,
+    kategori: (meta.kategori || 'lainnya').toLowerCase(),
+    untuk: (meta.untuk || '').toLowerCase(),
+    ringkas: meta.ringkas || '',
+    kata: meta.kata || '',
+    status: (meta.status || '').toLowerCase(),
+    intro: blok(intro.join('\n')),
+    bagian: bagian.map(b => ({ judul: b.judul, bahaya: /^segera\b/i.test(b.judul), html: blok(b.lines.join('\n')) }))
+  };
+}
+
+/* ---------- data ---------- */
+const TOPIK = (window.MATERI || []).map(r => bacaTopik(r.md, r.path)).filter(t => /^[a-z0-9-]+$/.test(t.id));
+const PETA = new Map(TOPIK.map(t => [t.id, t]));
+const alamatDasar = () => location.href.split(/[?#]/)[0];
+const linkPasien = ids => alamatDasar() + '?t=' + ids.join(',');
+
+function buatQR(teks, judul) {
+  const q = qrcode(0, 'M');
+  q.addData(teks);
+  q.make();
+  return q.createSvgTag({ cellSize: 4, margin: 16, scalable: true, title: judul || 'Kode QR' });
+}
+
+/* ============================================================
+   MODE PASIEN
+   ============================================================ */
+function artikel(t) {
+  let pertamaDibuka = false;
+  const isi = t.bagian.map((b, k) => {
+    const idj = `b-${t.id}-${k}`;
+    if (b.bahaya) return `<section class="bahaya" aria-labelledby="${idj}"><h3 id="${idj}">${IKON.bahaya}${inline(b.judul)}</h3>${b.html}</section>`;
+    const buka = !pertamaDibuka; pertamaDibuka = true;
+    return `<details class="bagian"${buka ? ' open' : ''}><summary><h3 id="${idj}">${inline(b.judul)}</h3></summary><div class="isi-bagian">${b.html}</div></details>`;
+  }).join('');
+  return `<article class="topik" id="t-${esc(t.id)}" aria-labelledby="j-${esc(t.id)}">
+    <h2 id="j-${esc(t.id)}">${esc(t.judul)}</h2>
+    ${t.untuk === 'keluarga' ? '<p class="label">Untuk keluarga pasien</p>' : ''}
+    <div class="pengantar">${t.intro}</div>${isi}</article>`;
+}
+
+function modePasien(ids, cetakOtomatis) {
+  document.body.classList.add('mode-pasien');
+  const ada = [], hilang = [];
+  [...new Set(ids)].forEach(id => PETA.has(id) ? ada.push(PETA.get(id)) : hilang.push(id));
+  document.title = ada.length ? ada.map(t => t.judul).join(', ') + ' · ' + SITUS.nama : SITUS.nama;
+
+  let h = `<header class="kepala"><div class="wadah"><p class="situs">${esc(SITUS.nama)}</p>${SITUS.penyusun ? `<p class="penyusun">${esc(SITUS.penyusun)}</p>` : ''}</div></header><main id="isi" class="wadah">`;
+  if (!ada.length) {
+    h += `<div class="kosong"><h1>Materi tidak ditemukan</h1><p>Link ini mungkin terpotong atau salah ketik. Silakan minta QR atau link baru ke dokter atau perawat.</p></div></main>`;
+    $('#app').innerHTML = h; return;
+  }
+  const bersih = linkPasien(ada.map(t => t.id));
+  h += `<div class="cetak-qr"><div class="qr">${buatQR(bersih, 'Kode QR materi')}</div><div><p><strong>Scan kode ini dengan kamera HP</strong> untuk membuka materi yang sama.</p><p>${ada.map(t => esc(t.judul)).join(' · ')}</p></div></div>`;
+  h += `<h1 class="sapaan">Materi untuk Bapak/Ibu</h1>`;
+  if (ada.length > 1) h += `<nav class="daftar-isi" aria-label="Daftar materi"><p>Ada ${ada.length} materi. Ketuk untuk langsung ke materinya:</p><ol>${ada.map(t => `<li><a href="#t-${esc(t.id)}">${esc(t.judul)}</a></li>`).join('')}</ol></nav>`;
+  h += `<div class="alat" role="group" aria-label="Pengaturan tampilan">
+      <button type="button" class="tombol" data-aksi="kecil" aria-label="Perkecil huruf">A−</button>
+      <button type="button" class="tombol" data-aksi="besar" aria-label="Perbesar huruf">A+</button>
+      <button type="button" class="tombol" data-aksi="buka" aria-pressed="false">Buka semua</button>
+      <button type="button" class="tombol" data-aksi="cetak">${IKON.cetak}Cetak</button></div>`;
+  if (hilang.length) h += `<p class="awas" role="note">${hilang.length} materi di link ini tidak ditemukan. Materi lain tetap bisa dibaca di bawah.</p>`;
+  h += ada.map(artikel).join('');
+  h += `<footer class="kaki"><p>${esc(SITUS.catatan)}</p></footer></main>`;
+  $('#app').innerHTML = h;
+
+  const SKALA = [1, 1.125, 1.25, 1.4];
+  let si = Math.min(Math.max(ambil('skala', 0), 0), SKALA.length - 1);
+  const terapkan = () => document.documentElement.style.setProperty('--skala', SKALA[si]);
+  terapkan();
+
+  const tombolBuka = $('[data-aksi="buka"]');
+  const semuaDetail = () => $$('details.bagian');
+  const segarkanTombolBuka = () => {
+    const semuaTerbuka = semuaDetail().every(d => d.open);
+    tombolBuka.textContent = semuaTerbuka ? 'Tutup semua' : 'Buka semua';
+    tombolBuka.setAttribute('aria-pressed', String(semuaTerbuka));
+  };
+  semuaDetail().forEach(d => d.addEventListener('toggle', segarkanTombolBuka));
+  segarkanTombolBuka();
+
+  $('.alat').addEventListener('click', e => {
+    const b = e.target.closest('[data-aksi]'); if (!b) return;
+    const a = b.dataset.aksi;
+    if (a === 'besar' && si < SKALA.length - 1) { si++; terapkan(); simpan('skala', si); }
+    if (a === 'kecil' && si > 0) { si--; terapkan(); simpan('skala', si); }
+    if (a === 'buka') { const buka = !semuaDetail().every(d => d.open); semuaDetail().forEach(d => d.open = buka); segarkanTombolBuka(); }
+    if (a === 'cetak') window.print();
+  });
+
+  let sebelumCetak = [];
+  addEventListener('beforeprint', () => { sebelumCetak = semuaDetail().map(d => d.open); semuaDetail().forEach(d => d.open = true); });
+  addEventListener('afterprint', () => { semuaDetail().forEach((d, k) => d.open = sebelumCetak[k] ?? d.open); segarkanTombolBuka(); });
+
+  if (cetakOtomatis) setTimeout(() => window.print(), 500);
+}
+
+/* ---------- mulai ---------- */
+const P = new URLSearchParams(location.search);
+if (P.has('t')) modePasien((P.get('t') || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean), P.has('cetak'));
+else halamanKosong();
+function halamanKosong() {
+  document.body.classList.add('mode-pasien');
+  $('#app').innerHTML = `<header class="kepala"><div class="wadah"><p class="situs">${esc(SITUS.nama)}</p></div></header>
+    <main id="isi" class="wadah"><div class="kosong"><h1>Scan QR dari dokter atau perawat</h1><p>Halaman ini menampilkan materi edukasi yang dipilihkan khusus untuk Bapak/Ibu. Silakan scan kode QR yang ditunjukkan petugas, atau buka link yang dikirimkan.</p></div></main>`;
+}
+</script>
+</body>
+</html>

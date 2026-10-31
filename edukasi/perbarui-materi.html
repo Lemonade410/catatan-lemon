@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Perbarui materi</title>
+<style>
+:root{color-scheme:light dark;--bg:#f5f7f6;--kartu:#fff;--teks:#1b2420;--teks2:#47544e;--garis:#dde4e0;--utama:#0f6e56;--utama-teks:#fff;--ok:#0f6e56;--salah:#9b2626;--awas:#7a4a06}
+@media (prefers-color-scheme:dark){:root{--bg:#121614;--kartu:#1a1f1d;--teks:#e7eeea;--teks2:#b5c2bc;--garis:#2b3330;--utama:#5dcaa5;--utama-teks:#04342c;--ok:#5dcaa5;--salah:#f7c1c1;--awas:#f8cf85}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--teks);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6}
+main{max-width:44rem;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.4rem;margin:0 0 8px}
+ol{padding-left:1.3em}
+.kartu{background:var(--kartu);border:1px solid var(--garis);border-radius:12px;padding:16px;margin:16px 0}
+label.tombol,button{display:inline-flex;align-items:center;min-height:44px;padding:8px 16px;border-radius:8px;border:1px solid var(--utama);background:var(--utama);color:var(--utama-teks);font:inherit;font-weight:600;cursor:pointer}
+input[type=file]{position:absolute;opacity:0;width:1px;height:1px}
+label.tombol:focus-within,button:focus-visible{outline:3px solid #1d9e75;outline-offset:2px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{border-bottom:1px solid var(--garis);padding:6px 4px;text-align:left;vertical-align:top}
+.ok{color:var(--ok)}.salah{color:var(--salah)}.awas{color:var(--awas)}
+code{font-family:ui-monospace,Consolas,monospace}
+</style>
+</head>
+<body>
+<main>
+  <h1>Perbarui materi</h1>
+  <p>Pakai halaman ini setiap kali kamu mengubah, menambah, atau menghapus file materi (<code>.md</code>).</p>
+  <ol>
+    <li>Klik tombol di bawah, lalu pilih folder <strong>edukasi</strong>.</li>
+    <li>Periksa daftar materi dan peringatan yang muncul.</li>
+    <li>Klik <strong>Unduh materi.js</strong>, lalu taruh file itu di folder <strong>edukasi</strong> untuk menggantikan yang lama.</li>
+    <li>Unggah ulang folder ke hosting.</li>
+  </ol>
+  <label class="tombol">Pilih folder edukasi<input type="file" id="folder" webkitdirectory multiple></label>
+  <div id="hasil" aria-live="polite"></div>
+</main>
+<script>
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function meta(src){
+  const m = src.replace(/^﻿/,'').match(/^---\r?\n([\s\S]*?)\r?\n---/); const o = {};
+  if (!m) return null;
+  m[1].split(/\r?\n/).forEach(l => { const k = l.indexOf(':'); if (k > 0) o[l.slice(0,k).trim().toLowerCase()] = l.slice(k+1).replace(/\s+#.*$/,'').trim(); });
+  return o;
+}
+document.getElementById('folder').addEventListener('change', async e => {
+  const files = [...e.target.files].filter(f => /\.md$/i.test(f.name) && !/^readme\.md$/i.test(f.name));
+  const out = document.getElementById('hasil');
+  if (!files.length) { out.innerHTML = '<p class="salah">Tidak ada file .md di folder itu. Pastikan yang dipilih folder <strong>edukasi</strong>.</p>'; return; }
+  const data = [], baris = [], idDipakai = {};
+  let galat = 0;
+  for (const f of files.sort((a,b) => a.webkitRelativePath.localeCompare(b.webkitRelativePath))) {
+    const path = f.webkitRelativePath.split('/').slice(1).join('/') || f.name;
+    const md = await f.text();
+    const m = meta(md);
+    const masalah = [];
+    if (!m) masalah.push('tidak ada frontmatter (bagian --- di atas)');
+    else {
+      if (!m.id) masalah.push('id kosong');
+      else if (!/^[a-z0-9-]+$/.test(m.id)) masalah.push('id hanya boleh huruf kecil, angka, dan tanda -');
+      else if (idDipakai[m.id]) masalah.push('id sama dengan ' + idDipakai[m.id]);
+      if (!m.judul) masalah.push('judul kosong');
+      if (m.kategori && !['penyakit','tindakan'].includes(m.kategori.toLowerCase())) masalah.push('kategori baru: "' + m.kategori + '" (tetap jalan, tampil sebagai kelompok tersendiri)');
+    }
+    const fatal = masalah.some(x => !x.startsWith('kategori baru'));
+    if (fatal) galat++; else { data.push({ path, md }); idDipakai[m.id] = path; }
+    baris.push(`<tr><td><code>${esc(path)}</code></td><td>${esc(m?.id || '')}</td><td>${esc(m?.status || '')}</td><td class="${fatal ? 'salah' : masalah.length ? 'awas' : 'ok'}">${masalah.length ? esc(masalah.join('; ')) + (fatal ? ' — dilewati' : '') : 'OK'}</td></tr>`);
+  }
+  const isi = '/* Dibuat otomatis oleh perbarui-materi.html. Jangan diedit manual. */\nwindow.MATERI = ' + JSON.stringify(data, null, 1) + ';\n';
+  const url = URL.createObjectURL(new Blob([isi], { type: 'text/javascript' }));
+  out.innerHTML = `<div class="kartu"><p><strong>${data.length}</strong> materi siap${galat ? `, <span class="salah">${galat} dilewati karena bermasalah</span>` : ''}.</p>
+    <a href="${url}" download="materi.js"><button type="button" tabindex="-1">Unduh materi.js</button></a></div>
+    <div class="kartu"><table><thead><tr><th>File</th><th>id</th><th>Status</th><th>Cek</th></tr></thead><tbody>${baris.join('')}</tbody></table></div>`;
+});
+</script>
+</body>
+</html>
