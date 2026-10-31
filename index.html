@@ -105,8 +105,10 @@ h1,h2,h3,p{margin:0}
 .home-btn--cppt{background:var(--hl-tint);border-color:var(--hl-edge)}
 .home-btn--cppt .hb-ico{background:var(--hl);color:var(--hl-ink)}
 .home-btn--bbl{background:var(--surface)}
+.home-btn--alat{background:var(--surface);border-style:dashed}
 .home-btn--edu{background:var(--pk-soft);border-color:var(--pk-edge)}
 .home-btn--edu .hb-ico{background:var(--pk);color:var(--pk-ink)}
+.alat-off{display:none!important}
 .home-foot{padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
 .lock-back{justify-self:start;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px 0 8px;border:1.5px solid var(--rule);border-radius:8px;background:transparent;color:var(--ink-2);font-size:14px;font-weight:700}
 .lock-back:hover{border-color:var(--ink);color:var(--ink)}
@@ -704,6 +706,20 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 .src-item p{max-width:72ch;font-size:13.5px;color:var(--ink-2)}
 .src-item ol{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--muted)}
 
+/* ===== Favorit A/P, tempel lab, Alat ===== */
+.fav{margin-top:10px}
+.fav-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.fav-chip{max-width:100%;white-space:normal;text-align:left;border-style:dashed}
+.fav-chip:hover{border-style:solid}
+.fav-ta{font-size:14px}
+.labp-set{margin-top:10px;padding:10px 12px;border:1.5px solid var(--rule);border-radius:10px;background:var(--surface)}
+.labp-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:8px}
+.labp-top .x{margin-left:auto}
+.labp-raw{font-family:var(--f-mono);font-size:12.5px;white-space:pre;overflow:auto!important;tab-size:4;max-height:132px;min-height:66px}
+.labp-info{display:block;margin-top:6px}
+.alat-link{margin-top:12px}
+#secAlat .fold:first-child{margin-top:0}
+
 /* ===== Panel hasil (HP): lembar konsul jadi laci dari bawah ===== */
 @media (max-width:999px){
   .sheet-wrap{position:fixed;left:0;right:0;bottom:0;z-index:24;max-height:calc(88dvh - env(safe-area-inset-top,0px));overflow:auto;overscroll-behavior:contain;padding:10px var(--gutter) calc(84px + env(safe-area-inset-bottom,0px));background:var(--ground);border-top:3px solid var(--pk);border-radius:18px 18px 0 0;box-shadow:0 -18px 40px -24px rgba(0,0,0,.55);transform:translateY(105%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s linear .26s}
@@ -749,7 +765,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     <button type="button" class="home-btn home-btn--cppt" data-go="cppt"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8l3 3v13H5V4z"/><path d="M9 10h6M9 14h6M9 18h3"/></svg></span><span><span class="hb-t">CPPT</span><span class="hb-s">Dewasa dan anak, konsul WA</span></span><span class="hb-go" aria-hidden="true">›</span></button>
     <button type="button" class="home-btn home-btn--bbl" data-go="bbl"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><path d="M10.5 8h.01M13.5 8h.01"/></svg></span><span><span class="hb-t">Lapor bayi</span><span class="hb-s">Bayi baru lahir untuk DPJP</span></span><span class="hb-go" aria-hidden="true">›</span></button>
     <button type="button" class="home-btn home-btn--edu" data-go="edu"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg></span><span><span class="hb-t">Edukasi</span><span class="hb-s">Pilih materi, tunjukkan QR ke pasien</span></span><span class="hb-go" aria-hidden="true">›</span></button>
-    <p class="home-foot">Password diminta sekali saat masuk, berlaku untuk ketiga menu sampai 15 menit tidak dipakai.</p>
+    <button type="button" class="home-btn home-btn--alat" data-go="alat"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h3.5"/></svg></span><span><span class="hb-t">Alat</span><span class="hb-s">Skor, eGFR, cairan, status gizi</span></span><span class="hb-go" aria-hidden="true">›</span></button>
+    <p class="home-foot">Password diminta sekali saat masuk, berlaku untuk semua menu sampai 15 menit tidak dipakai.</p>
   </nav>
 </div>
 
@@ -823,14 +840,19 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
       <section class="sec" id="secA" aria-labelledby="hA">
         <h2 class="sec-h"><button type="button" class="sec-tog" data-sec="A" aria-expanded="true" aria-controls="aWrap"><span class="tab" aria-hidden="true">A</span><span class="sec-t" id="hA">Asesmen</span><span class="sec-sum" data-sum="A"></span><span class="chev" aria-hidden="true"></span></button></h2>
-        <div class="sec-body" id="aWrap"><textarea class="in" id="aIn" rows="2" data-fk="a" aria-labelledby="hA" placeholder="Diagnosis kerja dan banding, satu per baris"></textarea></div>
+        <div class="sec-body" id="aWrap"><textarea class="in" id="aIn" rows="2" data-fk="a" aria-labelledby="hA" placeholder="Diagnosis kerja dan banding, satu per baris"></textarea><div class="fav" id="aFav"></div></div>
       </section>
 
       <section class="sec" id="secP" aria-labelledby="hP">
         <h2 class="sec-h"><button type="button" class="sec-tog" data-sec="P" aria-expanded="true" aria-controls="pWrap"><span class="tab" aria-hidden="true">P</span><span class="sec-t" id="hP">Plan</span><span class="sec-sum" data-sum="P"></span><span class="chev" aria-hidden="true"></span></button></h2>
         <div class="sec-body" id="pWrap"><div class="allergy allergy--p" hidden></div>
         <div id="fluidBox"></div>
-        <textarea class="in" id="pIn" rows="3" data-fk="p" aria-labelledby="hP" placeholder="Satu instruksi per baris, mis.&#10;IVFD RL 20 tpm&#10;Cek DL, GDS, elektrolit"></textarea></div>
+        <textarea class="in" id="pIn" rows="3" data-fk="p" aria-labelledby="hP" placeholder="Satu instruksi per baris, mis.&#10;IVFD RL 20 tpm&#10;Cek DL, GDS, elektrolit"></textarea><div class="fav" id="pFav"></div></div>
+      </section>
+
+      <section class="sec" id="secAlat" aria-labelledby="hX" hidden>
+        <div class="sec-head sec-head--card"><span class="tab" aria-hidden="true">✚</span><h2 id="hX">Alat</h2><span class="sec-note">Untuk pasien di tab ini. Skor memakai TTV dan PF yang diisi di CPPT.</span></div>
+        <div class="sec-body"><div id="alatBody"></div></div>
       </section>
 
       <section class="sec" id="secBBL" aria-labelledby="hB" hidden>
@@ -1553,7 +1575,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       tv: [],
       ant: { usia: '', usiaU: 0, bb: '', tb: '', sex: null, idn: '', umur: '' },   // idn = nama/no. RM, umur = teks umur; keduanya ditempel dari ERM untuk baris "atas nama" konsul WA
       ps: { on: false, a: null, aAct: [], cspine: false, b: null, nadi: null, irama: null, bleed: null, bleedK: '', lat: null, jejas: null, jejasK: '' },
-      pf: pf, nl: { on: false, pw: ['', '', '', ''], kesan: '' }, luka: [], lok: '', pen: '', penLab: '', penRad: '', kons: { asal: 0 },   // pw kosong semua = kekuatan motorik tidak dilakukan
+      pf: pf, nl: { on: false, pw: ['', '', '', ''], kesan: '' }, luka: [], lok: '', pen: '', penLab: '', labSets: [], penRad: '', kons: { asal: 0 },   // pw kosong semua = kekuatan motorik tidak dilakukan
       gz: { dob: '', tgl: '', cara: null, lk: '', kkT: '' },
       sc: {
         s2: false, pB: null, pC: null, pR: null, pX: false, deh: false,
@@ -1614,6 +1636,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       ['lok', 'pen', 'a', 'p'].forEach(k => { if (typeof d[k] === 'string') s[k] = d[k]; });
       ['s', 'o', 'ant', 'ps', 'sc', 'amp', 'pat', 'lab', 'fl', 'bbl', 'obg', 'kons', 'gz', 'bb'].forEach(k => mergeShallow(s[k], d[k]));
       ['rwK', 'penLab', 'penRad'].forEach(k => { if (typeof d[k] === 'string') s[k] = d[k]; });
+      if (Array.isArray(d.labSets)) s.labSets = d.labSets.filter(x => x && typeof x.raw === 'string').slice(0, 10).map(x => ({ id: typeof x.id === 'string' ? x.id : uid('L'), jam: String(x.jam || '').slice(0, 24), raw: x.raw.slice(0, 20000) }));
       if (d.nl && typeof d.nl === 'object') {
         s.nl.on = !!d.nl.on;
         if (typeof d.nl.kesan === 'string') s.nl.kesan = d.nl.kesan;
@@ -1848,7 +1871,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   function switchTo(id) {
     db.cur = id; state = curPat().st;
-    if (area === 'cppt' || area === 'bbl') db.lastCur[area] = id; renaming = null; renameNew = false; focusSec = null;
+    if (area) db.lastCur[area === 'bbl' ? 'bbl' : 'cppt'] = id; renaming = null; renameNew = false; focusSec = null;
     syncAP(); refresh(); window.scrollTo(0, 0);
   }
   function closePatient(id) {
@@ -1925,13 +1948,23 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     BLK = {};
     renderTabs();
     // mode ringkas (Dewasa/Anak): hanya bagian S; O, A, P tidak ditampilkan dan tidak ditulis (isiannya tetap tersimpan)
-    const bbl = state.who === 'bbl', onlyS = !bbl && appMode === 'ringkas';
+    const bbl = state.who === 'bbl', onlyS = !bbl && appMode === 'ringkas', alat = area === 'alat' && !bbl;
+    $('#secAlat').hidden = !alat;
+    if (alat) {
+      ['#secS', '#secO', '#secA', '#secP', '#secBBL'].forEach(s => { $(s).hidden = true; });
+      $('#secPt').hidden = false;
+      ['#sBody', '#oBody', '#bblBody', '#fluidBox'].forEach(s => { $(s).textContent = ''; });
+      renderPt(); renderAlat();
+      syncModes(); applySecs(); measureBar(); updateSums();
+      return;
+    }
+    $('#alatBody').textContent = '';
     ['#secPt', '#secS'].forEach(s => { $(s).hidden = bbl; });
     ['#secO', '#secA', '#secP'].forEach(s => { $(s).hidden = bbl || onlyS; });
     $('#secBBL').hidden = !bbl;
     if (bbl) { $('#ptTog').textContent = ''; $('#ptBody').textContent = ''; $('#sBody').textContent = ''; $('#oBody').textContent = ''; $('#fluidBox').textContent = ''; renderBBL(); }
     else if (onlyS) { $('#bblBody').textContent = ''; $('#oBody').textContent = ''; $('#fluidBox').textContent = ''; renderPt(); renderS(); }
-    else { $('#bblBody').textContent = ''; renderPt(); renderS(); renderO(); renderFluid(); }
+    else { $('#bblBody').textContent = ''; $('#fluidBox').textContent = ''; renderPt(); renderS(); renderO(); renderFav('a'); renderFav('p'); }
     syncModes(); applySecs(); measureBar();
     growAll($$('textarea', $(bbl ? '#bblBody' : '.form')).filter(t => t.id !== 'aIn' && t.id !== 'pIn' && t.offsetParent));
   }
@@ -1945,10 +1978,174 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   function autoW(el) { const n = Math.max((el.value || '').length, (el.placeholder || '').length, 4); el.style.width = Math.min(n + 2, 48) + 'ch'; }
 
+  /* ================= Alat: skor, status gizi, eGFR, cairan ================= */
+  function renderAlat() {
+    const b = $('#alatBody');
+    b.textContent = '';
+    const lab = state.lab;
+    const cr = txt(lab.cr, '', v => { lab.cr = v; }, 'lab:cr', { id: 'labCr', class: 'in in--sm in--num', inputmode: 'decimal', style: 'width:8ch' });
+    b.appendChild(fold('X:ant', 'Antropometri', [h('p', { class: 'hint' }, 'BB, TB, dan lainnya: dipakai skor, gizi, eGFR, dan cairan. Sama dengan isian di CPPT.'), blk('O:ant', antEl)]));
+    b.appendChild(fold('X:skor', state.who === 'anak' ? 'Skor & status gizi' : 'Skor', [
+      h('p', { class: 'hint' }, 'Dihitung otomatis dari TTV dan PF di CPPT. Klik "tulis ke CPPT" untuk memasukkannya; pilihan ini diingat untuk pasien berikutnya.'),
+      blk('O:score', () => h('div', { id: 'scoreBox' }, scoresEl()), sigScore)]));
+    b.appendChild(fold('X:ginjal', 'eGFR', [
+      row('Kreatinin', [cr,
+        blk('O:crU', () => h('div', { class: 'chips' }, ['mg/dL', 'µmol/L'].map((u, i) => chip({ l: u }, lab.crU === i, () => { lab.crU = i; refresh(['O:crU']); }, 'lab:crU:' + i, 'chip--sm'))))], 'labCr'),
+      blk('O:ginjal', () => h('div', { id: 'ginjalBox' }, ginjalEl()), sigRenal)]));
+    const fb = h('div', { id: 'fluidBoxAlat' });
+    fb.appendChild(blk('P:fl', fluidEl));
+    b.appendChild(fold('X:cairan', 'Kalkulator cairan', [fb]));
+  }
+
+  /* ================= Favorit: diagnosis cepat (A) dan terapi (P) ================= */
+  // Disimpan di perangkat ini (bukan data pasien). Ketuk = tambahkan satu baris ke kolom A atau P.
+  const K_FAV = 'cpptkilat.fav.v1';
+  let fav = (() => { const f = store.get('localStorage', K_FAV) || {}; const ok = x => Array.isArray(x) ? x.filter(t => typeof t === 'string' && clean(t)).slice(0, 60) : []; return { a: ok(f.a), p: ok(f.p) }; })();
+  const favEdit = { a: false, p: false };
+  const FAV_NAMA = { a: 'Diagnosis cepat', p: 'Favorit terapi' };
+  const FAV_CONTOH = { a: 'mis.\nObs. febris H3\nDHF grade I\nHT st 2', p: 'mis.\nIVFD RL 20 tpm\nParacetamol 3x500 mg PO\nOndansetron 3x4 mg IV' };
+  function favTambah(kind, t) {
+    const el = $(kind === 'a' ? '#aIn' : '#pIn');
+    const lines = String(el.value || '').split('\n');
+    if (lines.some(l => clean(l) === clean(t))) { toast('Sudah ada: ' + t); return; }
+    el.value = (clean(el.value) ? el.value.replace(/\s+$/, '') + '\n' : '') + t;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  function renderFav(kind) {
+    const box = $(kind === 'a' ? '#aFav' : '#pFav');
+    if (!box) return;
+    box.textContent = '';
+    const list = fav[kind];
+    const head = h('div', { class: 'fav-head' }, h('span', { class: 'mini-lab' }, FAV_NAMA[kind]),
+      h('button', { type: 'button', class: 'lnk', 'data-fk': 'fav:atur:' + kind, 'aria-expanded': favEdit[kind] ? 'true' : 'false', onclick: () => { favEdit[kind] = !favEdit[kind]; renderFav(kind); } }, favEdit[kind] ? 'Selesai' : 'Atur…'));
+    box.appendChild(head);
+    if (favEdit[kind]) {
+      const ta = h('textarea', { class: 'in fav-ta', rows: '5', placeholder: FAV_CONTOH[kind], 'aria-label': FAV_NAMA[kind] + ', satu per baris', 'data-fk': 'fav:ta:' + kind });
+      ta.value = list.join('\n');
+      ta.addEventListener('input', () => {
+        fav[kind] = ta.value.split('\n').map(clean).filter(Boolean).filter((x, i, a) => a.indexOf(x) === i).slice(0, 60);
+        store.set('localStorage', K_FAV, fav);
+      });
+      box.appendChild(ta);
+      box.appendChild(h('p', { class: 'hint' }, 'Satu per baris. Tersimpan di perangkat ini saja, tidak ikut data pasien.'));
+      setTimeout(() => grow(ta), 0);
+      return;
+    }
+    if (!list.length) { box.appendChild(h('p', { class: 'hint' }, 'Belum ada. Ketuk "Atur…" untuk menambahkan yang sering dipakai.')); return; }
+    box.appendChild(h('div', { class: 'chips fav-chips' }, list.map((t, i) => h('button', { type: 'button', class: 'chip chip--sm fav-chip', 'data-fk': 'fav:' + kind + ':' + i, title: 'Tambahkan ke ' + (kind === 'a' ? 'Asesmen' : 'Plan'), onclick: () => favTambah(kind, t) }, '+ ' + t))));
+  }
+
+  /* ================= Tempel hasil lab dari SIMRS ================= */
+  // Tabel SIMRS (dipisah Tab) dibaca apa adanya: nilai normal, satuan, dan tanda * diambil dari tempelan, tanpa database.
+  // WA: baris abnormal ditebalkan + L/H. CPPT (teks polos): nilai abnormal diberi *. Pemeriksaan ulang ditulis serial (a -> b).
+  const LAB_K = new Map([['hemoglobin', ['Hb', 10]], ['hematrokit', ['Ht', 11]], ['hematokrit', ['Ht', 11]], ['leukosit', ['Leu', 12]], ['trombosit', ['Tr', 13]], ['eritrosit', ['Eri', 14]],
+    ['glukosa sewaktu', ['GDS', 30]], ['glukosa puasa', ['GDP', 31]], ['glukosa 2 jam pp', ['GD2PP', 32]], ['ureum', ['Ur', 40]], ['creatinin', ['Cr', 41]], ['kreatinin', ['Cr', 41]], ['asam urat', ['AU', 45]],
+    ['cholesterol total', ['Kol total', 50]], ['cholesterol hdl', ['HDL', 51]], ['cholesterol ldl', ['LDL', 52]], ['trigliserida', ['TG', 53]],
+    ['natrium', ['Na', 60]], ['kalium', ['K', 61]], ['chlorida', ['Cl', 62]], ['klorida', ['Cl', 62]],
+    ['ph', ['pH', 70]], ['pco2', ['pCO2', 71]], ['po2', ['pO2', 72]], ['hco3', ['HCO3', 73]], ['tco2', ['TCO2', 74]], ['be (ecf)', ['BE', 75]], ['o2 sat', ['SaO2', 76]],
+    ['protein urin', ['Protein urin', 85]], ['hbsag', ['HBsAg', 90]], ['anti hiv', ['Anti-HIV', 91]]]);
+  const LAB_HJ = ['basofil', 'eosinofil', 'neutrofil batang', 'neutrofil segmen', 'limfosit', 'monosit'];
+  const LAB_GRUP = { 'urin lengkap': ['Urin lengkap', 80], 'test narkoba': ['Tes narkoba', 95] };
+  const LAB_KUAL = { negative: 'negatif', positive: 'positif', 'non reactive': 'non-reaktif', reactive: 'reaktif' };
+  const labKual = v => LAB_KUAL[v.toLowerCase()] || v;
+  const labSat = u => u.replace(/^mg\/dl$/i, 'mg/dL').replace(/^mmhg$/i, 'mmHg').replace(/^mEq\/$/, 'mEq/L');
+  const labNum = v => v !== '' && !isNaN(Number(v));
+  const labKata = r => !labNum(r.val) && /^[a-z]/i.test(r.val);
+  function labBaca(src) {
+    const rows = [];
+    let grup = '', gInd = 0;
+    String(src || '').split(/\r?\n/).forEach(raw => {
+      if (!raw.trim()) return;
+      const c = (raw.indexOf('\t') >= 0 ? raw.split('\t') : raw.trim().split(/\s{2,}/)).map(x => x.trim());
+      const nama = c[0].replace(/\s*\(H2TL\)\s*$/i, '').trim(), k = nama.toLowerCase();
+      const ind = raw.match(/^[ \t]*/)[0].replace(/\t/g, '    ').length;
+      if (c.length < 2 || !c[1]) { grup = k; gInd = ind; return; }
+      if (grup && ind <= gInd) grup = '';
+      const flag = /\*/.test(c[1]), val = c[1].replace(/\*/g, '').trim(), ref = (c[2] || '').trim(), unit = labSat((c[3] || '').trim());
+      let arah = '';
+      if (flag && labNum(val)) {
+        const v = Number(val), m = ref.match(/^(-?[\d.]+)\s*-\s*(-?[\d.]+)$/), lt = ref.match(/^<\s*(-?[\d.]+)/), gt = ref.match(/^>\s*(-?[\d.]+)/);
+        if (m) arah = v < +m[1] ? 'L' : v > +m[2] ? 'H' : ''; else if (lt) arah = 'H'; else if (gt) arah = 'L';
+      }
+      const g = LAB_GRUP[grup] ? grup : '';
+      rows.push({ nama: nama, k: k, kunci: (g ? g + '|' : '') + k, val: val, flag: flag, arah: arah, ref: ref, unit: unit, grup: g });
+    });
+    return rows;
+  }
+  function labSerialLines() {
+    const sets = (state.labSets || []).map(x => ({ jam: clean(x.jam), rows: labBaca(x.raw) })).filter(x => x.rows.length);
+    if (!sets.length) return [];
+    const n = sets.length, peta = new Map();
+    let urut = 0;
+    sets.forEach((st, si) => st.rows.forEach(r => {
+      if (LAB_HJ.indexOf(r.k) >= 0) return;
+      if (!peta.has(r.kunci)) {
+        const e = LAB_K.get(r.k), go = r.grup ? LAB_GRUP[r.grup][1] : null;
+        peta.set(r.kunci, { grup: r.grup, nama: r.grup ? r.nama : (e ? e[0] : r.nama), o: go != null ? go + (urut++) / 1000 : (e ? e[1] : 200 + (urut++) / 1000), v: Array(n).fill(null), ref: '', unit: '' });
+      }
+      const x = peta.get(r.kunci);
+      x.v[si] = r; if (r.ref) x.ref = r.ref; if (r.unit) x.unit = r.unit;
+    }));
+    const hj = sets.map(st => LAB_HJ.map(k => st.rows.find(r => r.k === k)));
+    if (hj.some(a => a.some(Boolean))) peta.set('__hj', { grup: '', nama: 'Hitung jenis', o: 15, unit: '%', ref: '', hj: hj });
+    const fRef = r => { const m = (r || '').match(/^(-?[\d.]+)\s*-\s*(-?[\d.]+)$/); return m ? m[1] + '–' + m[2] : (r || ''); };
+    const ada = x => (x.hj ? x.hj.map(a => a.some(Boolean)) : x.v.map(Boolean));
+    const baris = (x, idx) => {
+      let wa, cp, abn;
+      if (x.hj) {
+        const f = (a, w) => (a.some(Boolean) ? a.map(r => (r ? r.val + (r.flag ? (w ? r.arah : '*') : '') : '-')).join('/') : '-');
+        wa = idx.map(i => f(x.hj[i], true)).join(' -> '); cp = idx.map(i => f(x.hj[i], false)).join(' -> ');
+        abn = x.hj[idx[idx.length - 1]].some(r => r && r.flag);
+      } else {
+        const vs = idx.map(i => x.v[i]);
+        const f = (r, w) => { if (!r) return '-'; const v = labNum(r.val) ? r.val : labKual(r.val); return v + (r.flag ? (w ? (r.arah ? ' ' + r.arah : '') : '*') : ''); };
+        wa = vs.map(r => f(r, true)).join(' -> '); cp = vs.map(r => f(r, false)).join(' -> ');
+        const ak = vs.slice().reverse().find(Boolean); abn = !!(ak && ak.flag);
+      }
+      const kual = !x.hj && x.v.every(r => !r || labKata(r));
+      const tail = (x.ref && !kual ? ' (' + fRef(x.ref) + ')' : '') + (x.unit && !kual ? ' ' + x.unit : '');
+      const pre = x.grup ? '  ' : '';
+      return [{ t: pre + x.nama + ': ' + wa + tail, c: pre + x.nama + ': ' + cp + tail, abn: abn }];
+    };
+    const urutan = [...peta.values()].sort((a, b) => a.o - b.o), L = [];
+    const cetak = (daftar, idx) => { let g = ''; daftar.forEach(x => { if (x.grup && x.grup !== g) L.push([{ t: LAB_GRUP[x.grup][0] + ':' }]); g = x.grup; L.push(baris(x, idx)); }); };
+    if (n === 1) { if (sets[0].jam) L.push([{ t: 'Lab ' + sets[0].jam + ':' }]); cetak(urutan, [0]); return L; }
+    const semua = [...Array(n).keys()], jam = sets.map((st, i) => st.jam || 'set ' + (i + 1));
+    const serial = urutan.filter(x => ada(x).filter(Boolean).length >= 2);
+    if (serial.length) { L.push([{ t: 'Lab serial: ' + jam.join(' -> ') }]); cetak(serial, semua); }
+    semua.forEach(i => {
+      const sekali = urutan.filter(x => { const a = ada(x); return a.filter(Boolean).length === 1 && a[i]; });
+      if (sekali.length) { L.push([{ t: 'Lab ' + jam[i] + ':' }]); cetak(sekali, [i]); }
+    });
+    return L;
+  }
+  const jamKini = () => { const d = new Date(); return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + ' ' + pad2(d.getHours()) + '.' + pad2(d.getMinutes()); };
+  function labSetsEl() {
+    const sets = state.labSets;
+    const box = h('div', { class: 'labp' });
+    box.appendChild(h('div', { class: 'sub-head' }, h('h3', null, 'Tempel dari SIMRS'),
+      h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'labp:add', onclick: () => { if (sets.length >= 10) { toast('Maksimal 10 set lab'); return; } sets.push({ id: uid('L'), jam: jamKini(), raw: '' }); refresh(['O:labp']); setTimeout(() => { const t = document.querySelector('[data-fk="labp:raw:' + sets[sets.length - 1].id + '"]'); if (t) t.focus(); }, 0); } }, sets.length ? '+ Lab ulang' : '+ Tempel hasil lab'),
+      h('span', { class: 'hint' }, 'Salin tabel hasil dari SIMRS, tempel di sini. Nilai normal dan tanda * ikut dari SIMRS. Lab ulang ditulis serial.')));
+    sets.forEach((x, i) => {
+      const jam = txt(x.jam, 'tgl/jam', v => { x.jam = v; }, 'labp:jam:' + x.id, { class: 'in in--sm', 'aria-label': 'Waktu lab ke-' + (i + 1), style: 'width:14ch' });
+      const raw = h('textarea', { class: 'in labp-raw', rows: '3', placeholder: 'Tempel tabel hasil lab di sini', spellcheck: 'false', 'aria-label': 'Hasil lab ke-' + (i + 1), 'data-fk': 'labp:raw:' + x.id });
+      raw.value = x.raw;
+      raw.addEventListener('input', () => { x.raw = raw.value; grow(raw); changed(); cek(); });
+      const info = h('span', { class: 'hint' });
+      const cek = () => { const r = labBaca(x.raw); info.textContent = r.length ? r.length + ' pemeriksaan terbaca, ' + r.filter(y => y.flag).length + ' abnormal' : (clean(x.raw) ? 'Belum terbaca. Pastikan menyalin tabel langsung dari SIMRS.' : ''); };
+      cek();
+      info.classList.add('labp-info');
+      box.appendChild(h('div', { class: 'labp-set' },
+        h('div', { class: 'labp-top' }, h('b', null, 'Lab ' + (i + 1)), jam,
+          h('button', { type: 'button', class: 'x', 'aria-label': 'Hapus lab ' + (i + 1), 'data-fk': 'labp:del:' + x.id, onclick: () => { sets.splice(i, 1); refresh(['O:labp']); } }, '×')), raw, info));
+    });
+    return box;
+  }
+
   /* ================= Lipat ala panel file Obsidian ================= */
   // Bagian S/O/A/P (kuning) dan sub-bagian (pink) bisa dilipat. Status buka/tutup diingat di perangkat ini.
   // Sub-bagian yang terlipat menampilkan ringkasan isinya di kanan.
-  const FOLD_DEF = { 'S:ku': true };
+  const FOLD_DEF = { 'S:ku': true, 'X:skor': true };
   const foldOpen = k => (prefs.fold && k in prefs.fold) ? !!prefs.fold[k] : !!FOLD_DEF[k];
   function setFold(k, v) { prefs.fold = Object.assign({}, prefs.fold, { [k]: v }); savePrefs(); }
   function fold(key, title, kids, opt) {
@@ -2471,22 +2668,16 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
     b.appendChild(fold('O:neuro', 'PF neuro & khusus', [blk('O:nl', nlEl), blk('O:kh', khEl)]));
 
-    b.appendChild(fold('O:skor', 'Skor', [
-      h('div', { class: 'sub-head' }, h('h3', null, 'Skor'),
-        h('span', { class: 'hint' }, 'Dihitung otomatis dari TTV dan PF. Klik "tulis ke CPPT" untuk memasukkannya; pilihan ini diingat untuk pasien berikutnya.')),
-      blk('O:score', () => h('div', { id: 'scoreBox' }, scoresEl()), sigScore)], { nohead: true }));
+    b.appendChild(h('p', { class: 'hint alat-link' }, 'Skor, status gizi, eGFR, dan kalkulator cairan ada di menu ',
+      h('button', { type: 'button', class: 'lnk', 'data-fk': 'go:alat', onclick: () => enterArea('alat') }, 'Alat'),
+      '. Yang dicentang "tulis ke CPPT" tetap masuk ke catatan ini.'));
 
-    const lab = state.lab;
-    const cr = txt(lab.cr, '', v => { lab.cr = v; }, 'lab:cr', { id: 'labCr', class: 'in in--sm in--num', inputmode: 'decimal', style: 'width:8ch' });
     b.appendChild(fold('O:lab', 'Lab & penunjang', [
-      h('p', { class: 'hint' }, 'Yang kosong tidak ditulis.'),
-      row('Laboratorium', ta('oLab', state.penLab, 'mis. Hb 12,1 / Leu 14.300 / Ht 38 / Tr 210.000', v => { state.penLab = v; }, 'o:penLab'), 'oLab'),
-      row('Kreatinin', [cr,
-        blk('O:crU', () => h('div', { class: 'chips' }, ['mg/dL', 'µmol/L'].map((u, i) => chip({ l: u }, lab.crU === i, () => { lab.crU = i; refresh(['O:crU']); }, 'lab:crU:' + i, 'chip--sm')))),
-        h('span', { class: 'hint' }, state.who === 'dewasa' ? 'eGFR otomatis (butuh usia, JK, BB), ditulis di Laboratorium' : 'eGFR otomatis (butuh TB), ditulis di Laboratorium')], 'labCr'),
-      blk('O:ginjal', () => h('div', { id: 'ginjalBox' }, ginjalEl()), sigRenal),
+      blk('O:labp', labSetsEl),
+      row('Lab lain', ta('oLab', state.penLab, 'Ketik manual, mis. GDS stik 333', v => { state.penLab = v; }, 'o:penLab'), 'oLab', 'row--gap'),
       row('Radiologi', ta('oRad', state.penRad, 'mis. foto thorax: kardiomegali (-), infiltrat paru kanan bawah', v => { state.penRad = v; }, 'o:penRad'), 'oRad'),
-      row('Penunjang lain', ta('oPen', state.pen, 'mis. EKG: sinus ritme, HR 88 x/menit', v => { state.pen = v; }, 'o:pen'), 'oPen')]));
+      row('Penunjang lain', ta('oPen', state.pen, 'mis. EKG: sinus ritme, HR 88 x/menit', v => { state.pen = v; }, 'o:pen'), 'oPen'),
+      h('p', { class: 'hint' }, 'Yang kosong tidak ditulis. Kreatinin dan eGFR ada di menu Alat.')]));
   }
 
   // Tanda isian yang dipakai kartu skor/gizi dan eGFR: kartu digambar ulang hanya bila ini berubah
@@ -4730,11 +4921,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   function gzConcl() { const g = gzOut(); return g && g.concl ? g.concl : ''; }
   // Laboratorium: teks bebas lalu kreatinin/eGFR (huruf kapital bila jadi baris sendiri)
   function labLinesOf() {
-    const lines = splitLines(state.penLab).map(l => [{ t: l }]), rn = renalParts('');
+    const lines = labSerialLines().concat(splitLines(state.penLab).map(l => [{ t: l }])), rn = renalParts('');
     if (rn) lines.push(lines.length ? capParts(rn) : rn);
     return lines;
   }
-  const penLabel = () => (clean(state.penRad) || clean(state.penLab) || renalParts() ? 'Penunjang lain' : 'Penunjang');
+  const penLabel = () => (clean(state.penRad) || clean(state.penLab) || (state.labSets || []).some(x => clean(x.raw)) || renalParts() ? 'Penunjang lain' : 'Penunjang');
 
   /* ================= Konsul WhatsApp ================= */
   // *teks* tebal di WhatsApp: spasi di tepi dikeluarkan dari tanda bintang
@@ -4744,6 +4935,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   const waBold = parts => parts.map(p => (p.abn ? boldT(p.t) : p.t)).join('').replace(/\s+$/, '');
   const waPlain = parts => parts.map(p => p.t).join('').replace(/\s+$/, '');
+  const cPlain = parts => parts.map(p => (p.c != null ? p.c : p.t)).join('').replace(/\s+$/, '');
   /* Baris laporan: t = teks WA (dengan *tebal*), c = teks polos untuk CPPT di EMR, p = potongan (stabilo di lembar),
      b = potongan tidak normal ditebalkan, k = bagian (A/S/O/P), h = judul bagian, hint = teks bantu di lembar (tidak disalin).
      Urutan laporan ASOP: diagnosa kerja, S, O, P. Mode ringkas: hanya S. */
@@ -4752,7 +4944,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const L = [];
     let k = null;
     const add = (t, c) => L.push({ t: t, c: c == null ? t : c, k: k });
-    const addP = (parts, bold) => L.push({ t: bold ? waBold(parts) : waPlain(parts), c: waPlain(parts), p: parts, b: !!bold, k: k });
+    const addP = (parts, bold) => L.push({ t: bold ? waBold(parts) : waPlain(parts), c: cPlain(parts), p: parts, b: !!bold, k: k });
     const head = key => { k = key; L.push({ t: WA_HEAD[key], c: WA_HEAD[key], h: key, k: key }); };
     const blank = () => L.push({ t: '', c: '', k: k });
     // subjudul (hd = teks WA, plain = teks polos bila beda) lalu isinya; isi berupa teks atau potongan
@@ -5605,7 +5797,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
   /* ================= Menu depan & area (CPPT, Lapor bayi, Edukasi) ================= */
   let area = null, pendingArea = null;
-  const AREA_NAMA = { cppt: 'CPPT', bbl: 'Lapor bayi', edu: 'Edukasi' };
+  const AREA_NAMA = { cppt: 'CPPT', bbl: 'Lapor bayi', edu: 'Edukasi', alat: 'Alat' };
   // Pasien Lapor bayi dan pasien CPPT punya daftar tab sendiri-sendiri
   function inArea(p, a) { return (p.st.who === 'bbl') === (a === 'bbl'); }
   function newAreaPatient(a) {
@@ -5636,14 +5828,16 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     $('.desk').hidden = edu; $('.dock').hidden = edu; $('.bar-pt').hidden = edu;
     $('.modes').hidden = edu; $('#btnNew').hidden = edu;
     $('#segWho').hidden = a === 'bbl';
+    $('#segKind').classList.toggle('alat-off', a === 'alat');
     if (edu) { renderEdu(); measureBar(); window.scrollTo(0, 0); bumpIdle(); return; }
     if (db) {
       if (!db.lastCur) db.lastCur = { cppt: null, bbl: null };
-      const list = db.list.filter(p => inArea(p, a));
-      let id = db.lastCur[a];
+      const lk = a === 'bbl' ? 'bbl' : 'cppt';   // Alat memakai pasien CPPT yang sama
+      const list = db.list.filter(p => inArea(p, lk));
+      let id = db.lastCur[lk];
       if (!list.some(p => p.id === id)) id = list.some(p => p.id === db.cur) ? db.cur : (list[0] && list[0].id);
-      if (!id) id = newAreaPatient(a).id;
-      db.cur = id; db.lastCur[a] = id;
+      if (!id) id = newAreaPatient(lk).id;
+      db.cur = id; db.lastCur[lk] = id;
       state = curPat().st; renaming = null; renameNew = false; focusSec = null;
       syncAP(); refresh(); saveSoon();
     }
