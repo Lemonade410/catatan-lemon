@@ -4,6 +4,7 @@ judul: Pertolongan Pertama Henti Jantung di Rumah
 kategori: tindakan
 untuk: keluarga
 ringkas: Langkah pijat jantung untuk orang awam sambil menunggu bantuan datang
+kata:
 status: draf
 ---
 

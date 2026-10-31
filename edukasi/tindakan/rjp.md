@@ -4,6 +4,7 @@ judul: Resusitasi Jantung Paru dan Kejut Listrik di Rumah Sakit
 kategori: tindakan
 untuk: keluarga
 ringkas: Apa yang terjadi saat jantung berhenti di rumah sakit, dan apa yang dilakukan tim medis
+kata: rjp, cpr, resusitasi, henti jantung, cardiac arrest   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

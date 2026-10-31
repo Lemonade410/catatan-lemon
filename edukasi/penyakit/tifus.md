@@ -4,6 +4,7 @@ judul: Demam Tifoid (Tifus)
 kategori: penyakit
 untuk: pasien
 ringkas: Menghabiskan antibiotik, menjaga kebersihan, dan mengenali komplikasi usus
+kata: tifoid, typhoid, tifus, demam tifoid   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

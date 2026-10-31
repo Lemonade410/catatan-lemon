@@ -4,6 +4,7 @@ judul: Diabetes (Kencing Manis)
 kategori: penyakit
 untuk: pasien
 ringkas: Cara menjaga gula darah tetap terkendali dan mencegah komplikasi
+kata: diabetes, dm, dm tipe 2, t2dm, kencing manis   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

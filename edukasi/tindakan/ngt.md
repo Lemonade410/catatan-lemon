@@ -4,6 +4,7 @@ judul: Selang Makan Lewat Hidung (NGT)
 kategori: tindakan
 untuk: keluarga
 ringkas: Fungsi selang makan, cara menjaganya, dan mencegah tersedak
+kata: ngt, sonde   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

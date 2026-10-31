@@ -4,6 +4,7 @@ judul: Keputusan Tidak Dilakukan Resusitasi
 kategori: tindakan
 untuk: keluarga
 ringkas: Penjelasan untuk keluarga yang diajak berdiskusi soal keputusan tidak dilakukan resusitasi
+kata: dnr   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

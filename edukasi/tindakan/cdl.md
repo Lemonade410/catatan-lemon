@@ -4,6 +4,7 @@ judul: Selang Cuci Darah (Kateter Double Lumen)
 kategori: tindakan
 untuk: pasien
 ringkas: Merawat selang akses cuci darah di leher atau lipat paha
+kata: cdl, double lumen   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

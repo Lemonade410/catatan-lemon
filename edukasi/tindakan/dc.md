@@ -4,6 +4,7 @@ judul: Selang Kencing (Kateter Urin)
 kategori: tindakan
 untuk: pasien
 ringkas: Fungsi selang kencing, cara merawatnya, dan tanda infeksi
+kata: dc, kateter urin, foley   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

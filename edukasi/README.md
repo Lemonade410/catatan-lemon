@@ -26,9 +26,11 @@ Buka `index.html`, cari bagian `PENGATURAN` di dekat awal skrip. Di situ ada `na
 
 `id` yang sudah pernah dipakai di QR yang dicetak **jangan diganti namanya**. Kalau diganti, QR lama akan menampilkan "materi tidak ditemukan". Kalau ingin mengganti, tambahkan topik baru saja.
 
-## Kata kunci pencarian (opsional)
+## Kata kunci (`kata:`)
 
-Tambahkan `kata:` di frontmatter supaya topik ketemu dengan kata lain, misalnya `kata: cimino shunt cuci darah`.
+Daftar kata dipisah koma, misalnya `kata: dbd, dhf, dengue`. Dipakai untuk dua hal:
+1. **Pencarian** di menu Edukasi.
+2. **Centang otomatis**: kalau salah satu kata muncul di diagnosis kerja (A) atau Plan pasien di CPPT, materinya langsung tercentang saat menu Edukasi dibuka. Kata dicocokkan utuh (bukan potongan kata), huruf besar-kecil tidak berpengaruh.
 
 ## Aturan format (supaya nanti gampang dituang ke HTML)
 

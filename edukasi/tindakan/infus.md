@@ -4,6 +4,7 @@ judul: Infus
 kategori: tindakan
 untuk: pasien
 ringkas: Cara menjaga infus supaya lancar dan tidak perlu ditusuk ulang
+kata: ivfd, infus   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

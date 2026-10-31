@@ -4,6 +4,7 @@ judul: Penyakit Ginjal Kronis
 kategori: penyakit
 untuk: pasien
 ringkas: Memperlambat kerusakan ginjal lewat obat, makanan, dan menghindari racun ginjal
+kata: ckd, pgk, gagal ginjal kronik, gagal ginjal kronis, penyakit ginjal kronik, esrd   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

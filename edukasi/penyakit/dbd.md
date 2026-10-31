@@ -4,6 +4,7 @@ judul: Demam Berdarah Dengue
 kategori: penyakit
 untuk: pasien
 ringkas: Fase kritis saat demam turun, tanda bahaya, dan cara merawat di rumah
+kata: dbd, dhf, dengue, df, demam berdarah, dss   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

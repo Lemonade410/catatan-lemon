@@ -4,6 +4,7 @@ judul: Kolesterol Tinggi
 kategori: penyakit
 untuk: pasien
 ringkas: Kenapa kolesterol perlu diturunkan dan obatnya perlu diminum terus
+kata: dislipidemia, hiperkolesterolemia, hipertrigliseridemia   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

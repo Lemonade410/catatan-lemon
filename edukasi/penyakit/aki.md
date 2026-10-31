@@ -4,6 +4,7 @@ judul: Gangguan Ginjal Mendadak
 kategori: penyakit
 untuk: pasien
 ringkas: Ginjal yang tiba-tiba terganggu sering bisa pulih, asal penyebabnya ditangani
+kata: aki, gga, gangguan ginjal akut, cedera ginjal akut   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

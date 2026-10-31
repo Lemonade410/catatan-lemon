@@ -4,6 +4,7 @@ judul: Gagal Jantung
 kategori: penyakit
 untuk: pasien
 ringkas: Mengatur cairan, garam, dan berat badan supaya tidak bolak-balik dirawat
+kata: chf, gagal jantung, hf, adhf, hfref, hfpef   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

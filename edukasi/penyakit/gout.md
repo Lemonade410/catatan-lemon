@@ -4,6 +4,7 @@ judul: Asam Urat Tinggi dan Serangan Gout
 kategori: penyakit
 untuk: pasien
 ringkas: Mengatasi serangan nyeri sendi dan mencegahnya datang lagi
+kata: gout, gout arthritis, artritis gout, hiperurisemia   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

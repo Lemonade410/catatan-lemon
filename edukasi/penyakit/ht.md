@@ -4,6 +4,7 @@ judul: Hipertensi (Darah Tinggi)
 kategori: penyakit
 untuk: pasien
 ringkas: Menjaga tekanan darah tetap terkendali untuk mencegah stroke dan serangan jantung
+kata: hipertensi, ht, hhd, hipertensi urgensi, hipertensi emergensi   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

@@ -4,6 +4,7 @@ judul: Selang Napas dan Mesin Bantu Napas
 kategori: tindakan
 untuk: keluarga
 ringkas: Penjelasan untuk keluarga tentang pemasangan selang napas dan ventilator
+kata: intubasi, ett, ventilator, ventilasi mekanik   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

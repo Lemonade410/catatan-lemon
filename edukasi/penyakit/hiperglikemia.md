@@ -4,6 +4,7 @@ judul: Gula Darah Terlalu Tinggi (Krisis Gula)
 kategori: penyakit
 untuk: pasien
 ringkas: Kenapa gula bisa melonjak, tanda bahayanya, dan cara mencegah kambuh
+kata: kad, dka, hhs, ketoasidosis, hiperglikemia, hiperglikemi, krisis hiperglikemia   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

@@ -4,6 +4,7 @@ judul: Penyakit Jantung Koroner dan Serangan Jantung
 kategori: penyakit
 untuk: pasien
 ringkas: Mengenali tanda serangan jantung dan mencegahnya terulang
+kata: pjk, cad, ihd, ska, acs, stemi, nstemi, uap, angina, infark miokard   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

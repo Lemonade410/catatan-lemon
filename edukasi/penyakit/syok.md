@@ -4,6 +4,7 @@ judul: Syok
 kategori: penyakit
 untuk: keluarga
 ringkas: Penjelasan untuk keluarga tentang keadaan syok dan penanganannya di ruang intensif
+kata: syok, shock, syok septik, syok hipovolemik, syok kardiogenik   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

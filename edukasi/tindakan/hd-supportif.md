@@ -4,6 +4,7 @@ judul: Cuci Darah Sementara (Darurat)
 kategori: tindakan
 untuk: keluarga
 ringkas: Cuci darah untuk menolong ginjal yang terganggu mendadak, yang belum tentu seumur hidup
+kata: hd cito, hd emergensi, hd inisiasi, hd supportif, sled, crrt   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

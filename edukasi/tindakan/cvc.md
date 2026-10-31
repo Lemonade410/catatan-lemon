@@ -4,6 +4,7 @@ judul: Infus Pembuluh Besar (Kateter Vena Sentral)
 kategori: tindakan
 untuk: keluarga
 ringkas: Kenapa pasien perlu infus di leher, dada, atau lipat paha, dan risikonya
+kata: cvc, cvp, kateter vena sentral   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 

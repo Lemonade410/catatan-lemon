@@ -140,6 +140,8 @@ h1,h2,h3,p{margin:0}
 .edu-tags span{font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;border:1px solid var(--rule);color:var(--muted)}
 .edu-tags .draf{background:var(--hl-tint);border-color:var(--hl-edge);color:var(--ink)}
 .edu-empty{padding:24px 0;text-align:center;color:var(--muted)}
+.edu-saran{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:14px;padding:12px 14px;border:1.5px solid var(--pk-edge);border-radius:12px;background:var(--pk-soft)}
+.edu-saran p{flex:1 1 220px;margin:0;font-size:14px}
 .edu-bar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--bar);color:var(--bar-ink);border-top:3px solid var(--hl);padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .edu-bar-in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:8px;padding-inline:var(--gutter)}
 .edu-info{flex:1;min-width:0;font-size:14px}
@@ -708,7 +710,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
 /* ===== Favorit A/P, tempel lab, Alat ===== */
 .fav{margin-top:10px}
-.fav-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.fav-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:6px}
+.fav-edu{margin-left:auto;background:var(--pk-soft);border-color:var(--pk-edge)}
 .fav-chip{max-width:100%;white-space:normal;text-align:left;border-style:dashed}
 .fav-chip:hover{border-style:solid}
 .fav-ta{font-size:14px}
@@ -880,6 +883,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
   <section class="edu" id="edu" aria-labelledby="eduJudul" hidden>
     <div class="edu-head"><h2 id="eduJudul">Edukasi pasien</h2><p>Ketuk materi untuk pasien ini, lalu tampilkan QR-nya. Materi terbuka di HP pasien tanpa password.</p></div>
+    <div class="edu-saran" id="eduSaran" role="status" hidden></div>
     <div class="edu-cari"><label class="sr" for="eduCari">Cari materi</label><input class="in" id="eduCari" type="search" placeholder="Cari: diabetes, infus, ginjal…" autocomplete="off" spellcheck="false"></div>
     <div id="eduList"></div>
     <p class="edu-empty" id="eduEmpty" hidden></p>
@@ -2017,7 +2021,8 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     box.textContent = '';
     const list = fav[kind];
     const head = h('div', { class: 'fav-head' }, h('span', { class: 'mini-lab' }, FAV_NAMA[kind]),
-      h('button', { type: 'button', class: 'lnk', 'data-fk': 'fav:atur:' + kind, 'aria-expanded': favEdit[kind] ? 'true' : 'false', onclick: () => { favEdit[kind] = !favEdit[kind]; renderFav(kind); } }, favEdit[kind] ? 'Selesai' : 'Atur…'));
+      h('button', { type: 'button', class: 'lnk', 'data-fk': 'fav:atur:' + kind, 'aria-expanded': favEdit[kind] ? 'true' : 'false', onclick: () => { favEdit[kind] = !favEdit[kind]; renderFav(kind); } }, favEdit[kind] ? 'Selesai' : 'Atur…'),
+      kind === 'a' ? h('button', { type: 'button', class: 'btn btn--sm fav-edu', 'data-fk': 'go:edu', title: 'Buka Edukasi; materi dicentang dari diagnosis kerja', onclick: () => enterArea('edu') }, 'QR edukasi ›') : null);
     box.appendChild(head);
     if (favEdit[kind]) {
       const ta = h('textarea', { class: 'in fav-ta', rows: '5', placeholder: FAV_CONTOH[kind], 'aria-label': FAV_NAMA[kind] + ', satu per baris', 'data-fk': 'fav:ta:' + kind });
@@ -5774,6 +5779,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (modalView) { $('#modal').hidden = true; modalView = null; setBackInert(false); if (history.state && history.state.clModal) { modalPopSkip = true; history.back(); } }
     const dlg = $('#eduDlg'); if (dlg && dlg.open) dlg.close();
     document.documentElement.classList.remove('sheet-open');
+    eduPilih.length = 0; eduUntuk = null;
     const atHome = !$('#home').hidden;
     if (area) pendingArea = area;
     $('#app').hidden = true;
@@ -5856,14 +5862,46 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       return o;
     };
     eduTopik = (window.MATERI || []).map(r => meta(r.md)).filter(t => /^[a-z0-9-]+$/.test(t.id || ''))
-      .map(t => ({ id: t.id, judul: t.judul || t.id, kat: (t.kategori || 'lainnya').toLowerCase(), untuk: (t.untuk || '').toLowerCase(), ringkas: t.ringkas || '', kata: t.kata || '', draf: (t.status || '').toLowerCase() === 'draf' }));
+      .map(t => ({ id: t.id, judul: t.judul || t.id, kat: (t.kategori || 'lainnya').toLowerCase(), untuk: (t.untuk || '').toLowerCase(), ringkas: t.ringkas || '', kata: t.kata || '', draf: (t.status || '').toLowerCase() === 'draf',
+        kunci: String(t.kata || '').toLowerCase().split(',').map(x => x.trim()).filter(Boolean) }));
     return eduTopik;
   }
   const eduLinkDari = ids => new URL('edukasi/?t=' + ids.join(','), location.href).href;
   const SVG_CENTANG = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+  // Saran dari diagnosis kerja (A) dan Plan pasien CPPT yang terakhir dibuka: cocokkan kata di "kata:" tiap materi (kata utuh)
+  let eduUntuk = null;
+  function eduPasien() {
+    if (!db) return null;
+    const id = db.lastCur && db.lastCur.cppt;
+    return db.list.find(p => p.id === id && p.st.who !== 'bbl') || null;
+  }
+  function eduSaran(p) {
+    if (!p) return [];
+    const teks = ' ' + String((p.st.a || '') + '\n' + (p.st.p || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ') + ' ';
+    if (!teks.trim()) return [];
+    return eduBaca().filter(t => t.kunci.some(k => { const w = k.replace(/[^a-z0-9]+/g, ' ').trim(); return w && teks.indexOf(' ' + w + ' ') >= 0; })).map(t => t.id);
+  }
+  function eduSaranSync() {
+    const box = $('#eduSaran');
+    const p = eduPasien(), saran = eduSaran(p);
+    // ganti pasien = pilihan mulai dari saran pasien itu
+    if (!p || p.id !== eduUntuk) {
+      eduUntuk = p ? p.id : null;
+      eduPilih.length = 0;
+      saran.forEach(id => eduPilih.push(id));
+    }
+    box.textContent = '';
+    if (!p || !saran.length) { box.hidden = true; return; }
+    const T = eduBaca(), nm = id => (T.find(t => t.id === id) || { judul: id }).judul;
+    const kurang = saran.filter(id => eduPilih.indexOf(id) < 0);
+    box.hidden = false;
+    box.appendChild(h('p', null, h('b', null, 'Dari diagnosis ' + p.label + ': '), saran.map(nm).join(', ') + '.'));
+    if (kurang.length) box.appendChild(h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'edu:saran', onclick: () => { kurang.forEach(id => eduPilih.push(id)); eduSync(); eduSaranSync(); } }, 'Centang saran (' + kurang.length + ')'));
+    else box.appendChild(h('span', { class: 'hint' }, 'Sudah tercentang. Tambah atau kurangi sesuai kebutuhan.'));
+  }
   function renderEdu() {
     const box = $('#eduList');
-    if (box._done) { eduSync(); return; }
+    if (box._done) { eduSaranSync(); eduSync(); return; }
     const T = eduBaca();
     if (!T.length) { box.textContent = ''; box.appendChild(h('p', { class: 'edu-empty' }, 'Materi belum terbaca. Pastikan folder edukasi ikut terunggah, lalu buka ulang aplikasi.')); return; }
     box._done = true;
@@ -5879,7 +5917,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         const b = h('button', { type: 'button', class: 'edu-opt', 'aria-pressed': 'false', 'data-edu': t.id },
           h('span', { class: 'edu-box' }, ico(SVG_CENTANG)), h('span', { class: 'edu-t' }, t.judul),
           t.ringkas ? h('span', { class: 'edu-r' }, t.ringkas) : null, tags.length ? h('span', { class: 'edu-tags' }, ...tags) : null);
-        b.addEventListener('click', () => { const i = eduPilih.indexOf(t.id); if (i >= 0) eduPilih.splice(i, 1); else eduPilih.push(t.id); eduSync(); });
+        b.addEventListener('click', () => { const i = eduPilih.indexOf(t.id); if (i >= 0) eduPilih.splice(i, 1); else eduPilih.push(t.id); eduSync(); eduSaranSync(); });
         const li = h('li', null, b);
         li._cari = (t.judul + ' ' + t.ringkas + ' ' + t.id + ' ' + t.kata).toLowerCase();
         ul.appendChild(li);
@@ -5890,6 +5928,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       sec._jml = jml;
       box.appendChild(sec);
     });
+    eduSaranSync();
     eduSync();
   }
   function eduSync() {

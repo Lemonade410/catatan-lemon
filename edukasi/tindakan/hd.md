@@ -4,6 +4,7 @@ judul: Cuci Darah Rutin (Hemodialisis)
 kategori: tindakan
 untuk: pasien
 ringkas: Menjalani cuci darah rutin, merawat cimino, dan menjaga cairan di antara jadwal
+kata: hd rutin, hd reguler, hemodialisis rutin   # kata di diagnosis kerja/plan yang mencentang materi ini otomatis
 status: draf
 ---
 
