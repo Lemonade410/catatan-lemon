@@ -727,10 +727,16 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 @media (max-width:999px){
   .sheet-wrap{position:fixed;left:0;right:0;bottom:0;z-index:24;max-height:calc(88dvh - env(safe-area-inset-top,0px));overflow:auto;overscroll-behavior:contain;padding:10px var(--gutter) calc(84px + env(safe-area-inset-bottom,0px));background:var(--ground);border-top:3px solid var(--pk);border-radius:18px 18px 0 0;box-shadow:0 -18px 40px -24px rgba(0,0,0,.55);transform:translateY(105%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s linear .26s}
   .sheet-open .sheet-wrap{transform:none;visibility:visible;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s}
-  .sheet-wrap::before{content:"";display:block;width:44px;height:5px;margin:0 auto 10px;border-radius:3px;background:var(--rule)}
+  .sheet-scrim{position:fixed;inset:0;z-index:23;background:rgba(10,10,9,.45);opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s linear .2s}
+  .sheet-open .sheet-scrim{opacity:1;visibility:visible;transition:opacity .2s,visibility 0s}
+  .sheet-wrap{padding-top:0}
+  .laci-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:center;min-height:52px;margin:0 calc(var(--gutter) * -1) 6px;padding:8px var(--gutter);background:var(--ground);touch-action:none;cursor:grab}
+  .laci-grip{width:48px;height:6px;border-radius:3px;background:var(--muted);opacity:.6}
+  .laci-x{position:absolute;right:var(--gutter);min-height:40px;padding:0 14px;font-size:15px}
   .sheet-open body{overflow:hidden}
 }
-@media (max-width:999px) and (prefers-reduced-motion:reduce){.sheet-wrap,.sheet-open .sheet-wrap{transition:none}}
+@media (max-width:999px) and (prefers-reduced-motion:reduce){.sheet-wrap,.sheet-open .sheet-wrap,.sheet-scrim{transition:none}}
+@media (min-width:1000px){.sheet-scrim,.laci-head{display:none!important}}
 
 /* ===== Dok bawah (HP) & toast ===== */
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;padding-inline:var(--gutter);padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:var(--bar);border-top:3px solid var(--hl)}
@@ -864,7 +870,9 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       </section>
     </div>
 
+    <div class="sheet-scrim" id="sheetScrim" aria-hidden="true"></div>
     <aside class="sheet-wrap" aria-label="Laporan konsul WA">
+      <div class="laci-head" id="laciHead"><span class="laci-grip" aria-hidden="true"></span><button type="button" class="btn btn--sm laci-x" id="sheetClose">Tutup <span aria-hidden="true">×</span></button></div>
       <div class="sheet" id="sheet">
         <div class="sheet-head">
           <div class="sheet-id"><div class="sheet-title" id="sheetTitle">KONSUL WA</div><div class="sheet-sub" id="sheetSub">Dewasa · Asesmen awal</div></div>
@@ -5778,7 +5786,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     hideToast();
     if (modalView) { $('#modal').hidden = true; modalView = null; setBackInert(false); if (history.state && history.state.clModal) { modalPopSkip = true; history.back(); } }
     const dlg = $('#eduDlg'); if (dlg && dlg.open) dlg.close();
-    document.documentElement.classList.remove('sheet-open');
+    setSheet(false);
     eduPilih.length = 0; eduUntuk = null;
     const atHome = !$('#home').hidden;
     if (area) pendingArea = area;
@@ -5814,7 +5822,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     return p;
   }
   function showHome() {
-    document.documentElement.classList.remove('sheet-open');
+    setSheet(false);
     const dlg = $('#eduDlg'); if (dlg && dlg.open) dlg.close();
     if (modalView) closeModal();
     $('#app').hidden = true; $('#lock').hidden = true; $('#home').hidden = false;
@@ -6110,14 +6118,37 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   $('#btnTheme').addEventListener('click', toggleTheme);
   $('#btnLock').addEventListener('click', () => lock(''));
   $$('.js-copyall').forEach(b => b.addEventListener('click', copyAll));
-  // HP: lembar konsul naik dari bawah seperti laci; laptop: lembar tetap di samping
-  function setSheet(open) {
+  // HP: lembar konsul naik dari bawah seperti laci; laptop: lembar tetap di samping.
+  // Tutup laci: tombol Tutup (atas laci atau dok), ketuk area gelap, geser pegangan ke bawah, Esc, atau tombol Back HP.
+  let sheetPopSkip = false;
+  const sheetIsOpen = () => document.documentElement.classList.contains('sheet-open');
+  function setSheet(open, fromPop) {
+    if (open === sheetIsOpen()) return;
     document.documentElement.classList.toggle('sheet-open', open);
-    const b = $('#btnJump');
+    const b = $('#btnJump'), wrap = $('.sheet-wrap');
     b.setAttribute('aria-expanded', open ? 'true' : 'false');
     b.textContent = open ? 'Tutup' : (state && state.who === 'bbl' ? 'Lihat laporan' : 'Lihat konsul');
-    if (open) $('.sheet-wrap').scrollTop = 0;
+    wrap.style.transform = '';
+    if (open) {
+      wrap.scrollTop = 0;
+      try { history.pushState(Object.assign({}, history.state, { clSheet: true }), ''); } catch (e) { /* abaikan */ }
+      setTimeout(() => { try { $('#sheetClose').focus({ preventScroll: true }); } catch (e) { /* abaikan */ } }, 60);
+    } else {
+      if (!fromPop && history.state && history.state.clSheet) { sheetPopSkip = true; history.back(); }
+      if (wrap.contains(document.activeElement)) { try { b.focus({ preventScroll: true }); } catch (e) { /* abaikan */ } }
+    }
   }
+  // Geser pegangan laci ke bawah untuk menutup
+  (function () {
+    const head = $('#laciHead'), wrap = $('.sheet-wrap');
+    let y0 = null, dy = 0;
+    head.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; y0 = e.clientY; dy = 0; wrap.style.transition = 'none'; try { head.setPointerCapture(e.pointerId); } catch (err) { /* abaikan */ } });
+    head.addEventListener('pointermove', e => { if (y0 == null) return; dy = Math.max(0, e.clientY - y0); wrap.style.transform = 'translateY(' + dy + 'px)'; });
+    const end = () => { if (y0 == null) return; y0 = null; wrap.style.transition = ''; if (dy > 70) setSheet(false); else wrap.style.transform = ''; };
+    head.addEventListener('pointerup', end); head.addEventListener('pointercancel', end);
+  })();
+  $('#sheetClose').addEventListener('click', () => setSheet(false));
+  $('#sheetScrim').addEventListener('click', () => setSheet(false));
   $('#btnJump').setAttribute('aria-controls', 'sheet');
   $('#btnJump').addEventListener('click', () => setSheet(!document.documentElement.classList.contains('sheet-open')));
   $$('.sec-tog').forEach(b => b.addEventListener('click', () => toggleSec(b)));
@@ -6126,8 +6157,10 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   $('#modalClose').addEventListener('click', closeModal);
   $('#modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   window.addEventListener('popstate', () => {
+    if (sheetPopSkip) { sheetPopSkip = false; return; }
     if (modalPopSkip) { modalPopSkip = false; return; }
-    if (modalView) closeModal(true);
+    if (modalView) { closeModal(true); return; }
+    if (sheetIsOpen()) setSheet(false, true);
   });
   const aIn = $('#aIn'), pIn = $('#pIn');
   aIn.addEventListener('input', () => { state.a = aIn.value; grow(aIn); changed(); });
