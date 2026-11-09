@@ -106,6 +106,7 @@ h1,h2,h3,p{margin:0}
 .home-btn--cppt .hb-ico{background:var(--hl);color:var(--hl-ink)}
 .home-btn--bbl{background:var(--surface)}
 .home-btn--alat{background:var(--surface);border-style:dashed}
+.home-btn--lab{background:var(--surface);border-color:var(--hl-edge)}
 .home-btn--edu{background:var(--pk-soft);border-color:var(--pk-edge)}
 .home-btn--edu .hb-ico{background:var(--pk);color:var(--pk-ink)}
 .alat-off{display:none!important}
@@ -718,6 +719,9 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 .labp-set{margin-top:10px;padding:10px 12px;border:1.5px solid var(--rule);border-radius:10px;background:var(--surface)}
 .labp-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:8px}
 .labp-top .x{margin-left:auto}
+.labp-top .in[type=date]{width:auto;min-width:15ch}
+.labp-top .in[type=time]{width:auto;min-width:10ch}
+.labp-top .lnk{font-size:13px}
 .labp-raw{font-family:var(--f-mono);font-size:12.5px;white-space:pre;overflow:auto!important;tab-size:4;max-height:132px;min-height:66px}
 .labp-info{display:block;margin-top:6px}
 .alat-link{margin-top:12px}
@@ -772,6 +776,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     </svg>
     <p class="home-lede">Mau mengerjakan apa?</p>
     <button type="button" class="home-btn home-btn--cppt" data-go="cppt"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8l3 3v13H5V4z"/><path d="M9 10h6M9 14h6M9 18h3"/></svg></span><span><span class="hb-t">CPPT</span><span class="hb-s">Dewasa dan anak, konsul WA</span></span><span class="hb-go" aria-hidden="true">›</span></button>
+    <button type="button" class="home-btn home-btn--lab" data-go="lab"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6.5L4.8 18.3A1.8 1.8 0 0 0 6.3 21h11.4a1.8 1.8 0 0 0 1.5-2.7L14 9.5V3"/><path d="M7.5 15h9"/></svg></span><span><span class="hb-t">Hasil lab</span><span class="hb-s">Tempel dari SIMRS, urut tanggal, salin</span></span><span class="hb-go" aria-hidden="true">›</span></button>
     <button type="button" class="home-btn home-btn--bbl" data-go="bbl"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><path d="M10.5 8h.01M13.5 8h.01"/></svg></span><span><span class="hb-t">Lapor bayi</span><span class="hb-s">Bayi baru lahir untuk DPJP</span></span><span class="hb-go" aria-hidden="true">›</span></button>
     <button type="button" class="home-btn home-btn--edu" data-go="edu"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg></span><span><span class="hb-t">Edukasi</span><span class="hb-s">Pilih materi, tunjukkan QR ke pasien</span></span><span class="hb-go" aria-hidden="true">›</span></button>
     <button type="button" class="home-btn home-btn--alat" data-go="alat"><span class="hb-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h3.5"/></svg></span><span><span class="hb-t">Alat</span><span class="hb-s">Skor, eGFR, cairan, status gizi</span></span><span class="hb-go" aria-hidden="true">›</span></button>
@@ -862,6 +867,11 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       <section class="sec" id="secAlat" aria-labelledby="hX" hidden>
         <div class="sec-head sec-head--card"><span class="tab" aria-hidden="true">✚</span><h2 id="hX">Alat</h2><span class="sec-note">Untuk pasien di tab ini. Skor memakai TTV dan PF yang diisi di CPPT.</span></div>
         <div class="sec-body"><div id="alatBody"></div></div>
+      </section>
+
+      <section class="sec" id="secLab" aria-labelledby="hL" hidden>
+        <div class="sec-head sec-head--card"><span class="tab" aria-hidden="true">L</span><h2 id="hL">Hasil lab</h2><span class="sec-note">Untuk pasien di tab ini; sama dengan Lab di CPPT.</span></div>
+        <div class="sec-body"><div id="labBody"></div></div>
       </section>
 
       <section class="sec" id="secBBL" aria-labelledby="hB" hidden>
@@ -1648,7 +1658,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       ['lok', 'pen', 'a', 'p'].forEach(k => { if (typeof d[k] === 'string') s[k] = d[k]; });
       ['s', 'o', 'ant', 'ps', 'sc', 'amp', 'pat', 'lab', 'fl', 'bbl', 'obg', 'kons', 'gz', 'bb'].forEach(k => mergeShallow(s[k], d[k]));
       ['rwK', 'penLab', 'penRad'].forEach(k => { if (typeof d[k] === 'string') s[k] = d[k]; });
-      if (Array.isArray(d.labSets)) s.labSets = d.labSets.filter(x => x && typeof x.raw === 'string').slice(0, 10).map(x => ({ id: typeof x.id === 'string' ? x.id : uid('L'), jam: String(x.jam || '').slice(0, 24), raw: x.raw.slice(0, 20000) }));
+      if (Array.isArray(d.labSets)) s.labSets = d.labSets.filter(x => x && typeof x.raw === 'string').slice(0, 10).map(x => Object.assign({ id: typeof x.id === 'string' ? x.id : uid('L'), raw: x.raw.slice(0, 20000) }, labWaktu(x)));
       if (d.nl && typeof d.nl === 'object') {
         s.nl.on = !!d.nl.on;
         if (typeof d.nl.kesan === 'string') s.nl.kesan = d.nl.kesan;
@@ -1961,7 +1971,18 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     renderTabs();
     // mode ringkas (Dewasa/Anak): hanya bagian S; O, A, P tidak ditampilkan dan tidak ditulis (isiannya tetap tersimpan)
     const bbl = state.who === 'bbl', onlyS = !bbl && appMode === 'ringkas', alat = area === 'alat' && !bbl;
+    const labA = area === 'lab' && !bbl;
     $('#secAlat').hidden = !alat;
+    $('#secLab').hidden = !labA;
+    if (labA) {
+      ['#secPt', '#secS', '#secO', '#secA', '#secP', '#secBBL'].forEach(s => { $(s).hidden = true; });
+      ['#ptBody', '#ptTog', '#sBody', '#oBody', '#bblBody', '#fluidBox', '#alatBody'].forEach(s => { $(s).textContent = ''; });
+      renderLabArea();
+      syncModes(); applySecs(); measureBar(); updateSums();
+      growAll($$('textarea', $('#labBody')).filter(t => t.offsetParent));
+      return;
+    }
+    $('#labBody').textContent = '';
     if (alat) {
       ['#secS', '#secO', '#secA', '#secP', '#secBBL'].forEach(s => { $(s).hidden = true; });
       $('#secPt').hidden = false;
@@ -1989,6 +2010,23 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     list.forEach((el, i) => { el.style.height = Math.max(hs[i] + 2, 66) + 'px'; });
   }
   function autoW(el) { const n = Math.max((el.value || '').length, (el.placeholder || '').length, 4); el.style.width = Math.min(n + 2, 48) + 'ch'; }
+
+  /* ================= Hasil lab (menu sendiri): hanya lab, isian sama dengan Lab di CPPT ================= */
+  function renderLabArea() {
+    const b = $('#labBody');
+    b.textContent = '';
+    b.appendChild(blk('O:labp', labSetsEl));
+    b.appendChild(row('Lab lain', ta('oLab', state.penLab, 'Ketik manual, mis. GDS stik 333', v => { state.penLab = v; }, 'o:penLab'), 'oLab', 'row--gap'));
+    b.appendChild(h('p', { class: 'hint' }, 'Semua yang diisi di sini juga masuk ke bagian Laboratorium di CPPT pasien ini.'));
+  }
+  // Lembar Hasil lab: baris lab saja (WA dengan *tebal*, polos dengan tanda * untuk CPPT di EMR)
+  function buildLabSheet() {
+    const lines = labLinesOf();
+    if (!lines.length) return [{ t: '', hint: 'Belum ada hasil lab. Tempel tabel dari SIMRS di kiri.' }];
+    const L = [{ t: 'Laboratorium:', c: 'Laboratorium:' }];
+    lines.forEach(x => L.push({ t: waBold(x), c: cPlain(x), p: x, b: true }));
+    return L;
+  }
 
   /* ================= Alat: skor, status gizi, eGFR, cairan ================= */
   function renderAlat() {
@@ -2050,7 +2088,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
   /* ================= Tempel hasil lab dari SIMRS ================= */
   // Tabel SIMRS (dipisah Tab) dibaca apa adanya: nilai normal, satuan, dan tanda * diambil dari tempelan, tanpa database.
-  // WA: baris abnormal ditebalkan + L/H. CPPT (teks polos): nilai abnormal diberi *. Pemeriksaan ulang ditulis serial (a -> b).
+  // WA: baris abnormal ditebalkan + (hi)/(low). CPPT (teks polos): nilai abnormal diberi *. Pemeriksaan ulang ditulis serial (a -> b).
   const LAB_K = new Map([['hemoglobin', ['Hb', 10]], ['hematrokit', ['Ht', 11]], ['hematokrit', ['Ht', 11]], ['leukosit', ['Leu', 12]], ['trombosit', ['Tr', 13]], ['eritrosit', ['Eri', 14]],
     ['glukosa sewaktu', ['GDS', 30]], ['glukosa puasa', ['GDP', 31]], ['glukosa 2 jam pp', ['GD2PP', 32]], ['ureum', ['Ur', 40]], ['creatinin', ['Cr', 41]], ['kreatinin', ['Cr', 41]], ['asam urat', ['AU', 45]],
     ['cholesterol total', ['Kol total', 50]], ['cholesterol hdl', ['HDL', 51]], ['cholesterol ldl', ['LDL', 52]], ['trigliserida', ['TG', 53]],
@@ -2078,7 +2116,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       let arah = '';
       if (flag && labNum(val)) {
         const v = Number(val), m = ref.match(/^(-?[\d.]+)\s*-\s*(-?[\d.]+)$/), lt = ref.match(/^<\s*(-?[\d.]+)/), gt = ref.match(/^>\s*(-?[\d.]+)/);
-        if (m) arah = v < +m[1] ? 'L' : v > +m[2] ? 'H' : ''; else if (lt) arah = 'H'; else if (gt) arah = 'L';
+        if (m) arah = v < +m[1] ? 'low' : v > +m[2] ? 'hi' : ''; else if (lt) arah = 'hi'; else if (gt) arah = 'low';
       }
       const g = LAB_GRUP[grup] ? grup : '';
       rows.push({ nama: nama, k: k, kunci: (g ? g + '|' : '') + k, val: val, flag: flag, arah: arah, ref: ref, unit: unit, grup: g });
@@ -2086,7 +2124,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     return rows;
   }
   function labSerialLines() {
-    const sets = (state.labSets || []).map(x => ({ jam: clean(x.jam), rows: labBaca(x.raw) })).filter(x => x.rows.length);
+    const sets = labUrut(state.labSets || []).map(x => ({ jam: labLabel(x), rows: labBaca(x.raw) })).filter(x => x.rows.length);
     if (!sets.length) return [];
     const n = sets.length, peta = new Map();
     let urut = 0;
@@ -2106,12 +2144,12 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const baris = (x, idx) => {
       let wa, cp, abn;
       if (x.hj) {
-        const f = (a, w) => (a.some(Boolean) ? a.map(r => (r ? r.val + (r.flag ? (w ? r.arah : '*') : '') : '-')).join('/') : '-');
+        const f = (a, w) => (a.some(Boolean) ? a.map(r => (r ? r.val + (r.flag ? (w ? (r.arah ? ' (' + r.arah + ')' : '') : '*') : '') : '-')).join('/') : '-');
         wa = idx.map(i => f(x.hj[i], true)).join(' -> '); cp = idx.map(i => f(x.hj[i], false)).join(' -> ');
         abn = x.hj[idx[idx.length - 1]].some(r => r && r.flag);
       } else {
         const vs = idx.map(i => x.v[i]);
-        const f = (r, w) => { if (!r) return '-'; const v = labNum(r.val) ? r.val : labKual(r.val); return v + (r.flag ? (w ? (r.arah ? ' ' + r.arah : '') : '*') : ''); };
+        const f = (r, w) => { if (!r) return '-'; const v = labNum(r.val) ? r.val : labKual(r.val); return v + (r.flag ? (w ? (r.arah ? ' (' + r.arah + ')' : '') : '*') : ''); };
         wa = vs.map(r => f(r, true)).join(' -> '); cp = vs.map(r => f(r, false)).join(' -> ');
         const ak = vs.slice().reverse().find(Boolean); abn = !!(ak && ak.flag);
       }
@@ -2132,15 +2170,50 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     });
     return L;
   }
-  const jamKini = () => { const d = new Date(); return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + ' ' + pad2(d.getHours()) + '.' + pad2(d.getMinutes()); };
+  /* Waktu lab: tgl (YYYY-MM-DD) wajib-ish, jam (HH:MM) boleh kosong. Hasil selalu diurutkan dari tanggal paling lama,
+     walau yang dimasukkan duluan adalah yang terbaru. Tanpa jam = di depan lab berjam pada tanggal yang sama. */
+  const tglHariIni = () => { const d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); };
+  function labWaktu(x) {
+    const ok = (t, j) => ({ tgl: /^\d{4}-\d{2}-\d{2}$/.test(t || '') ? t : '', jam: /^\d{2}:\d{2}$/.test(j || '') ? j : '' });
+    if (x && (x.tgl != null || /^\d{2}:\d{2}$/.test(x.jam || ''))) return ok(x.tgl, x.jam);
+    // data lama: satu kolom teks "dd/mm hh.mm"
+    const m = String((x && x.jam) || '').match(/(\d{1,2})[\/\-.](\d{1,2})(?:[\/\-.](\d{2,4}))?(?:\s+(\d{1,2})[.:](\d{2}))?/);
+    if (!m) return ok('', '');
+    const now = new Date();
+    let y = m[3] ? +m[3] : now.getFullYear();
+    if (y < 100) y += 2000;
+    if (!m[3] && new Date(y, +m[2] - 1, +m[1]) - now > 7 * 864e5) y -= 1;   // "31/12" dibuka Januari = tahun lalu
+    return ok(y + '-' + pad2(+m[2]) + '-' + pad2(+m[1]), m[4] ? pad2(+m[4]) + ':' + m[5] : '');
+  }
+  const labKunciW = x => (x.tgl || '9999-99-99') + ' ' + (x.jam || '');
+  const labUrut = sets => sets.map((x, i) => [x, i]).sort((a, b) => (labKunciW(a[0]) < labKunciW(b[0]) ? -1 : labKunciW(a[0]) > labKunciW(b[0]) ? 1 : a[1] - b[1])).map(a => a[0]);
+  function labLabel(x) {
+    if (!x.tgl) return '';
+    const p = x.tgl.split('-'), thn = +p[0] !== new Date().getFullYear() ? '/' + p[0].slice(2) : '';
+    return p[2] + '/' + p[1] + thn + (x.jam ? ' ' + x.jam.replace(':', '.') : '');
+  }
+  // Urutkan daftar di form juga (setelah selesai mengubah tanggal/jam), supaya nomor Lab 1, 2, ... ikut urutan waktu
+  function labRapikan() {
+    const sets = state.labSets, u = labUrut(sets);
+    if (u.every((x, i) => x === sets[i])) return;
+    sets.length = 0; u.forEach(x => sets.push(x));
+    refresh(['O:labp']);
+  }
   function labSetsEl() {
     const sets = state.labSets;
     const box = h('div', { class: 'labp' });
     box.appendChild(h('div', { class: 'sub-head' }, h('h3', null, 'Tempel dari SIMRS'),
-      h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'labp:add', onclick: () => { if (sets.length >= 10) { toast('Maksimal 10 set lab'); return; } sets.push({ id: uid('L'), jam: jamKini(), raw: '' }); refresh(['O:labp']); setTimeout(() => { const t = document.querySelector('[data-fk="labp:raw:' + sets[sets.length - 1].id + '"]'); if (t) t.focus(); }, 0); } }, sets.length ? '+ Lab ulang' : '+ Tempel hasil lab'),
-      h('span', { class: 'hint' }, 'Salin tabel hasil dari SIMRS, tempel di sini. Nilai normal dan tanda * ikut dari SIMRS. Lab ulang ditulis serial.')));
+      h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'labp:add', onclick: () => { if (sets.length >= 10) { toast('Maksimal 10 set lab'); return; } sets.push({ id: uid('L'), tgl: tglHariIni(), jam: '', raw: '' }); refresh(['O:labp']); setTimeout(() => { const t = document.querySelector('[data-fk="labp:raw:' + sets[sets.length - 1].id + '"]'); if (t) t.focus(); }, 0); } }, sets.length ? '+ Lab ulang' : '+ Tempel hasil lab'),
+      h('span', { class: 'hint' }, 'Salin tabel hasil dari SIMRS, tempel di sini. Nilai normal dan tanda * ikut dari SIMRS. Lab ulang ditulis serial, otomatis urut dari tanggal paling lama; jam boleh kosong.')));
     sets.forEach((x, i) => {
-      const jam = txt(x.jam, 'tgl/jam', v => { x.jam = v; }, 'labp:jam:' + x.id, { class: 'in in--sm', 'aria-label': 'Waktu lab ke-' + (i + 1), style: 'width:14ch' });
+      const rapi = () => setTimeout(() => { if (state && state.labSets === sets) labRapikan(); }, 0);
+      const tgl = h('input', { class: 'in in--sm', type: 'date', value: x.tgl || '', 'aria-label': 'Tanggal lab ke-' + (i + 1), 'data-fk': 'labp:tgl:' + x.id });
+      tgl.addEventListener('change', () => { x.tgl = /^\d{4}-\d{2}-\d{2}$/.test(tgl.value) ? tgl.value : ''; changed(); });
+      tgl.addEventListener('blur', rapi);
+      const jam = h('input', { class: 'in in--sm', type: 'time', value: x.jam || '', 'aria-label': 'Jam lab ke-' + (i + 1) + ' (boleh kosong)', title: 'Jam boleh kosong', 'data-fk': 'labp:jam:' + x.id });
+      const jamX = h('button', { type: 'button', class: 'lnk', 'data-fk': 'labp:jamx:' + x.id, hidden: !x.jam, onclick: () => { x.jam = ''; jam.value = ''; jamX.hidden = true; changed(); labRapikan(); } }, 'tanpa jam');
+      jam.addEventListener('change', () => { x.jam = /^\d{2}:\d{2}$/.test(jam.value) ? jam.value : ''; jamX.hidden = !x.jam; changed(); });
+      jam.addEventListener('blur', rapi);
       const raw = h('textarea', { class: 'in labp-raw', rows: '3', placeholder: 'Tempel tabel hasil lab di sini', spellcheck: 'false', 'aria-label': 'Hasil lab ke-' + (i + 1), 'data-fk': 'labp:raw:' + x.id });
       raw.value = x.raw;
       raw.addEventListener('input', () => { x.raw = raw.value; grow(raw); changed(); cek(); });
@@ -2149,7 +2222,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       cek();
       info.classList.add('labp-info');
       box.appendChild(h('div', { class: 'labp-set' },
-        h('div', { class: 'labp-top' }, h('b', null, 'Lab ' + (i + 1)), jam,
+        h('div', { class: 'labp-top' }, h('b', null, 'Lab ' + (i + 1)), tgl, jam, jamX,
           h('button', { type: 'button', class: 'x', 'aria-label': 'Hapus lab ' + (i + 1), 'data-fk': 'labp:del:' + x.id, onclick: () => { sets.splice(i, 1); refresh(['O:labp']); } }, '×')), raw, info));
     });
     return box;
@@ -5265,7 +5338,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
   /* ================= Lembar (laporan WA) & bagian turunan ================= */
   // Tampilan lembar: 'bbl' (lapor bayi) atau 'wa' (konsul WhatsApp; bagian S, O, A, P di dalamnya bisa disalin untuk CPPT)
-  const sheetMode = () => (state.who === 'bbl' ? 'bbl' : 'wa');
+  const sheetMode = () => (state.who === 'bbl' ? 'bbl' : area === 'lab' ? 'lab' : 'wa');
   // Perbarui daftar baris secara bertahap: baris yang sama tidak digambar ulang
   function patchList(box, keys, mk) {
     const old = box._k || [], kids = box.children;
@@ -5301,14 +5374,14 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     body.textContent = '';
     body._mode = mode;
     const lines = h('div', { class: 'sh-lines' });
-    body.appendChild(h('section', { class: 'sh-sec rep', 'aria-label': mode === 'bbl' ? 'Lapor bayi baru lahir' : 'Konsul WhatsApp' }, lines));
+    body.appendChild(h('section', { class: 'sh-sec rep', 'aria-label': mode === 'bbl' ? 'Lapor bayi baru lahir' : mode === 'lab' ? 'Hasil lab' : 'Konsul WhatsApp' }, lines));
     body._secs = { rep: { lines: lines } };
   }
   function renderSheet() {
     const body = $('#sheetBody'), mode = sheetMode();
     if (body._mode !== mode) sheetSkeleton(body, mode);
     syncSheetHead(mode);
-    const items = mode === 'bbl' ? bblLines().map(t => ({ t: t })) : buildWA();
+    const items = mode === 'bbl' ? bblLines().map(t => ({ t: t })) : mode === 'lab' ? buildLabSheet() : buildWA();
     const has = {};
     items.forEach(x => { if (x.k && !x.h && !x.hint && x.t !== '') has[x.k] = 1; });
     body._items = items;
@@ -5316,8 +5389,17 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   function syncSheetHead(mode) {
     const lab = curPat().label;
-    $('#waBar').hidden = false;
-    $('#btnSoap').hidden = mode !== 'wa';
+    $('#waBar').hidden = mode === 'lab';
+    $('#btnSoap').hidden = mode === 'bbl';
+    $('#btnSoap').textContent = mode === 'lab' ? 'Salin polos' : 'Salin SOAP';
+    if (mode === 'lab') {
+      $('#btnSoap').title = 'Salin hasil lab untuk CPPT di EMR: tanpa tanda bintang tebal, nilai abnormal diberi *';
+      $('#sheetTitle').textContent = 'HASIL LAB';
+      $('#sheetSub').textContent = lab + ' · urut tanggal';
+      $('#sheetFoot').textContent = 'Stabilo = tidak normal, ditebalkan (*…*) di WA.';
+      if (!document.documentElement.classList.contains('sheet-open')) $('#btnJump').textContent = 'Lihat hasil';
+      return;
+    }
     $('#btnSoap').title = appMode === 'ringkas' ? 'Salin S untuk CPPT di EMR: tanpa salam, identitas, dan tanda bintang' : 'Salin S, O, A, P untuk CPPT di EMR: tanpa salam, identitas, dan tanda bintang';
     renderWaBar();
     if (mode === 'bbl') {
@@ -5527,7 +5609,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   function copyAll() {
     if (!state) return;
     const mode = sheetMode();
-    copyText(mode === 'bbl' ? bblLines().join('\n') : waText(buildWA()), mode === 'bbl' ? 'Laporan' : 'Konsul WA').then(ok => {
+    copyText(mode === 'bbl' ? bblLines().join('\n') : mode === 'lab' ? waText(buildLabSheet().filter(x => !x.hint)) : waText(buildWA()), mode === 'bbl' ? 'Laporan' : mode === 'lab' ? 'Hasil lab' : 'Konsul WA').then(ok => {
       if (!ok) return;
       $$('.js-copyall .lbl').forEach(l => { l.textContent = 'Tersalin'; });
       clearTimeout(flashT);
@@ -5536,7 +5618,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   }
   // Salin per bagian dan Salin SOAP: teks polos untuk CPPT di EMR (tanpa tanda bintang)
   function copySection(k) { if (state && state.who !== 'bbl') copyText(waSectionText(buildWA(), k), WA_NAME[k]); }
-  function copySoap() { if (state && state.who !== 'bbl') copyText(soapText(buildWA()), 'SOAP'); }
+  function copySoap() { if (!state || state.who === 'bbl') return; if (sheetMode() === 'lab') { copyText(buildLabSheet().filter(x => !x.hint).map(x => x.c).join('\n'), 'Hasil lab'); return; } copyText(soapText(buildWA()), 'SOAP'); }
 
   /* ================= Modal: atur default & sumber ================= */
   let modalView = null, modalReturn = null, modalPopSkip = false;
@@ -5811,7 +5893,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
   /* ================= Menu depan & area (CPPT, Lapor bayi, Edukasi) ================= */
   let area = null, pendingArea = null;
-  const AREA_NAMA = { cppt: 'CPPT', bbl: 'Lapor bayi', edu: 'Edukasi', alat: 'Alat' };
+  const AREA_NAMA = { cppt: 'CPPT', bbl: 'Lapor bayi', edu: 'Edukasi', alat: 'Alat', lab: 'Hasil lab' };
   // Pasien Lapor bayi dan pasien CPPT punya daftar tab sendiri-sendiri
   function inArea(p, a) { return (p.st.who === 'bbl') === (a === 'bbl'); }
   function newAreaPatient(a) {
@@ -5840,13 +5922,13 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const edu = a === 'edu';
     $('#edu').hidden = !edu;
     $('.desk').hidden = edu; $('.dock').hidden = edu; $('.bar-pt').hidden = edu;
-    $('.modes').hidden = edu; $('#btnNew').hidden = edu;
+    $('.modes').hidden = edu || a === 'lab'; $('#btnNew').hidden = edu;
     $('#segWho').hidden = a === 'bbl';
     $('#segKind').classList.toggle('alat-off', a === 'alat');
     if (edu) { renderEdu(); measureBar(); window.scrollTo(0, 0); bumpIdle(); return; }
     if (db) {
       if (!db.lastCur) db.lastCur = { cppt: null, bbl: null };
-      const lk = a === 'bbl' ? 'bbl' : 'cppt';   // Alat memakai pasien CPPT yang sama
+      const lk = a === 'bbl' ? 'bbl' : 'cppt';   // Alat dan Hasil lab memakai pasien CPPT yang sama
       const list = db.list.filter(p => inArea(p, lk));
       let id = db.lastCur[lk];
       if (!list.some(p => p.id === id)) id = list.some(p => p.id === db.cur) ? db.cur : (list[0] && list[0].id);
@@ -5998,7 +6080,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (key && !noSave) saveChain = saveChain.then(() => encSave(key, json, filled)).then(() => true, () => false);
   }
   function clearPage() {
-    ['#ptTog', '#ptBody', '#sBody', '#oBody', '#bblBody', '#fluidBox', '#ptabs', '#waBar', '#modalBody', '#toast', '#sheetSub'].forEach(s => { const el = $(s); if (el) el.textContent = ''; });
+    ['#ptTog', '#ptBody', '#sBody', '#oBody', '#bblBody', '#fluidBox', '#alatBody', '#labBody', '#ptabs', '#waBar', '#modalBody', '#toast', '#sheetSub'].forEach(s => { const el = $(s); if (el) el.textContent = ''; });
     const body = $('#sheetBody');
     body.textContent = ''; body._mode = null; body._secs = null; body._items = null;
     $('#waBar')._sig = null;
