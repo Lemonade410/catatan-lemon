@@ -722,6 +722,14 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 .labp-top .in[type=date]{width:auto;min-width:15ch}
 .labp-top .in[type=time]{width:auto;min-width:10ch}
 .labp-top .lnk{font-size:13px}
+.labl-grid{display:grid;grid-template-columns:5.5ch minmax(7ch,9ch) minmax(0,1fr);gap:6px 8px;align-items:center}
+.labl-grid > b{font-size:14px}
+.labl-grid .in{font-size:14px;padding:6px 8px}
+.labl-grid select.in{font-size:13px;padding:6px 4px}
+.labl-grid .in.abn{background:var(--pk-soft);border-bottom-color:var(--pk)}
+.labl-own{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.labl-own .in{width:auto;flex:1 1 9ch}
+.set-ref{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0 10px}
 .labp-raw{font-family:var(--f-mono);font-size:12.5px;white-space:pre;overflow:auto!important;tab-size:4;max-height:132px;min-height:66px}
 .labp-info{display:block;margin-top:6px}
 .alat-link{margin-top:12px}
@@ -1477,7 +1485,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
   /* ================= Default buatan sendiri (localStorage) ================= */
   // kenal = perkenalan diri ("ini dengan ...") di kalimat salam; bawaan nyala
-  function defSettings() { return { v: 1, pfLabel: {}, pfExDef: {}, pfOnDef: {}, pfCustom: {}, rwCore: { dewasa: [], anak: [] }, gx: {}, bbl: { nama: '', rs: '', salam: '', penutup: '', kenal: true, pf: {} }, kons: { nama: '', salam: '', pembuka: '', penutup: '', kenal: true }, gzBBU: [60, 80, 120] }; }
+  function defSettings() { return { v: 1, pfLabel: {}, pfExDef: {}, pfOnDef: {}, pfCustom: {}, rwCore: { dewasa: [], anak: [] }, gx: {}, bbl: { nama: '', rs: '', salam: '', penutup: '', kenal: true, pf: {} }, kons: { nama: '', salam: '', pembuka: '', penutup: '', kenal: true }, gzBBU: [60, 80, 120], labRef: {} }; }
   // Gejala tambahan: rapikan, buang dobel (nama sama = gejala sama), batasi jumlahnya
   const gxCusList = a => a.map(t => clean(t).slice(0, 40)).filter(Boolean).filter((t, i, arr) => arr.findIndex(u => slug(u) === slug(t)) === i).slice(0, GX_CUS_MAX);
   function sanitizeSettings(x) {
@@ -1523,6 +1531,13 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
         ['nama', 'salam', 'pembuka', 'penutup'].forEach(k => { if (typeof x.kons[k] === 'string') s.kons[k] = clean(x.kons[k]).slice(0, 200); });
         if (typeof x.kons.kenal === 'boolean') s.kons.kenal = x.kons.kenal;
       }
+      if (x.labRef && typeof x.labRef === 'object') Object.keys(x.labRef).forEach(k => {
+        const a = x.labRef[k];
+        if (!/^[A-Za-z0-9 ]{1,12}$/.test(k) || !Array.isArray(a)) return;
+        const ok = a.filter(e => e && typeof e.ref === 'string' && clean(e.ref)).slice(-12).map(e => ({ ref: clean(e.ref).slice(0, 30), unit: clean(e.unit || '').slice(0, 20), who: e.who === 'anak' ? 'anak' : e.who === 'dewasa' ? 'dewasa' : '',
+          sex: e.sex === 0 || e.sex === 1 ? e.sex : null, a0: typeof e.a0 === 'number' ? e.a0 : null, a1: typeof e.a1 === 'number' ? e.a1 : null }));
+        if (ok.length) s.labRef[k] = ok;
+      });
       if (Array.isArray(x.gzBBU) && x.gzBBU.length === 3 && x.gzBBU.every(v => typeof v === 'number' && v > 0 && v < 300) && x.gzBBU[0] < x.gzBBU[1] && x.gzBBU[1] < x.gzBBU[2]) s.gzBBU = x.gzBBU.slice();
     } catch (e) { return defSettings(); }
     return s;
@@ -1658,7 +1673,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       ['lok', 'pen', 'a', 'p'].forEach(k => { if (typeof d[k] === 'string') s[k] = d[k]; });
       ['s', 'o', 'ant', 'ps', 'sc', 'amp', 'pat', 'lab', 'fl', 'bbl', 'obg', 'kons', 'gz', 'bb'].forEach(k => mergeShallow(s[k], d[k]));
       ['rwK', 'penLab', 'penRad'].forEach(k => { if (typeof d[k] === 'string') s[k] = d[k]; });
-      if (Array.isArray(d.labSets)) s.labSets = d.labSets.filter(x => x && typeof x.raw === 'string').slice(0, 10).map(x => Object.assign({ id: typeof x.id === 'string' ? x.id : uid('L'), raw: x.raw.slice(0, 20000) }, labWaktu(x)));
+      if (Array.isArray(d.labSets)) s.labSets = d.labSets.filter(x => x && (typeof x.raw === 'string' || x.luar)).slice(0, 10).map(x => Object.assign({ id: typeof x.id === 'string' ? x.id : uid('L'), raw: typeof x.raw === 'string' ? x.raw.slice(0, 20000) : '' }, labWaktu(x), x.luar ? { luar: true, it: luarItSan(x.it) } : {}));
       if (d.nl && typeof d.nl === 'object') {
         s.nl.on = !!d.nl.on;
         if (typeof d.nl.kesan === 'string') s.nl.kesan = d.nl.kesan;
@@ -2016,7 +2031,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     const b = $('#labBody');
     b.textContent = '';
     b.appendChild(blk('O:labp', labSetsEl));
-    b.appendChild(row('Lab lain', ta('oLab', state.penLab, 'Ketik manual, mis. GDS stik 333', v => { state.penLab = v; }, 'o:penLab'), 'oLab', 'row--gap'));
+    b.appendChild(luarFold());
     b.appendChild(h('p', { class: 'hint' }, 'Semua yang diisi di sini juga masuk ke bagian Laboratorium di CPPT pasien ini.'));
   }
   // Lembar Hasil lab: baris lab saja (WA dengan *tebal*, polos dengan tanda * untuk CPPT di EMR)
@@ -2090,7 +2105,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   // Tabel SIMRS (dipisah Tab) dibaca apa adanya: nilai normal, satuan, dan tanda * diambil dari tempelan, tanpa database.
   // WA: baris abnormal ditebalkan + (hi)/(low). CPPT (teks polos): nilai abnormal diberi *. Pemeriksaan ulang ditulis serial (a -> b).
   const LAB_K = new Map([['hemoglobin', ['Hb', 10]], ['hematrokit', ['Ht', 11]], ['hematokrit', ['Ht', 11]], ['leukosit', ['Leu', 12]], ['trombosit', ['Tr', 13]], ['eritrosit', ['Eri', 14]],
-    ['glukosa sewaktu', ['GDS', 30]], ['glukosa puasa', ['GDP', 31]], ['glukosa 2 jam pp', ['GD2PP', 32]], ['ureum', ['Ur', 40]], ['creatinin', ['Cr', 41]], ['kreatinin', ['Cr', 41]], ['asam urat', ['AU', 45]],
+    ['glukosa sewaktu', ['GDS', 30]], ['glukosa puasa', ['GDP', 31]], ['glukosa 2 jam pp', ['GD2PP', 32]], ['ureum', ['Ur', 40]], ['creatinin', ['Cr', 41]], ['kreatinin', ['Cr', 41]], ['sgot', ['SGOT', 42]], ['ast', ['SGOT', 42]], ['ast (sgot)', ['SGOT', 42]], ['sgpt', ['SGPT', 43]], ['alt', ['SGPT', 43]], ['alt (sgpt)', ['SGPT', 43]], ['asam urat', ['AU', 45]],
     ['cholesterol total', ['Kol total', 50]], ['cholesterol hdl', ['HDL', 51]], ['cholesterol ldl', ['LDL', 52]], ['trigliserida', ['TG', 53]],
     ['natrium', ['Na', 60]], ['kalium', ['K', 61]], ['chlorida', ['Cl', 62]], ['klorida', ['Cl', 62]],
     ['ph', ['pH', 70]], ['pco2', ['pCO2', 71]], ['po2', ['pO2', 72]], ['hco3', ['HCO3', 73]], ['tco2', ['TCO2', 74]], ['be (ecf)', ['BE', 75]], ['o2 sat', ['SaO2', 76]],
@@ -2124,12 +2139,14 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     return rows;
   }
   function labSerialLines() {
-    const sets = labUrut(state.labSets || []).map(x => ({ jam: labLabel(x), rows: labBaca(x.raw) })).filter(x => x.rows.length);
+    const sets = labUrut(state.labSets || []).map(x => ({ jam: labLabel(x), rows: x.luar ? luarRows(x) : labBaca(x.raw) })).filter(x => x.rows.length);
     if (!sets.length) return [];
     const n = sets.length, peta = new Map();
     let urut = 0;
     sets.forEach((st, si) => st.rows.forEach(r => {
       if (LAB_HJ.indexOf(r.k) >= 0) return;
+      const ab = !r.grup && LAB_K.get(r.k);
+      if (ab) r = Object.assign({}, r, { kunci: '@' + ab[0] });
       if (!peta.has(r.kunci)) {
         const e = LAB_K.get(r.k), go = r.grup ? LAB_GRUP[r.grup][1] : null;
         peta.set(r.kunci, { grup: r.grup, nama: r.grup ? r.nama : (e ? e[0] : r.nama), o: go != null ? go + (urut++) / 1000 : (e ? e[1] : 200 + (urut++) / 1000), v: Array(n).fill(null), ref: '', unit: '' });
@@ -2188,24 +2205,31 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   const labKunciW = x => (x.tgl || '9999-99-99') + ' ' + (x.jam || '');
   const labUrut = sets => sets.map((x, i) => [x, i]).sort((a, b) => (labKunciW(a[0]) < labKunciW(b[0]) ? -1 : labKunciW(a[0]) > labKunciW(b[0]) ? 1 : a[1] - b[1])).map(a => a[0]);
   function labLabel(x) {
-    if (!x.tgl) return '';
+    const luar = x.luar ? ' (luar)' : '';
+    if (!x.tgl) return x.luar ? 'luar' : '';
     const p = x.tgl.split('-'), thn = +p[0] !== new Date().getFullYear() ? '/' + p[0].slice(2) : '';
-    return p[2] + '/' + p[1] + thn + (x.jam ? ' ' + x.jam.replace(':', '.') : '');
+    return p[2] + '/' + p[1] + thn + (x.jam ? ' ' + x.jam.replace(':', '.') : '') + luar;
   }
   // Urutkan daftar di form juga (setelah selesai mengubah tanggal/jam), supaya nomor Lab 1, 2, ... ikut urutan waktu
+  // Hanya daftar yang urutannya benar-benar berubah yang digambar ulang (SIMRS dan lab luar terpisah).
   function labRapikan() {
     const sets = state.labSets, u = labUrut(sets);
     if (u.every((x, i) => x === sets[i])) return;
+    const beda = luar => { const a = sets.filter(x => !!x.luar === luar), b = u.filter(x => !!x.luar === luar); return a.some((x, i) => x !== b[i]); };
+    const keys = [beda(false) ? 'O:labp' : null, beda(true) ? 'O:labl' : null].filter(Boolean);
     sets.length = 0; u.forEach(x => sets.push(x));
-    refresh(['O:labp']);
+    if (keys.length) refresh(keys);
   }
   function labSetsEl() {
     const sets = state.labSets;
+    let no = 0;
     const box = h('div', { class: 'labp' });
     box.appendChild(h('div', { class: 'sub-head' }, h('h3', null, 'Tempel dari SIMRS'),
-      h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'labp:add', onclick: () => { if (sets.length >= 10) { toast('Maksimal 10 set lab'); return; } sets.push({ id: uid('L'), tgl: tglHariIni(), jam: '', raw: '' }); refresh(['O:labp']); setTimeout(() => { const t = document.querySelector('[data-fk="labp:raw:' + sets[sets.length - 1].id + '"]'); if (t) t.focus(); }, 0); } }, sets.length ? '+ Lab ulang' : '+ Tempel hasil lab'),
+      h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'labp:add', onclick: () => { if (sets.length >= 10) { toast('Maksimal 10 set lab'); return; } sets.push({ id: uid('L'), tgl: tglHariIni(), jam: '', raw: '' }); refresh(['O:labp']); setTimeout(() => { const t = document.querySelector('[data-fk="labp:raw:' + sets[sets.length - 1].id + '"]'); if (t) t.focus(); }, 0); } }, sets.some(x => !x.luar) ? '+ Lab ulang' : '+ Tempel hasil lab'),
       h('span', { class: 'hint' }, 'Salin tabel hasil dari SIMRS, tempel di sini. Nilai normal dan tanda * ikut dari SIMRS. Lab ulang ditulis serial, otomatis urut dari tanggal paling lama; jam boleh kosong.')));
-    sets.forEach((x, i) => {
+    sets.forEach(x => {
+      if (x.luar) return;
+      const i = no++;
       const rapi = () => setTimeout(() => { if (state && state.labSets === sets) labRapikan(); }, 0);
       const tgl = h('input', { class: 'in in--sm', type: 'date', value: x.tgl || '', 'aria-label': 'Tanggal lab ke-' + (i + 1), 'data-fk': 'labp:tgl:' + x.id });
       tgl.addEventListener('change', () => { x.tgl = /^\d{4}-\d{2}-\d{2}$/.test(tgl.value) ? tgl.value : ''; changed(); });
@@ -2216,16 +2240,193 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       jam.addEventListener('blur', rapi);
       const raw = h('textarea', { class: 'in labp-raw', rows: '3', placeholder: 'Tempel tabel hasil lab di sini', spellcheck: 'false', 'aria-label': 'Hasil lab ke-' + (i + 1), 'data-fk': 'labp:raw:' + x.id });
       raw.value = x.raw;
-      raw.addEventListener('input', () => { x.raw = raw.value; grow(raw); changed(); cek(); });
+      raw.addEventListener('input', () => { x.raw = raw.value; grow(raw); changed(); cek(); clearTimeout(raw._bt); raw._bt = setTimeout(() => labBelajar(x.raw), 900); });
       const info = h('span', { class: 'hint' });
       const cek = () => { const r = labBaca(x.raw); info.textContent = r.length ? r.length + ' pemeriksaan terbaca, ' + r.filter(y => y.flag).length + ' abnormal' : (clean(x.raw) ? 'Belum terbaca. Pastikan menyalin tabel langsung dari SIMRS.' : ''); };
       cek();
       info.classList.add('labp-info');
       box.appendChild(h('div', { class: 'labp-set' },
         h('div', { class: 'labp-top' }, h('b', null, 'Lab ' + (i + 1)), tgl, jam, jamX,
-          h('button', { type: 'button', class: 'x', 'aria-label': 'Hapus lab ' + (i + 1), 'data-fk': 'labp:del:' + x.id, onclick: () => { sets.splice(i, 1); refresh(['O:labp']); } }, '×')), raw, info));
+          h('button', { type: 'button', class: 'x', 'aria-label': 'Hapus lab ' + (i + 1), 'data-fk': 'labp:del:' + x.id, onclick: () => { sets.splice(sets.indexOf(x), 1); refresh(['O:labp']); } }, '×')), raw, info));
     });
     return box;
+  }
+
+  /* ================= Lab luar: isi satu-satu, nilai normal dipilih dari daftar ================= */
+  // Daftar nilai normal (settings.labRef) diisi otomatis dari tabel SIMRS yang ditempel (nilai RS sendiri),
+  // dicatat bersama kelompoknya (dewasa/anak, jenis kelamin, usia anak), plus yang diketik sendiri. Keterangan kelompok
+  // hanya tampil di pilihan; yang ditulis ke laporan cuma angka dan satuannya.
+  const LREF_MAX = 12;
+  const LUAR_T = [['Hb', 'hemoglobin', 'g/dL'], ['Ht', 'hematokrit', '%'], ['Leu', 'leukosit', ''], ['Tr', 'trombosit', ''], ['GDS', 'glukosa sewaktu', 'mg/dL'],
+    ['Ur', 'ureum', 'mg/dL'], ['Cr', 'kreatinin', 'mg/dL'], ['SGOT', 'sgot', 'U/L'], ['SGPT', 'sgpt', 'U/L'], ['Na', 'natrium', 'mmol/L'], ['K', 'kalium', 'mmol/L'], ['Cl', 'klorida', 'mmol/L']];
+  const LUAR_AB = LUAR_T.map(t => t[0]);
+  function luarItSan(it) {
+    const o = {};
+    if (it && typeof it === 'object') LUAR_AB.forEach(a => {
+      const e = it[a];
+      if (!e || typeof e !== 'object') return;
+      o[a] = { v: String(e.v || '').slice(0, 20), ref: e.ref == null ? null : String(e.ref).slice(0, 30), unit: String(e.unit || '').slice(0, 20) };
+    });
+    return o;
+  }
+  const lnum = t => { const v = String(t == null ? '' : t).trim().replace(',', '.'); return v !== '' && !isNaN(Number(v)) ? Number(v) : null; };
+  // arah abnormal dari nilai normal: "a - b", "< b", "> a" (koma desimal boleh)
+  function luarArah(v, ref) {
+    const x = lnum(v), r = String(ref || '').replace(/,/g, '.');
+    if (x == null || !r) return null;
+    const m = r.match(/^\s*(-?[\d.]+)\s*[-–]\s*(-?[\d.]+)\s*$/), lt = r.match(/^\s*<=?\s*(-?[\d.]+)/), gt = r.match(/^\s*>=?\s*(-?[\d.]+)/);
+    if (m) return x < +m[1] ? 'low' : x > +m[2] ? 'hi' : '';
+    if (lt) return x > +lt[1] ? 'hi' : '';
+    if (gt) return x < +gt[1] ? 'low' : '';
+    return null;
+  }
+  function luarRows(x) {
+    const it = x.it || {};
+    return LUAR_T.filter(t => it[t[0]] && clean(it[t[0]].v)).map(t => {
+      const e = it[t[0]], ar = luarArah(e.v, e.ref), ref = clean(e.ref || ''), unit = ref ? clean(e.unit || '') : t[2];
+      return { nama: t[0], k: t[1], kunci: t[1], val: clean(e.v).replace(',', '.'), flag: !!ar, arah: ar || '', ref: ref, unit: unit, grup: '' };
+    });
+  }
+  // Kelompok pasien saat ini (untuk mencatat dan memilih nilai normal)
+  function luarKel() {
+    const m = state.who === 'anak' ? ageMonths() : null;
+    return { who: state.who === 'anak' ? 'anak' : 'dewasa', sex: state.ant.sex === 0 || state.ant.sex === 1 ? state.ant.sex : null, age: m == null ? null : Math.round(m / 12 * 10) / 10 };
+  }
+  function luarCatat(ab, ref, unit, kel) {
+    ref = clean(ref).slice(0, 30); unit = clean(unit || '').slice(0, 20);
+    if (!ref) return false;
+    const a = settings.labRef[ab] || (settings.labRef[ab] = []);
+    let e = a.find(z => z.ref === ref && z.unit === unit && z.who === kel.who && z.sex === kel.sex);
+    if (!e) { e = { ref: ref, unit: unit, who: kel.who, sex: kel.sex, a0: null, a1: null }; a.push(e); if (a.length > LREF_MAX) a.shift(); }
+    else { a.splice(a.indexOf(e), 1); a.push(e); }   // yang terakhir dipakai di belakang (paling baru)
+    if (kel.who === 'anak' && kel.age != null) { e.a0 = e.a0 == null ? kel.age : Math.min(e.a0, kel.age); e.a1 = e.a1 == null ? kel.age : Math.max(e.a1, kel.age); }
+    return true;
+  }
+  // Pelajari nilai normal dari tabel SIMRS yang ditempel
+  function labBelajar(raw) {
+    if (!state || state.who === 'bbl') return;
+    const kel = luarKel(), before = JSON.stringify(settings.labRef);
+    labBaca(raw).forEach(r => {
+      const e = !r.grup && LAB_K.get(r.k);
+      if (e && LUAR_AB.indexOf(e[0]) >= 0 && r.ref && labNum(r.val)) luarCatat(e[0], r.ref, r.unit, kel);
+    });
+    if (JSON.stringify(settings.labRef) !== before) { saveSettings(); if (BLK['O:labl'] && BLK['O:labl'].el.isConnected) refresh(['O:labl']); }
+  }
+  const umurT = y => (y < 2 ? Math.round(y * 12) + ' bln' : Math.floor(y) + ' th');
+  function umurR(a, b) {
+    const ta = umurT(a), tb = umurT(b);
+    if (ta === tb) return ta;
+    if ((a < 2) === (b < 2)) return ta.replace(/ \S+$/, '') + '–' + tb;   // "3–5 th", "6–18 bln"
+    return ta + '–' + tb;
+  }
+  function luarKet(e) {
+    const p = [];
+    if (e.who) p.push(e.who + (e.who === 'anak' && e.a0 != null ? ' ' + umurR(e.a0, e.a1) : ''));
+    if (e.sex != null) p.push(e.sex === 0 ? 'laki-laki' : 'perempuan');
+    return p.join(', ');
+  }
+  const luarRefT = (ref, unit) => ref.replace(/\s*[-–]\s*/, '–') + (unit ? ' ' + unit : '');
+  // Pilihan nilai normal: ref+satuan yang sama digabung (mis. sama untuk laki-laki dan perempuan)
+  function luarOpsi(ab) {
+    const g = new Map();
+    (settings.labRef[ab] || []).forEach((e, i) => {
+      const k = e.ref + '|' + e.unit;
+      if (!g.has(k)) g.set(k, { ref: e.ref, unit: e.unit, ent: [], i: i });
+      const x = g.get(k); x.ent.push(e); x.i = i;
+    });
+    return [...g.values()].map(x => {
+      const who = [...new Set(x.ent.map(e => e.who))], sx = [...new Set(x.ent.map(e => e.sex))];
+      const lbl = x.ent.length === 1 ? luarKet(x.ent[0]) : x.ent.map(luarKet).filter((t, i, a) => a.indexOf(t) === i).join('; ');
+      return { ref: x.ref, unit: x.unit, ket: who.length === 1 && sx.length === 2 && sx.indexOf(null) < 0 ? who[0] : lbl, ent: x.ent, i: x.i };
+    });
+  }
+  // Pilihan bawaan: yang paling cocok dengan pasien ini (dewasa/anak wajib sama; lalu jenis kelamin; lalu usia anak), yang terbaru menang
+  function luarAuto(ab) {
+    const kel = luarKel();
+    let best = null, bs = -1;
+    (settings.labRef[ab] || []).forEach((e, i) => {
+      if (e.who !== kel.who) return;
+      let sc = e.sex === kel.sex ? 4 : e.sex == null ? 2 : kel.sex == null ? 1 : -9;
+      if (kel.who === 'anak' && kel.age != null && e.a0 != null) sc += kel.age >= e.a0 - 0.5 && kel.age <= e.a1 + 0.5 ? 2 : 0;
+      if (sc >= 0 && sc + i / 100 > bs) { bs = sc + i / 100; best = e; }
+    });
+    return best;
+  }
+  function luarEl() {
+    const sets = state.labSets, box = h('div', { class: 'labp' });
+    const n = sets.filter(x => x.luar).length;
+    box.appendChild(h('div', { class: 'sub-head' },
+      h('button', { type: 'button', class: 'btn btn--sm', 'data-fk': 'labl:add', onclick: () => {
+        if (sets.length >= 10) { toast('Maksimal 10 set lab'); return; }
+        const x = { id: uid('L'), tgl: tglHariIni(), jam: '', raw: '', luar: true, it: {} };
+        sets.push(x); refresh(['O:labl']);
+        setTimeout(() => { const t = document.querySelector('[data-fk="labl:v:' + x.id + ':Hb"]'); if (t) t.focus(); }, 0);
+      } }, n ? '+ Lab luar lagi' : '+ Lab luar'),
+      h('span', { class: 'hint' }, 'Isi yang ada saja. Nilai normal dipilih dari daftar (terkumpul otomatis dari tabel SIMRS yang pernah ditempel, sesuai dewasa/anak dan jenis kelamin), atau ketik sendiri. Laporan hanya menulis angka nilai normalnya.')));
+    let no = 0;
+    sets.forEach(x => {
+      if (!x.luar) return;
+      const i = no++;
+      x.it = x.it || {};
+      const rapi = () => setTimeout(() => { if (state && state.labSets === sets) labRapikan(); }, 0);
+      const tgl = h('input', { class: 'in in--sm', type: 'date', value: x.tgl || '', 'aria-label': 'Tanggal lab luar ke-' + (i + 1), 'data-fk': 'labl:tgl:' + x.id });
+      tgl.addEventListener('change', () => { x.tgl = /^\d{4}-\d{2}-\d{2}$/.test(tgl.value) ? tgl.value : ''; changed(); });
+      tgl.addEventListener('blur', rapi);
+      const jam = h('input', { class: 'in in--sm', type: 'time', value: x.jam || '', 'aria-label': 'Jam lab luar ke-' + (i + 1) + ' (boleh kosong)', title: 'Jam boleh kosong', 'data-fk': 'labl:jam:' + x.id });
+      const jamX = h('button', { type: 'button', class: 'lnk', 'data-fk': 'labl:jamx:' + x.id, hidden: !x.jam, onclick: () => { x.jam = ''; jam.value = ''; jamX.hidden = true; changed(); labRapikan(); } }, 'tanpa jam');
+      jam.addEventListener('change', () => { x.jam = /^\d{2}:\d{2}$/.test(jam.value) ? jam.value : ''; jamX.hidden = !x.jam; changed(); });
+      jam.addEventListener('blur', rapi);
+      const grid = h('div', { class: 'labl-grid' });
+      LUAR_T.forEach(t => {
+        const ab = t[0], e = x.it[ab] || (x.it[ab] = { v: '', ref: null, unit: '' });
+        if (e.ref == null) { const a = luarAuto(ab); e.ref = a ? a.ref : ''; e.unit = a ? a.unit : ''; }
+        const opsi = luarOpsi(ab);
+        if (e.ref && !opsi.some(o => o.ref === e.ref && o.unit === e.unit)) opsi.push({ ref: e.ref, unit: e.unit, ket: 'dipakai' });
+        const v = h('input', { class: 'in in--num', type: 'text', inputmode: 'decimal', value: e.v, placeholder: '-', autocomplete: 'off', 'aria-label': ab + ' lab luar ke-' + (i + 1), 'data-fk': 'labl:v:' + x.id + ':' + ab });
+        const tanda = () => { const ar = luarArah(e.v, e.ref); v.classList.toggle('abn', !!ar); v.title = ar ? (ar === 'hi' ? 'Di atas' : 'Di bawah') + ' nilai normal' : ''; };
+        v.addEventListener('input', () => { e.v = v.value; tanda(); changed(); });
+        tanda();
+        const sel = h('select', { class: 'in', 'aria-label': 'Nilai normal ' + ab, 'data-fk': 'labl:r:' + x.id + ':' + ab });
+        sel.appendChild(h('option', { value: '' }, opsi.length ? 'tanpa nilai normal' + (t[2] ? ' (' + t[2] + ')' : '') : 'belum ada daftar' + (t[2] ? ' (' + t[2] + ')' : '')));
+        opsi.forEach((o, k) => sel.appendChild(h('option', { value: String(k), selected: o.ref === e.ref && o.unit === e.unit }, luarRefT(o.ref, o.unit) + (o.ket ? ' (' + o.ket + ')' : ''))));
+        sel.appendChild(h('option', { value: 'own' }, 'Ketik sendiri…'));
+        const own = h('div', { class: 'labl-own', hidden: true });
+        const oRef = h('input', { class: 'in in--sm', type: 'text', placeholder: 'mis. 3-10', 'aria-label': 'Nilai normal ' + ab, 'data-fk': 'labl:or:' + x.id + ':' + ab });
+        const oUnit = h('input', { class: 'in in--sm', type: 'text', value: t[2], placeholder: 'satuan', 'aria-label': 'Satuan ' + ab, 'data-fk': 'labl:ou:' + x.id + ':' + ab });
+        const simpan = () => {
+          if (!clean(oRef.value)) { toast('Isi nilai normalnya dulu, mis. 3-10', true); return; }
+          e.ref = clean(oRef.value).slice(0, 30); e.unit = clean(oUnit.value).slice(0, 20);
+          luarCatat(ab, e.ref, e.unit, luarKel()); saveSettings();
+          refresh(['O:labl']);
+        };
+        oRef.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); simpan(); } });
+        own.appendChild(oRef); own.appendChild(oUnit);
+        own.appendChild(h('button', { type: 'button', class: 'btn btn--sm', onclick: simpan }, 'Simpan'));
+        own.appendChild(h('span', { class: 'hint' }, 'masuk daftar untuk ' + luarKet(Object.assign({ a0: null }, luarKel()))));
+        sel.addEventListener('change', () => {
+          if (sel.value === 'own') { own.hidden = false; setTimeout(() => oRef.focus(), 0); return; }
+          own.hidden = true;
+          const o = opsi[+sel.value];
+          e.ref = o ? o.ref : ''; e.unit = o ? o.unit : '';
+          tanda(); changed();
+        });
+        grid.appendChild(h('b', null, ab)); grid.appendChild(v); grid.appendChild(sel); grid.appendChild(own);
+      });
+      box.appendChild(h('div', { class: 'labp-set' },
+        h('div', { class: 'labp-top' }, h('b', null, 'Luar ' + (i + 1)), tgl, jam, jamX,
+          h('button', { type: 'button', class: 'x', 'aria-label': 'Hapus lab luar ' + (i + 1), 'data-fk': 'labl:del:' + x.id, onclick: () => { sets.splice(sets.indexOf(x), 1); refresh(['O:labl']); } }, '×')),
+        grid));
+    });
+    return box;
+  }
+  // Lab luar: terlipat bawaan; terbuka sendiri hanya bila pasien ini punya isian lab luar. Tidak diingat antar pasien.
+  const luarBuka = {};
+  function luarFold() {
+    const id = db && db.cur, ada = (state.labSets || []).some(x => x.luar) || !!clean(state.penLab);
+    const open = id in luarBuka ? luarBuka[id] : ada;
+    return fold('L:luar', 'Lab luar', [blk('O:labl', luarEl),
+      row('Lainnya', ta('oLab', state.penLab, 'Ketik bebas, mis. GDS stik 333', v => { state.penLab = v; }, 'o:penLab'), 'oLab', 'row--gap')],
+      { open: open, onToggle: v => { if (id) luarBuka[id] = v; } });
   }
 
   /* ================= Lipat ala panel file Obsidian ================= */
@@ -2236,7 +2437,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
   function setFold(k, v) { prefs.fold = Object.assign({}, prefs.fold, { [k]: v }); savePrefs(); }
   function fold(key, title, kids, opt) {
     opt = opt || {};
-    const open = foldOpen(key), bid = 'fb-' + key.replace(/[^a-z0-9]/gi, '-');
+    const open = 'open' in opt ? !!opt.open : foldOpen(key), bid = 'fb-' + key.replace(/[^a-z0-9]/gi, '-');
     const sum = h('span', { class: 'fold-sum' });
     const head = h('button', { type: 'button', class: 'fold-head', 'aria-expanded': open ? 'true' : 'false', 'aria-controls': bid, 'data-fk': 'fold:' + key },
       h('span', { class: 'chev', 'aria-hidden': 'true' }), h('span', { class: 'fold-t' }, title), sum);
@@ -2246,7 +2447,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     el._sum = sum; el._body = body;
     head.addEventListener('click', () => {
       const nu = body.hidden;
-      body.hidden = !nu; head.setAttribute('aria-expanded', nu ? 'true' : 'false'); setFold(key, nu);
+      body.hidden = !nu; head.setAttribute('aria-expanded', nu ? 'true' : 'false'); if (opt.onToggle) opt.onToggle(nu); else setFold(key, nu);
       if (nu) growAll($$('textarea', body)); else updateSums();
     });
     return el;
@@ -2760,7 +2961,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
 
     b.appendChild(fold('O:lab', 'Lab & penunjang', [
       blk('O:labp', labSetsEl),
-      row('Lab lain', ta('oLab', state.penLab, 'Ketik manual, mis. GDS stik 333', v => { state.penLab = v; }, 'o:penLab'), 'oLab', 'row--gap'),
+      luarFold(),
       row('Radiologi', ta('oRad', state.penRad, 'mis. foto thorax: kardiomegali (-), infiltrat paru kanan bawah', v => { state.penRad = v; }, 'o:penRad'), 'oRad'),
       row('Penunjang lain', ta('oPen', state.pen, 'mis. EKG: sinus ritme, HR 88 x/menit', v => { state.pen = v; }, 'o:pen'), 'oPen'),
       h('p', { class: 'hint' }, 'Yang kosong tidak ditulis. Kreatinin dan eGFR ada di menu Alat.')]));
@@ -5011,7 +5212,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (rn) lines.push(lines.length ? capParts(rn) : rn);
     return lines;
   }
-  const penLabel = () => (clean(state.penRad) || clean(state.penLab) || (state.labSets || []).some(x => clean(x.raw)) || renalParts() ? 'Penunjang lain' : 'Penunjang');
+  const penLabel = () => (clean(state.penRad) || clean(state.penLab) || (state.labSets || []).some(x => clean(x.raw) || x.luar) || renalParts() ? 'Penunjang lain' : 'Penunjang');
 
   /* ================= Konsul WhatsApp ================= */
   // *teks* tebal di WhatsApp: spasi di tepi dikeluarkan dari tanda bintang
@@ -5657,7 +5858,7 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
     if (id) setTimeout(() => { const el = $('#src-' + id); if (el) el.scrollIntoView({ block: 'start' }); }, 0);
   }
   function openSettings() { openModal('Atur default', settingsBody(), 'set'); }
-  const SET_NAV = [['set-pf', 'Pemeriksaan fisik'], ['set-nl', 'Neurologi lengkap'], ['set-kh', 'PF khusus'], ['set-rw', 'Riwayat'], ['set-gx', 'Ceklis gejala'], ['set-kons', 'Konsul WA'], ['set-gz', 'Status gizi'], ['set-bbl', 'Lapor bayi'], ['set-ex', 'Pindahkan ke komputer lain']];
+  const SET_NAV = [['set-pf', 'Pemeriksaan fisik'], ['set-nl', 'Neurologi lengkap'], ['set-kh', 'PF khusus'], ['set-rw', 'Riwayat'], ['set-gx', 'Ceklis gejala'], ['set-kons', 'Konsul WA'], ['set-gz', 'Status gizi'], ['set-ref', 'Nilai normal lab'], ['set-bbl', 'Lapor bayi'], ['set-ex', 'Pindahkan ke komputer lain']];
   // Gulir isi menu Atur sampai judul bagian tepat di bawah baris tombol lompat
   function jumpSet(id) {
     const b = $('#modalBody'), el = document.getElementById(id), nav = $('.set-nav', b);
@@ -5736,6 +5937,18 @@ kbd{padding:0 5px;border:1px solid var(--rule);border-bottom-width:2px;border-ra
       h('button', { type: 'button', class: 'btn btn--sm', onclick: gzApply }, 'Simpan'),
       h('button', { type: 'button', class: 'btn btn--sm', onclick: () => { settings.gzBBU = [60, 80, 120]; saveSettings(); rerenderSettings(); changed(); } }, 'Bawaan'))));
     body.appendChild(sG);
+    const sR = h('section', { class: 'set-sec', id: 'set-ref' }, h('h3', null, 'Nilai normal lab luar'));
+    sR.appendChild(h('p', { class: 'set-intro' }, 'Terkumpul otomatis dari tabel SIMRS yang ditempel (dicatat menurut dewasa/anak, jenis kelamin, dan usia anak di Data pasien), plus yang diketik sendiri di Lab luar. Maksimal ' + LREF_MAX + ' per pemeriksaan; ikut terbawa lewat kode Pindahkan ke komputer lain.'));
+    let adaRef = false;
+    LUAR_T.forEach(t => {
+      const a = settings.labRef[t[0]] || [];
+      if (!a.length) return;
+      adaRef = true;
+      sR.appendChild(h('div', { class: 'set-ref' }, h('b', null, t[0]), a.map(e => h('span', { class: 'set-pill' }, luarRefT(e.ref, e.unit) + (luarKet(e) ? ' (' + luarKet(e) + ')' : ''),
+        h('button', { type: 'button', class: 'x x--sm', 'aria-label': 'Hapus ' + t[0] + ' ' + e.ref, onclick: () => { a.splice(a.indexOf(e), 1); if (!a.length) delete settings.labRef[t[0]]; saveSettings(); rerenderSettings(); refresh(); } }, '×')))));
+    });
+    if (!adaRef) sR.appendChild(h('p', { class: 'hint' }, 'Belum ada. Tempel satu tabel lab dari SIMRS (dengan Data pasien terisi) dan daftarnya mulai terisi.'));
+    body.appendChild(sR);
     const sB = h('section', { class: 'set-sec', id: 'set-bbl' }, h('h3', null, 'Lapor bayi baru lahir'));
     sB.appendChild(h('p', { class: 'set-intro' }, 'Kosongkan kolom untuk kembali ke bawaan (tulisan abu-abu). Nama kosong = sama dengan nama di Konsul WhatsApp.'));
     const bIn = (lab, get, set, ph, fk) => {
